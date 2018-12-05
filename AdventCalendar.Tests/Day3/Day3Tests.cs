@@ -43,6 +43,7 @@ namespace AdventCalendar.Tests.Day3
             const int HEIGHT = 9;
 
             var map = FabricMapper.Map(sampleClaims, WIDTH, HEIGHT);
+            map.GenerateCounts();
 
             var overlaps = map.GetOverlaps();
             Assert.Equal(4, overlaps.Count);
