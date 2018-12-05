@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -44,6 +45,15 @@ namespace AdventCalendar.Day4
 
             foreach (var entry in entries)
             {
+                if (entry.Timestamp.Hour == 23)
+                {
+                    var newTime = entry.Timestamp;
+                    newTime = newTime.AddMinutes(-entry.Timestamp.Minute);
+                    newTime = newTime.AddHours(1);
+
+                    entry.Timestamp = newTime;
+                }
+
                 if (currentGuard != null)
                 {
                     if (entry.Message.Equals("falls asleep"))
@@ -80,13 +90,14 @@ namespace AdventCalendar.Day4
                             Id = guardNumber
                         };
 
-                        currentGuard.LogEntries.Add(new LogEntry
-                        {
-                            Timestamp = entry.Timestamp,
-                            State = GuardStatus.Start
-                        });
+                        guards.Add(guardNumber, currentGuard);
                     };
-                    guards[guardNumber] = currentGuard;
+
+                    currentGuard.LogEntries.Add(new LogEntry
+                    {
+                        Timestamp = entry.Timestamp,
+                        State = GuardStatus.Start
+                    });
                 }
             }
 
@@ -118,16 +129,6 @@ namespace AdventCalendar.Day4
 
         private void evaluateStatus(GuardStatus currentStatus, DateTime? currentTime, Guard guard, DateTime? previousTime, GuardStatus? previousState)
         {
-
-            if (previousTime != null && previousTime.Value.Hour == 23)
-            {
-                var newTime = previousTime.Value;
-                newTime = newTime.AddMinutes(-previousTime.Value.Minute);
-                newTime = newTime.AddHours(1);
-
-                previousTime = newTime;
-            }
-
             switch (currentStatus)
             {
 
@@ -146,6 +147,10 @@ namespace AdventCalendar.Day4
                     break;
 
                 case GuardStatus.Sleep:
+                    if (previousState == GuardStatus.Sleep)
+                    {
+                        throw new Exception();
+                    }
                     break;
             }
         }

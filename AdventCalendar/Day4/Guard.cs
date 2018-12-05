@@ -35,7 +35,7 @@ namespace AdventCalendar.Day4
 
         }
 
-        public int GetTimeMostAsleep()
+        public IList<int> GetTimeMostAsleep()
         {
             Dictionary<int, int> totalMinuteCounts = new Dictionary<int, int>();
 
@@ -56,8 +56,37 @@ namespace AdventCalendar.Day4
                 }
             }
 
-            return totalMinuteCounts.FirstOrDefault(x => x.Value >= totalMinuteCounts.Max(y => y.Value)).Key;
+            var max = totalMinuteCounts.Where(x => x.Value >= totalMinuteCounts.Max(y => y.Value));
+
+            return max.Select(x => x.Key).ToList();
         }
+
+        public IList<int> GetFrequencyOfTimeMostAsleep()
+        {
+            Dictionary<int, int> totalMinuteCounts = new Dictionary<int, int>();
+
+            foreach (var Entry in TimeEntries)
+            {
+                for (int i = 0; i < Entry.Value.Length; i++)
+                {
+                    var minute = Entry.Value[i];
+
+                    if (totalMinuteCounts.ContainsKey(i))
+                    {
+                        totalMinuteCounts[i] += minute;
+                    }
+                    else
+                    {
+                        totalMinuteCounts.Add(i, minute);
+                    }
+                }
+            }
+
+            var max = totalMinuteCounts.Where(x => x.Value >= totalMinuteCounts.Max(y => y.Value));
+
+            return max.Select(x => x.Value).ToList();
+        }
+
 
         public int GetTotalTimeAsleep()
         {
@@ -77,7 +106,7 @@ namespace AdventCalendar.Day4
         {
             get
             {
-                return int.Parse(Id) * GetTimeMostAsleep();
+                return int.Parse(Id) * GetTimeMostAsleep()[0];
             }
         }
     }

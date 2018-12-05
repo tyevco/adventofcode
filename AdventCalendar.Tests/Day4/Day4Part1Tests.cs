@@ -8,19 +8,22 @@ namespace AdventCalendar.Tests.Day4
     public class Day4Part1Tests
     {
         IList<string> SampleDataSet = new List<string> {
-            "[1518-11-01 00:00] Guard #10 begins shift",
-            "[1518-11-01 00:05] falls asleep",
-            "[1518-11-01 00:25] wakes up",
-            "[1518-11-01 00:30] falls asleep",
-            "[1518-11-01 00:55] wakes up",
+            "[1518-12-03 23:58] Guard #100 begins shift",
+            "[1518-12-02 23:58] Guard #100 begins shift",
+            "[1518-12-01 23:58] Guard #100 begins shift",
             "[1518-11-01 23:58] Guard #99 begins shift",
-            "[1518-11-02 00:40] falls asleep",
-            "[1518-11-02 00:50] wakes up",
-            "[1518-11-03 00:05] Guard #10 begins shift",
             "[1518-11-03 00:24] falls asleep",
             "[1518-11-03 00:29] wakes up",
-            "[1518-11-04 00:02] Guard #99 begins shift",
+            "[1518-11-01 00:55] wakes up",
+            "[1518-11-02 00:40] falls asleep",
+            "[1518-11-02 00:50] wakes up",
+            "[1518-11-01 00:00] Guard #10 begins shift",
+            "[1518-11-01 00:05] falls asleep",
             "[1518-11-04 00:36] falls asleep",
+            "[1518-11-01 00:25] wakes up",
+            "[1518-11-03 00:05] Guard #10 begins shift",
+            "[1518-11-04 00:02] Guard #99 begins shift",
+            "[1518-11-01 00:30] falls asleep",
             "[1518-11-04 00:46] wakes up",
             "[1518-11-05 00:03] Guard #99 begins shift",
             "[1518-11-05 00:45] falls asleep",
@@ -33,19 +36,44 @@ namespace AdventCalendar.Tests.Day4
         {
             var guards = GuardDataParser.Parse(ActualDataSet);
 
-            guards.OrderBy(x => x.GetTotalTimeAsleep());
+            guards = guards.OrderBy(x => x.GetTotalTimeAsleep()).ToList();
 
-            var laziestGuard = guards.First();
-            var alertGuard = guards.Last();
+            var laziestGuard = guards.Last();
 
-            Assert.Equal("2539", laziestGuard.Id);
-            Assert.Equal(43, laziestGuard.GetTimeMostAsleep());
+            Assert.Equal("2351", laziestGuard.Id);
+            Assert.Equal(40, laziestGuard.GetTimeMostAsleep()[0]);
 
-            Assert.Equal(109177, laziestGuard.Answer);
+            Assert.Equal(94040, laziestGuard.Answer);
+
+
+            guards = guards.OrderBy(x =>
+            {
+                var freq = x.GetFrequencyOfTimeMostAsleep();
+
+                if (freq.Any())
+                {
+                    return freq[0];
+                }
+                else
+                {
+                    return 0;
+                }
+            }).ToList();
+
+            var napGuard = guards.Last();
+
+            var time = napGuard.GetTimeMostAsleep()[0];
+
+            Assert.Equal(20, time);
+            Assert.Equal("1997", napGuard.Id);
+            Assert.Equal(39940, napGuard.Answer);
+
+            foreach (var guard in guards)
+                ScheduleVisualizer.Visualize(guard);
         }
 
         [Fact]
-        public void SampleTestPart_Guard10AsleepAt24()
+        public void Guard10AsleepAt24()
         {
             var guards = GuardDataParser.Parse(SampleDataSet);
 
@@ -55,7 +83,7 @@ namespace AdventCalendar.Tests.Day4
 
 
         [Fact]
-        public void SampleTestPart_Guard10AwakeAt25()
+        public void Guard10AwakeAt25()
         {
             var guards = GuardDataParser.Parse(SampleDataSet);
 
@@ -65,7 +93,7 @@ namespace AdventCalendar.Tests.Day4
 
 
         [Fact]
-        public void SampleTestPart_Guard10TotalTimeAsleepIs50()
+        public void Guard10TotalTimeAsleepIs50()
         {
             var guards = GuardDataParser.Parse(SampleDataSet);
 
@@ -75,16 +103,16 @@ namespace AdventCalendar.Tests.Day4
 
 
         [Fact]
-        public void SampleTestPart_Guard10MostAsleepTimeIs24()
+        public void Guard10MostAsleepTimeIs24()
         {
             var guards = GuardDataParser.Parse(SampleDataSet);
 
             var guard10 = guards.FirstOrDefault(x => x.Id.Equals("10"));
-            Assert.Equal(24, guard10.GetTimeMostAsleep());
+            Assert.Equal(24, guard10.GetTimeMostAsleep()[0]);
         }
 
         [Fact]
-        public void SampleTestPart_Guard10AnswerIs240()
+        public void Guard10AnswerIs240()
         {
             var guards = GuardDataParser.Parse(SampleDataSet);
 
@@ -93,16 +121,16 @@ namespace AdventCalendar.Tests.Day4
         }
 
         [Fact]
-        public void SampleTestPart_Guard99MostAsleepTimeIs45()
+        public void Guard99MostAsleepTimeIs45()
         {
             var guards = GuardDataParser.Parse(SampleDataSet);
 
             var guard99 = guards.FirstOrDefault(x => x.Id.Equals("99"));
-            Assert.Equal(45, guard99.GetTimeMostAsleep());
+            Assert.Equal(45, guard99.GetTimeMostAsleep()[0]);
         }
 
         [Fact]
-        public void SampleTestPart_Guard99TotalTimeAsleepIs30()
+        public void Guard99TotalTimeAsleepIs30()
         {
             var guards = GuardDataParser.Parse(SampleDataSet);
 
@@ -111,12 +139,32 @@ namespace AdventCalendar.Tests.Day4
         }
 
         [Fact]
-        public void SampleTestPart_Guard99AnswerIs4455()
+        public void Guard99AnswerIs4455()
         {
             var guards = GuardDataParser.Parse(SampleDataSet);
 
             var guard99 = guards.FirstOrDefault(x => x.Id.Equals("99"));
             Assert.Equal(4455, guard99.Answer);
+        }
+
+        [Fact]
+        public void Guard1IsAsleep59Minutes()
+        {
+            var guards = GuardDataParser.Parse(new List<string> { "[1518-11-01 23:55] Guard #10 begins shift", "[1518-11-02 00:01] falls asleep", "[1518-11-02 23:55] Guard #10 begins shift", "[1518-11-03 00:01] falls asleep", "[1518-11-03 00:02] wakes up" });
+
+            var guard = guards[0];
+
+            Assert.Equal(60, guard.GetTotalTimeAsleep());
+        }
+
+        [Fact]
+        public void Guard1FavoriteMinuteIs01()
+        {
+            var guards = GuardDataParser.Parse(new List<string> { "[1518-11-02 00:01] falls asleep", "[1518-11-01 23:55] Guard #10 begins shift", "[1518-11-02 23:55] Guard #10 begins shift", "[1518-11-03 00:01] falls asleep", "[1518-11-03 00:02] wakes up" });
+
+            var guard = guards[0];
+
+            Assert.Equal(1, guard.GetTimeMostAsleep()[0]);
         }
     }
 }
