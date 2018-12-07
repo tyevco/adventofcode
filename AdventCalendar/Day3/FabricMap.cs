@@ -24,9 +24,10 @@ namespace AdventCalendar.Day3
         {
             for (int x = 0; x < claimCounts.Length; x++)
             {
+                var claimRow = claimCounts[x];
                 for (int y = 0; y < claimCounts[x].Length; y++)
                 {
-                    claimCounts[x][y] = claims.Count(c => c.HasClaim(x, y));
+                    claimRow[y] = claims.Count(c => c.HasClaim(x, y));
                 }
             }
         }
@@ -37,9 +38,10 @@ namespace AdventCalendar.Day3
 
             for (int x = 0; x < claimCounts.Length; x++)
             {
+                var claimRow = claimCounts[x];
                 for (int y = 0; y < claimCounts[x].Length; y++)
                 {
-                    if (claimCounts[x][y] > 1)
+                    if (claimRow[y] > 1)
                     {
                         overlaps.Add($"{x},{y}");
                     }
