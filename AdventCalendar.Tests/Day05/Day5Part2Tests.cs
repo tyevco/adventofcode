@@ -1,7 +1,7 @@
-﻿using AdventCalendar.Day5;
+﻿using AdventCalendar.Day05;
 using Xunit;
 
-namespace AdventCalendar.Tests.Day5
+namespace AdventCalendar.Tests.Day05
 {
     public class Day5Part2Tests
     {

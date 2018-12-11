@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AdventCalendar.Day6
+namespace AdventCalendar.Day06
 {
     public class ManhattanPoint
     {

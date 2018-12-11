@@ -22,8 +22,4 @@
     <ProjectReference Include="..\AdventCalendar\AdventCalendar.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Day11\" />
-  </ItemGroup>
-
 </Project>

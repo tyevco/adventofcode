@@ -1,4 +1,4 @@
-﻿namespace AdventCalendar.Day4
+﻿namespace AdventCalendar.Day04
 {
     public enum GuardStatus
     {

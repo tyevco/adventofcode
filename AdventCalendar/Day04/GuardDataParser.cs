@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace AdventCalendar.Day4
+namespace AdventCalendar.Day04
 {
     public class GuardDataParser
     {

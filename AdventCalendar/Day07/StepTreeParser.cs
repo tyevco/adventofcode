@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace AdventCalendar.Day7
+namespace AdventCalendar.Day07
 {
     public class StepTreeParser
     {

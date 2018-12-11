@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace AdventCalendar.Day2
+namespace AdventCalendar.Day02
 {
     public class InventoryManagementSystem
     {

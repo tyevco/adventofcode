@@ -1,4 +1,4 @@
-﻿namespace AdventCalendar.Day7
+﻿namespace AdventCalendar.Day07
 {
     public class Worker
     {

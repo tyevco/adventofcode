@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using AdventCalendar.Day9;
+using AdventCalendar.Day09;
 using Xunit;
 
-namespace AdventCalendar.Tests.Day9
+namespace AdventCalendar.Tests.Day09
 {
     public class MarbleGameTests
     {

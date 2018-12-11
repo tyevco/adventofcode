@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using Xunit;
-using AdventCalendar.Day7;
+using AdventCalendar.Day07;
 
-namespace AdventCalendar.Tests.Day7
+namespace AdventCalendar.Tests.Day07
 {
     public class Day7Tests
     {

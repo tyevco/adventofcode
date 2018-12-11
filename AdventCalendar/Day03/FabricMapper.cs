@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace AdventCalendar.Day3
+namespace AdventCalendar.Day03
 {
     public class FabricMapper
     {

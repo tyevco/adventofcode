@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 
-namespace AdventCalendar.Day7
+namespace AdventCalendar.Day07
 {
     public class StepTree
     {

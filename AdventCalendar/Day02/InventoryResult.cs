@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AdventCalendar.Day2
+namespace AdventCalendar.Day02
 {
     public class InventoryResult
     {

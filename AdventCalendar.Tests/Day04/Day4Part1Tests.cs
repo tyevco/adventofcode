@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using AdventCalendar.Day4;
+using AdventCalendar.Day04;
 using Xunit;
 
-namespace AdventCalendar.Tests.Day4
+namespace AdventCalendar.Tests.Day04
 {
     public class Day4Part1Tests
     {

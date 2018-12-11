@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AdventCalendar.Day8
+namespace AdventCalendar.Day08
 {
     public class ManeuverTreeParser
     {

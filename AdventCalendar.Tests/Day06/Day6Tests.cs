@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using AdventCalendar.Day6;
+using AdventCalendar.Day06;
 using Xunit;
 
-namespace AdventCalendar.Tests.Day6
+namespace AdventCalendar.Tests.Day06
 {
     public class Day6Tests
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AdventCalendar.Day4
+namespace AdventCalendar.Day04
 {
     public class LogEntry
     {

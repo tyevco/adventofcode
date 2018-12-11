@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using AdventCalendar.Day2;
+using AdventCalendar.Day02;
 using Xunit;
 
-namespace AdventCalendar.Tests.Day2
+namespace AdventCalendar.Tests.Day02
 {
     public class Day2Tests
     {

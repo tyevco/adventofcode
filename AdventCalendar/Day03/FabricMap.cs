@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AdventCalendar.Day3
+namespace AdventCalendar.Day03
 {
     public class FabricMap
     {

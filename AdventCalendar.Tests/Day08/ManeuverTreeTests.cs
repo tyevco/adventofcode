@@ -1,7 +1,7 @@
-﻿using AdventCalendar.Day8;
+﻿using AdventCalendar.Day08;
 using Xunit;
 
-namespace AdventCalendar.Tests.Day8
+namespace AdventCalendar.Tests.Day08
 {
     public class ManeuverTreeTests
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AdventCalendar.Day4
+namespace AdventCalendar.Day04
 {
     public class DataEntry
     {
