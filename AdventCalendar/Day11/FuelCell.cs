@@ -1,27 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace AdventCalendar.Day11
+﻿namespace AdventCalendar.Day11
 {
     public class FuelCell
     {
-        private int v1;
-        private int v2;
-        private int v3;
+        public int X { get; private set; }
+        public int Y { get; private set; }
+        public int SerialNumber { get; private set; }
 
-        public FuelCell(int v1, int v2, int v3)
+        public FuelCell(int x, int y, int serialNumber)
         {
-            this.v1 = v1;
-            this.v2 = v2;
-            this.v3 = v3;
+            this.X = x;
+            this.Y = y;
+            this.SerialNumber = serialNumber;
         }
 
+        private int? _powerLevel = null;
         public int PowerLevel
         {
             get
             {
+                if (_powerLevel == null || !_powerLevel.HasValue)
+                {
+                    int rackId = X + 10;
+                    int start = ((Y * rackId) + SerialNumber) * rackId;
 
+                    if (start < 100)
+                    {
+                        _powerLevel = -5;
+                    }
+                    else
+                    {
+                        _powerLevel = ((start / 100) % 10) - 5;
+                    }
+                }
+
+                return _powerLevel.Value;
             }
         }
     }

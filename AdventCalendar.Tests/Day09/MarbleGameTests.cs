@@ -23,9 +23,9 @@ namespace AdventCalendar.Tests.Day09
         }
 
         [Fact]
-        public void Simulate7PlayersAndLastMarbleIsWorth32Points()
+        public void Simulate7PlayersAndLastMarbleIsWorth25Points()
         {
-            var details = MarbleGame.Simulate(7, 32);
+            var details = MarbleGame.Simulate(7, 25);
             Assert.Equal(32, details.HighScore);
         }
 
@@ -61,7 +61,7 @@ namespace AdventCalendar.Tests.Day09
         public void Simulate30PlayersAndLastMarbleIsWorth5807Points()
         {
             var details = MarbleGame.Simulate(30, 5807);
-            Assert.Equal(34205, details.HighScore); // 37305 - this is coming back wrong
+            Assert.Equal(37305, details.HighScore); // 37305 - this is coming back wrong
         }
     }
 }

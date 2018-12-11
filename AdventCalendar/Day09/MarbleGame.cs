@@ -39,7 +39,7 @@ namespace AdventCalendar.Day09
             {
                 LinkedListNode<MarblePlayer> currentPlayer = game.Players.First;
 
-                while (lastMarble == null || (lastMarble.Score != lastMarbleValue && round < lastMarbleValue))
+                while (lastMarble == null || (lastMarble.Id < lastMarbleValue))
                 {
                     lastMarble = game.PlaceMarble();
 
