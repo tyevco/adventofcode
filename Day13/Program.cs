@@ -7,7 +7,8 @@ namespace Day13
 {
     class CartMayhem
     {
-        const bool CLEAR_OUTPUT = false;
+        const bool CLEAR_OUTPUT = true;
+        const bool DISPLAY_GAME = true;
 
         static void Main(string[] args)
         {
@@ -26,19 +27,25 @@ namespace Day13
 
                         bool finished = false;
 
-                        PrintGameState(game);
+                        if (DISPLAY_GAME)
+                            PrintGameState(game);
+
                         while (!finished)
                         {
                             game.Tick();
-                            Thread.Sleep(100);
-                            PrintGameState(game);
+
+                            if (DISPLAY_GAME)
+                            {
+                                //Thread.Sleep(250);
+                                PrintGameState(game);
+                            }
 
                             finished = game.Carts.Any(c => carts.Count(o => c.X == o.X && c.Y == o.Y) > 1);
                         }
 
                         var crashedCart = game.Carts.FirstOrDefault(c => carts.Count(o => c.X == o.X && c.Y == o.Y) > 1);
 
-                        Console.WriteLine($"Crash detected at: {crashedCart.X},{crashedCart.Y}");
+                        Console.WriteLine($"After {game.Ticks} ticks a crash was detected at: {crashedCart.X},{crashedCart.Y}");
                     }
                 }
                 catch (Exception ex)

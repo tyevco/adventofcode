@@ -9,6 +9,8 @@ namespace Day13
         public Grid Grid { get; }
         public IList<Cart> Carts { get; }
 
+        public int Ticks { get; private set; } = 0;
+
         public Game(Grid grid, IList<Cart> carts)
         {
             Grid = grid;
@@ -120,6 +122,8 @@ namespace Day13
                     throw new Exception($"Unable to find a track at {cart.X},{cart.Y}.");
                 }
             }
+
+            Ticks++;
         }
     }
 }
