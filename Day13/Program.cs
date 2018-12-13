@@ -8,7 +8,7 @@ namespace Day13
     class CartMayhem
     {
         const bool CLEAR_OUTPUT = true;
-        const bool DISPLAY_GAME = true;
+        const bool DISPLAY_GAME = false;
 
         static void Main(string[] args)
         {
@@ -36,14 +36,14 @@ namespace Day13
 
                             if (DISPLAY_GAME)
                             {
-                                //Thread.Sleep(250);
+                                Thread.Sleep(250);
                                 PrintGameState(game);
                             }
 
-                            finished = game.Carts.Any(c => carts.Count(o => c.X == o.X && c.Y == o.Y) > 1);
+                            finished = game.Carts.Count(c => !c.IsCrashed) == 1;
                         }
 
-                        var crashedCart = game.Carts.FirstOrDefault(c => carts.Count(o => c.X == o.X && c.Y == o.Y) > 1);
+                        var crashedCart = game.Carts.FirstOrDefault(c => !c.IsCrashed);
 
                         Console.WriteLine($"After {game.Ticks} ticks a crash was detected at: {crashedCart.X},{crashedCart.Y}");
                     }
@@ -64,7 +64,6 @@ namespace Day13
             {
                 Console.Clear();
             }
-
 
             for (int y = 0; y < game.Grid.Height; y++)
             {
