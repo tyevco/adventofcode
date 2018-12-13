@@ -2,7 +2,7 @@
   "profiles": {
     "Day13": {
       "commandName": "Project",
-      "commandLineArgs": "\"$(ProjectDir)actual.txt\""
+      "commandLineArgs": "\"$(ProjectDir)sample-grid.txt\""
     }
   }
 }

@@ -34,11 +34,6 @@
             return dir;
         }
 
-        public static Direction GetStraight(this Direction direction)
-        {
-            return direction;
-        }
-
         public static Direction GetLeft(this Direction direction)
         {
             Direction value;
