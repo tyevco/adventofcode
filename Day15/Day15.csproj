@@ -6,14 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Entity.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Entity.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Advent.Utilities\Advent.Utilities.csproj" />
   </ItemGroup>
 
