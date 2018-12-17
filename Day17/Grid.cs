@@ -15,6 +15,7 @@ namespace Day17
         public int Bottom { get; set; }
         public int Right { get; set; }
         public int Left { get; set; }
+        public bool Added { get; set; }
 
         public Material this[int x, int y]
         {
@@ -36,16 +37,28 @@ namespace Day17
             }
         }
 
+        internal void Propogate()
+        {
+            Added = false;
+            foreach (var m in Materials)
+            {
+                if (m != null)
+                {
+                    m.Propagate();
+                }
+            }
+        }
+
         private int GetIndex(int x, int y)
         {
-            return (x - Left) + (y - Top) * Width;
+            return (x - Left) + (y) * Width;
         }
 
         public Grid(int minX, int maxX, int minY, int maxY)
         {
             Left = minX - 1;
             Right = maxX + 1;
-            Top = 0;
+            Top = minY;
             Bottom = maxY;
 
             Width = (Right - Left) + 1;
@@ -57,7 +70,7 @@ namespace Day17
         {
             StringBuilder sb = new StringBuilder();
 
-            for (int y = Top; y < Height; y++)
+            for (int y = 0; y < Height; y++)
             {
                 for (int x = Left; x <= Right; x++)
                 {

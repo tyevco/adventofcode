@@ -11,14 +11,32 @@ namespace Day17
         {
             if (args.Length > 0)
             {
+                IList<Material> active = null;
+
                 var grid = new SpringParser().ParseData(args[0]);
 
-                Console.WriteLine(grid);
+                bool finished = false;
+                int i = 0;
+                while (!finished)
+                {
+                    grid.Propogate();
+                    i++;
 
-                var active = grid.Active();
+                    //Console.WriteLine(grid);
 
-                Console.WriteLine($"Water tiles: {active.Count(x => x != null && x.GetType().Equals(typeof(Water)))}");
-                Console.WriteLine($" Clay tiles: {active.Count(x => x != null && x.GetType().Equals(typeof(Clay)))}");
+                    if (i % 50 == 0)
+                    {
+                        active = grid.Active();
+                        Console.WriteLine($"[{i.ToString("0000")}] Clay tiles: {active.Count(x => x != null && x.Type == MaterialType.Clay)}, Water tiles: {active.Count(x => x != null && x.Type == MaterialType.Water)}");
+                    }
+
+                    finished = !grid.Added;
+                    //System.Threading.Thread.Sleep(500);
+                }
+
+                active = grid.Active();
+                Console.WriteLine($"[{i.ToString("0000")}] Clay tiles: {active.Count(x => x != null && x.Type == MaterialType.Clay)}, Water tiles: {active.Count(x => x != null && x.Type == MaterialType.Water)}");
+                Console.WriteLine($"Flowing Water tiles: {active.Count(x => x != null && x.Type == MaterialType.Water && ((Water)x).IsFlowing)}");
 
                 Console.ReadLine();
             }

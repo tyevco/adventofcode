@@ -2,6 +2,8 @@
 {
     public class Clay : Material
     {
+        public override MaterialType Type => MaterialType.Clay;
+
         public Clay(int x, int y, Grid grid)
             : base(grid)
         {
