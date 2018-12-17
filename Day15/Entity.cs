@@ -23,7 +23,7 @@ namespace Day15
 
         public override string ToString()
         {
-            return Type == EntityType.Elf ? "E" : "G";
+            return Health > 0 ? (Type == EntityType.Elf ? "E" : "G") : " ";
         }
     }
 }

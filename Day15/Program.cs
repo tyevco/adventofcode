@@ -21,7 +21,11 @@ namespace Day15
 
                     Console.Clear();
                     Console.WriteLine(map);
+                    System.Threading.Thread.Sleep(500);
                 }
+
+                Console.Clear();
+                Console.WriteLine(map);
             }
 
             Console.ReadLine();

@@ -20,22 +20,42 @@ namespace Day15
             Entities = map.Entities;
         }
 
-
         public void Tick()
         {
             var entities = Entities.Where(e => e.Health > 0).OrderBy(e => e.X + (e.Y * Map.Width)).ToList();
 
             foreach (var entity in entities)
             {
-                var point = FindPath(entity, entities);
-                if (point != null)
+                var nearby = NearbyEnemies(entity, entities.Where(e => e.Type != entity.Type).ToList());
+
+                if (nearby.Any())
                 {
-                    entity.X = point.X;
-                    entity.Y = point.Y;
+                    var target = nearby.OrderBy(e => e.Health).FirstOrDefault();
+
+                    target.Health -= entity.Attack;
+                }
+                else
+                {
+                    var point = FindPath(entity, entities);
+                    if (point != null)
+                    {
+                        entity.X = point.X;
+                        entity.Y = point.Y;
+                    }
                 }
             }
 
             CheckIfOver();
+        }
+
+        private IList<Entity> NearbyEnemies(Entity entity, IList<Entity> enemies)
+        {
+            return enemies.Where(p =>
+                (p.X == entity.X - 1 && p.Y == entity.Y) ||
+                (p.X == entity.X + 1 && p.Y == entity.Y) ||
+                (p.X == entity.X && p.Y == entity.Y - 1) ||
+                (p.X == entity.X && p.Y == entity.Y + 1)
+                                    ).ToList();
         }
 
         private void CheckIfOver()

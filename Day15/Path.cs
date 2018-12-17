@@ -102,11 +102,6 @@ namespace Day15
             {
                 var count = Points.Count;
 
-                if (distance > 1 && Points.Count == lastPointCount)
-                {
-                    break;
-                }
-
                 for (int i = 0; i < count; i++)
                 {
                     var point = Points.ElementAt(i);
@@ -164,7 +159,14 @@ namespace Day15
                     }
                 }
 
-                lastPointCount = Points.Count;
+                if (lastPointCount != Points.Count)
+                {
+                    lastPointCount = Points.Count;
+                }
+                else
+                {
+                    break;
+                }
                 distance++;
             }
         }
