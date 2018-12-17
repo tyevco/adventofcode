@@ -1,30 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Day15
 {
     public class Path
     {
-        int?[] targets;
+        Queue<Point> Points = new Queue<Point>();
         public Map Map { get; }
-
-        public int? this[int x, int y]
-        {
-            get
-            {
-                return targets[GetIndex(x, y)];
-            }
-            set
-            {
-                targets[GetIndex(x, y)] = value;
-            }
-        }
 
         private Path(Map map)
         {
-            targets = new int?[map.Width * map.Height];
             Map = map;
         }
 
@@ -33,9 +19,8 @@ namespace Day15
             return x + (y * Map.Width);
         }
 
-        public static Point FindTarget(Map map, IList<Entity> entities, Entity entity)
+        public static Point FindTargetPoint(Map map, IList<Entity> entities, Entity entity)
         {
-            Point point = new Point();
             int x = entity.X;
             int y = entity.Y;
 
@@ -81,131 +66,142 @@ namespace Day15
                 }
             }
 
+            IList<Point> points = new List<Point>();
             IList<Path> paths = new List<Path>();
             foreach (var plot in available)
             {
                 var path = new Path(map);
-                path.CalculateDistance(plot.X, plot.Y, entities, entity);
-                System.Diagnostics.Debug.WriteLine($"{plot.X},{plot.Y}");
-                System.Diagnostics.Debug.WriteLine(path);
+                path.CalculateDistance(plot.X, plot.Y, entity.X, entity.Y, entities, entity);
+                var point = path.GetPointClosestTo(entity.X, entity.Y);
+                if (point != null)
+                {
+                    points.Add(point);
+                }
             }
 
-            return point;
+            return points.OrderBy(p => p.Distance).FirstOrDefault();
         }
 
-        private void CalculateDistance(int x, int y, IList<Entity> entities, Entity entity)
+        private Point GetPointClosestTo(int x, int y)
         {
-            this[x, y] = 0;
+            return Points.Where(p =>
+                                (p.X == x - 1 && p.Y == y) ||
+                                (p.X == x + 1 && p.Y == y) ||
+                                (p.X == x && p.Y == y - 1) ||
+                                (p.X == x && p.Y == y + 1)
+                                ).OrderBy(p => p.Distance).FirstOrDefault();
+        }
 
-            var hyp = (int)Math.Sqrt(Math.Pow(Map.Width, 2) + Math.Pow(Map.Height, 2));
-            for (int i = 1; i < hyp; i++)
+        private void CalculateDistance(int x, int y, int targetX, int targetY, IList<Entity> entities, Entity entity)
+        {
+            Points.Enqueue(new Point(x, y, 0));
+            bool seeking = true;
+            int distance = 0;
+            int lastPointCount = 0;
+            while (seeking)
             {
-                for (int dy = -i; dy <= i; dy++)
+                var count = Points.Count;
+
+                if (distance > 1 && Points.Count == lastPointCount)
                 {
-                    for (int dx = -i; dx <= i; dx++)
+                    break;
+                }
+
+                for (int i = 0; i < count; i++)
+                {
+                    var point = Points.ElementAt(i);
+
                     {
-                        var mv = Math.Abs(dx) + Math.Abs(dy);
-                        if (mv == i)
+                        var p = TryAddPoint(point.X - 1, point.Y, distance, entities, entity);
+
+                        if (p != null)
                         {
-                            if (x + dx >= 0 && x + dx < Map.Width &&
-                                y + dy >= 0 && y + dy < Map.Height)
+                            if (p.X == targetX && p.Y == targetY)
                             {
-                                DetermineDistance(x + dx, y + dy, entities, entity);
+                                seeking = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    {
+                        var p = TryAddPoint(point.X + 1, point.Y, distance, entities, entity);
+
+                        if (p != null)
+                        {
+                            if (p.X == targetX && p.Y == targetY)
+                            {
+                                seeking = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    {
+                        var p = TryAddPoint(point.X, point.Y - 1, distance, entities, entity);
+
+                        if (p != null)
+                        {
+                            if (p.X == targetX && p.Y == targetY)
+                            {
+                                seeking = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    {
+                        var p = TryAddPoint(point.X, point.Y + 1, distance, entities, entity);
+
+                        if (p != null)
+                        {
+                            if (p.X == targetX && p.Y == targetY)
+                            {
+                                seeking = false;
+                                break;
                             }
                         }
                     }
                 }
+
+                lastPointCount = Points.Count;
+                distance++;
             }
         }
 
-        private int DetermineDistance(int x, int y, IList<Entity> entities, Entity entity)
+        private Point TryAddPoint(int x, int y, int d, IList<Entity> entities, Entity entity)
         {
-            int distance = Map.Width * Map.Height + 1;
-            if (this[x, y] == null)
+            Point p = null;
+            if (!Points.Any(t => t.X == x && y == t.Y))
             {
-                var other = entities.FirstOrDefault(e => e.X == x && e.Y == y && e.Health > 0);
-                if (other == null)
+                p = new Point(x, y, d);
+                if (DetermineValid(p, entities, entity))
                 {
-                    var space = Map[x, y];
-                    if (space.Type == PlotType.Tree)
-                    {
-                    }
-                    else
-                    {
-                        int min = GetMinimumNeighborDistance(x, y);
-
-                        this[x, y] = min + 1;
-                    }
-                }
-                else
-                {
+                    Points.Enqueue(p);
                 }
             }
 
-            return distance;
+            return p;
         }
 
-        private int GetMinimumNeighborDistance(int x, int y)
+        private bool DetermineValid(Point p, IList<Entity> entities, Entity entity)
         {
-            int cv = Map.Width * Map.Height + 1;
-
-            if (x > 0)
+            bool valid = true;
+            var other = entities.FirstOrDefault(e => e.X == p.X && e.Y == p.Y && e.Health > 0);
+            if (other == null)
             {
-                var val = this[x - 1, y];
-
-                if (val.HasValue && val < cv)
+                var space = Map[p.X, p.Y];
+                if (space.Type == PlotType.Tree)
                 {
-                    cv = val.Value;
+                    valid = false;
                 }
             }
-
-            if (x < Map.Width - 1)
+            else
             {
-                var val = this[x + 1, y];
-
-                if (val.HasValue && val < cv)
-                {
-                    cv = val.Value;
-                }
+                valid = false;
             }
 
-            if (y > 0)
-            {
-                var val = this[x, y - 1];
-
-                if (val.HasValue && val < cv)
-                {
-                    cv = val.Value;
-                }
-            }
-
-            if (y < Map.Height - 1)
-            {
-                var val = this[x, y + 1];
-
-                if (val.HasValue && val < cv)
-                {
-                    cv = val.Value;
-                }
-            }
-
-            return cv;
-        }
-
-
-        public override string ToString()
-        {
-            StringBuilder sb = new StringBuilder();
-            for (int y = 0; y < Map.Height; y++)
-            {
-                for (int x = 0; x < Map.Width; x++)
-                {
-                    sb.Append($" {(this[x, y].HasValue ? this[x, y].Value.ToString("00") : "__")}");
-                }
-                sb.AppendLine();
-            }
-
-            return sb.ToString();
+            return valid;
         }
     }
 }

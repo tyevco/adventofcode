@@ -11,13 +11,16 @@ namespace Day15
             {
                 var map = new BattleMapParser().ParseData(args[0]);
 
-                Console.WriteLine(map);
-
                 var system = new Game(map);
+
+                Console.WriteLine(map);
 
                 while (!system.Finished)
                 {
                     system.Tick();
+
+                    Console.Clear();
+                    Console.WriteLine(map);
                 }
             }
 

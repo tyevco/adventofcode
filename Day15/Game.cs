@@ -23,11 +23,16 @@ namespace Day15
 
         public void Tick()
         {
-            var entities = Entities.OrderBy(e => e.X + (e.Y * Map.Width)).ToList();
+            var entities = Entities.Where(e => e.Health > 0).OrderBy(e => e.X + (e.Y * Map.Width)).ToList();
 
             foreach (var entity in entities)
             {
-                FindPath(entity, entities);
+                var point = FindPath(entity, entities);
+                if (point != null)
+                {
+                    entity.X = point.X;
+                    entity.Y = point.Y;
+                }
             }
 
             CheckIfOver();
@@ -42,15 +47,12 @@ namespace Day15
             }
         }
 
-        private void FindPath(Entity entity, IList<Entity> entities)
+        private Point FindPath(Entity entity, IList<Entity> entities)
         {
             int x = entity.X;
             int y = entity.Y;
 
-            var targetGrid = Path.FindTarget(Map, entities, entity);
-
-            Console.WriteLine(targetGrid);
-
+            return Path.FindTargetPoint(Map, entities, entity);
         }
     }
 }
