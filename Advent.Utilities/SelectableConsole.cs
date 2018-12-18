@@ -16,6 +16,8 @@ namespace Advent.Utilities
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern IntPtr GetStdHandle(int handle);
 
+
+
         public SelectableConsole()
         {
             var handle = GetStdHandle(-11);
@@ -95,11 +97,22 @@ namespace Advent.Utilities
 
         public void Start(string folder)
         {
-            var file = SelectFileFromFolder(folder);
-
-            if (file != null)
+            while (true)
             {
-                Execute(file);
+                var file = SelectFileFromFolder(folder);
+
+                if (file != null)
+                {
+                    Execute(file);
+                }
+
+                Console.WriteLine("Finished.");
+                var info = Console.ReadKey();
+
+                if (info.Key == ConsoleKey.Q)
+                    break;
+
+                Console.Clear();
             }
         }
 

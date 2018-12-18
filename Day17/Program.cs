@@ -13,9 +13,6 @@ namespace Day17
             {
                 new Program().Start(args[0]);
             }
-
-            Console.WriteLine("Finished.");
-            Console.ReadLine();
         }
 
         protected override void Execute(string file)

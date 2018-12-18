@@ -8,20 +8,9 @@ namespace Day15
     {
         static void Main(string[] args)
         {
-            while (true)
+            if (args.Length > 0)
             {
-                if (args.Length > 0)
-                {
-                    new Program().Start(args[0]);
-                }
-
-                Console.WriteLine("Finished.");
-                var info = Console.ReadKey();
-
-                if (info.Key == ConsoleKey.Q)
-                    break;
-
-                Console.Clear();
+                new Program().Start(args[0]);
             }
         }
 
