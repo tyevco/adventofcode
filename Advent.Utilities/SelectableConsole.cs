@@ -64,7 +64,8 @@ namespace Advent.Utilities
                             if (option.Enabled())
                             {
                                 Console.Write("[x] ");
-                            } else
+                            }
+                            else
                             {
                                 Console.Write("[ ] ");
                             }
@@ -118,16 +119,38 @@ namespace Advent.Utilities
             return null;
         }
 
-        protected virtual void HandleOptions(ConsoleKeyInfo info)
+        protected ConsoleOption CreateOption(string text, Action handler, Func<bool> enabled, Func<bool> predicate = null)
+        {
+            return new ConsoleOption
+            {
+                Text = text,
+                Handler = handler,
+                Predicate = predicate,
+                Enabled = enabled
+            };
+        }
+
+        protected void HandleOptions(ConsoleKeyInfo info)
         {
             if (options != null && options.Any())
             {
-                var option = options.FirstOrDefault(o => info.KeyChar == o.Command);
+                var option = options.FirstOrDefault(o => char.ToLower(info.KeyChar) == char.ToLower(o.Command));
                 if (option != null)
                 {
-                    option.Handler();
+                    if (option.Predicate == null || option.Predicate())
+                        option.Handler();
+                }
+
+
+                foreach (var o in options)
+                {
+                    if (o.Predicate != null && !o.Predicate() && o.Enabled())
+                    {
+                        o.Handler();
+                    }
                 }
             }
+
         }
 
         public void Start(string folder)

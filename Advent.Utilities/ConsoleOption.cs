@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Advent.Utilities
 {
@@ -27,5 +25,7 @@ namespace Advent.Utilities
                 return ConsoleCodes.Option(Text);
             }
         }
+
+        public Func<bool> Predicate { get; set; }
     }
 }

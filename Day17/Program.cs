@@ -7,7 +7,9 @@ namespace Day17
 {
     class Program : SelectableConsole
     {
-        public bool EnableDebug { get; private set; }
+        public bool EnableDebug { get; private set; } = false;
+        public bool FlowProgress { get; private set; } = true;
+        public bool Animate { get; private set; } = false;
 
         static void Main(string[] args)
         {
@@ -26,16 +28,21 @@ namespace Day17
                     Text = "Debug Output",
                     Handler = () => EnableDebug = !EnableDebug,
                     Enabled = () => EnableDebug
+                },
+                new ConsoleOption
+                {
+                    Text = "Animate (Requires Debug Output)",
+                    Handler = () => Animate = !Animate,
+                    Enabled = () => Animate,
+                    Predicate = () => EnableDebug
+                },
+                new ConsoleOption
+                {
+                    Text = "Flow Progress",
+                    Handler = () => FlowProgress = !FlowProgress,
+                    Enabled = () => FlowProgress
                 }
             };
-        }
-
-        protected override void HandleOptions(ConsoleKeyInfo info)
-        {
-            if (info.Key == ConsoleKey.D)
-            {
-                EnableDebug = !EnableDebug;
-            }
         }
 
         protected override void Execute(string file)
@@ -51,17 +58,26 @@ namespace Day17
                 grid.Propogate();
                 i++;
 
-                Console.WriteLine(grid);
+                if (EnableDebug)
+                {
+                    Console.WriteLine(grid);
+                }
 
-                if (i % 50 == 0)
+                if (FlowProgress && i % 50 == 0)
                 {
                     active = grid.Active();
                     Console.WriteLine($"[{i.ToString("0000")}] Clay tiles: {active.Count(x => x != null && x.Type == MaterialType.Clay)}, Water tiles: {active.Count(x => x != null && x.Type == MaterialType.Water)}");
                 }
 
                 finished = !grid.Added;
-                //System.Threading.Thread.Sleep(500);
+
+                if (Animate) { 
+                    System.Threading.Thread.Sleep(500);
+                    Console.Clear();
+                }
             }
+
+            Console.WriteLine(grid);
 
             active = grid.Active();
             Console.WriteLine($"[{i.ToString("0000")}] Clay tiles: {active.Count(x => x != null && x.Type == MaterialType.Clay)}, Water tiles: {active.Count(x => x != null && x.Type == MaterialType.Water)}");
