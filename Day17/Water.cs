@@ -2,6 +2,7 @@
 {
     public class Water : Material
     {
+        //There is a minor issue where a piece of flowing water is marked as still. This is rare (1 spot out of the actual data)
         public bool IsFlowing { get; set; } = false;
 
         public override MaterialType Type => MaterialType.Water;
