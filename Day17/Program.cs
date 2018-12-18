@@ -7,11 +7,34 @@ namespace Day17
 {
     class Program : SelectableConsole
     {
+        public bool EnableDebug { get; private set; }
+
         static void Main(string[] args)
         {
             if (args.Length > 0)
             {
                 new Program().Start(args[0]);
+            }
+        }
+
+        protected override IList<ConsoleOption> GetOptions()
+        {
+            return new List<ConsoleOption>
+            {
+                new ConsoleOption
+                {
+                    Text = "Debug Output",
+                    Handler = () => EnableDebug = !EnableDebug,
+                    Enabled = () => EnableDebug
+                }
+            };
+        }
+
+        protected override void HandleOptions(ConsoleKeyInfo info)
+        {
+            if (info.Key == ConsoleKey.D)
+            {
+                EnableDebug = !EnableDebug;
             }
         }
 
@@ -28,7 +51,7 @@ namespace Day17
                 grid.Propogate();
                 i++;
 
-                //Console.WriteLine(grid);
+                Console.WriteLine(grid);
 
                 if (i % 50 == 0)
                 {
@@ -43,6 +66,7 @@ namespace Day17
             active = grid.Active();
             Console.WriteLine($"[{i.ToString("0000")}] Clay tiles: {active.Count(x => x != null && x.Type == MaterialType.Clay)}, Water tiles: {active.Count(x => x != null && x.Type == MaterialType.Water)}");
             Console.WriteLine($"Flowing Water tiles: {active.Count(x => x != null && x.Type == MaterialType.Water && ((Water)x).IsFlowing)}");
+            Console.WriteLine($"Top: {grid.Top} to {grid.Bottom}");
         }
     }
 }

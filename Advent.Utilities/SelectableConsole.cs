@@ -16,7 +16,7 @@ namespace Advent.Utilities
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern IntPtr GetStdHandle(int handle);
 
-
+        private IList<ConsoleOption> options;
 
         public SelectableConsole()
         {
@@ -33,6 +33,8 @@ namespace Advent.Utilities
             files = Directory.GetFiles(folder);
             bool seekFile = true;
 
+            options = GetOptions();
+
             if (files.Any())
             {
                 while (seekFile)
@@ -43,44 +45,60 @@ namespace Advent.Utilities
                     {
                         if (i == target)
                         {
-                            Console.Write("[x] ");
+                            Console.Write("> ");
                         }
                         else
                         {
-                            Console.Write("[ ] ");
+                            Console.Write("  ");
                         }
 
                         Console.WriteLine(files[i]);
                     }
 
-                    bool keyOkay = false;
-
-                    while (!keyOkay)
+                    if (options != null && options.Any())
                     {
-                        var info = Console.ReadKey();
+                        Console.WriteLine();
 
-                        if (info.Key == ConsoleKey.Enter)
+                        foreach (var option in options)
                         {
-                            seekFile = false;
-                            keyOkay = true;
+                            if (option.Enabled())
+                            {
+                                Console.Write("[x] ");
+                            } else
+                            {
+                                Console.Write("[ ] ");
+                            }
+
+                            Console.WriteLine(option.ConsoleText);
                         }
-                        else if (info.Key == ConsoleKey.UpArrow)
-                        {
-                            if (target > 0)
-                                target--;
-                            keyOkay = true;
-                        }
-                        else if (info.Key == ConsoleKey.DownArrow)
-                        {
-                            if (target < files.Count - 1)
-                                target++;
-                            keyOkay = true;
-                        }
-                        else if (info.Key == ConsoleKey.Q)
-                        {
-                            Environment.Exit(0);
-                            keyOkay = true;
-                        }
+                    }
+
+                    Console.WriteLine();
+                    Console.WriteLine("Press Q to quit...");
+
+                    var info = Console.ReadKey();
+
+                    if (info.Key == ConsoleKey.Enter)
+                    {
+                        seekFile = false;
+                    }
+                    else if (info.Key == ConsoleKey.UpArrow)
+                    {
+                        if (target > 0)
+                            target--;
+                    }
+                    else if (info.Key == ConsoleKey.DownArrow)
+                    {
+                        if (target < files.Count - 1)
+                            target++;
+                    }
+                    else if (info.Key == ConsoleKey.Q)
+                    {
+                        Environment.Exit(0);
+                    }
+                    else
+                    {
+                        HandleOptions(info);
                     }
                 }
 
@@ -92,6 +110,23 @@ namespace Advent.Utilities
             {
                 Console.WriteLine("No files were found in the specified directory...");
                 return null;
+            }
+        }
+
+        protected virtual IList<ConsoleOption> GetOptions()
+        {
+            return null;
+        }
+
+        protected virtual void HandleOptions(ConsoleKeyInfo info)
+        {
+            if (options != null && options.Any())
+            {
+                var option = options.FirstOrDefault(o => info.KeyChar == o.Command);
+                if (option != null)
+                {
+                    option.Handler();
+                }
             }
         }
 

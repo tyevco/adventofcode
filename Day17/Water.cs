@@ -20,7 +20,10 @@
             {
                 if (Below == null)
                 {
-                    AddWater(X, Y + 1);
+                    if (Y + 1 <= Grid.Bottom)
+                    {
+                        AddWater(X, Y + 1);
+                    }
                 }
                 else
                 {
@@ -30,12 +33,12 @@
                         {
                             if (Left == null)
                             {
-                                AddWater(X - 1, Y);
+                                AddWater(X - 1, Y).Propagate();
                             }
 
                             if (Right == null)
                             {
-                                AddWater(X + 1, Y);
+                                AddWater(X + 1, Y).Propagate();
                             }
                         }
                         else
@@ -44,14 +47,14 @@
                             {
                                 if (Left == null)
                                 {
-                                    AddWater(X - 1, Y);
+                                    AddWater(X - 1, Y).Propagate();
                                 }
                             }
                             if (DiagonalRight.Type == MaterialType.Clay || (DiagonalRight.Type == MaterialType.Water && !((Water)DiagonalRight).IsFlowing))
                             {
                                 if (Right == null)
                                 {
-                                    AddWater(X + 1, Y);
+                                    AddWater(X + 1, Y).Propagate();
                                 }
                             }
                         }
@@ -60,12 +63,12 @@
                     {
                         if (Left == null)
                         {
-                            AddWater(X - 1, Y);
+                            AddWater(X - 1, Y).Propagate();
                         }
 
                         if (Right == null)
                         {
-                            AddWater(X + 1, Y);
+                            AddWater(X + 1, Y).Propagate();
                         }
 
                         if ((Above?.Type == MaterialType.Water || Above?.Type == MaterialType.Clay) &&
@@ -88,7 +91,7 @@
                     bool foundAir = false;
                     for (int i = left; i <= right; i++)
                     {
-                        if (Grid[i, Y] == null)
+                        if (Grid[i, Y] == null && Grid[i, Y + 1] == null)
                         {
                             foundAir = true;
                             break;
