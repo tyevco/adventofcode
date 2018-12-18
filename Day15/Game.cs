@@ -36,8 +36,7 @@ namespace Day15
 
                     if (nearby.Any())
                     {
-                        var minHealth = nearby.Min(e => e.Health);
-                        var target = nearby.Where(e => e.Health == minHealth).OrderBy(e => e.X + e.Y * Map.Width).FirstOrDefault();
+                        var target = nearby.OrderBy(e => e.Health).ThenBy(e => e.X + e.Y * Map.Width).FirstOrDefault();
                         target.Health -= entity.Attack;
 
                         if (target.Health > 0)
@@ -58,6 +57,19 @@ namespace Day15
                                 //System.Diagnostics.Debug.WriteLine($"{entity.Type} {entity.Id} moves to location ({point.X},{point.Y}).");
                             }
                         }
+
+                        var moveNearby = NearbyEnemies(entity, entities.Where(e => e.Type != entity.Type));
+
+                        if (moveNearby.Any())
+                        {
+                            var target = moveNearby.OrderBy(e => e.Health).ThenBy(e => e.X + e.Y * Map.Width).FirstOrDefault();
+                            target.Health -= entity.Attack;
+
+                            if (target.Health > 0)
+                                System.Diagnostics.Debug.WriteLine($"{entity.Type} {entity.Id} attacks {target.Type} {target.Id} for {entity.Attack} damage, leaving {target.Health} health.");
+                            else
+                                System.Diagnostics.Debug.WriteLine($"{entity.Type} {entity.Id} kills {target.Type} {target.Id}.");
+                        }
                     }
 
                     var entityEnd = DateTime.Now;
@@ -71,10 +83,8 @@ namespace Day15
 
             System.Diagnostics.Debug.WriteLine($"Round complete, took {(roundEnd - roundStart).Milliseconds}ms.");
 
+            Round++;
             CheckIfOver();
-
-            if (!Finished)
-                Round++;
         }
 
         private IEnumerable<Entity> NearbyEnemies(Entity entity, IEnumerable<Entity> enemies)

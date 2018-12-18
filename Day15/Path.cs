@@ -78,9 +78,7 @@ namespace Day15
 
             if (points.Any())
             {
-                int minDistance = points.Min(p => p.Distance);
-
-                return points.Where(p => p.Distance == minDistance).OrderBy(p => p.X + p.Y * map.Width).FirstOrDefault();
+                return points.OrderBy(p => p.Distance).ThenBy(p => p.X + p.Y * map.Width).FirstOrDefault();
             }
             else
             {
