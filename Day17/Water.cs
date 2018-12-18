@@ -31,31 +31,40 @@
                     {
                         if (IsThereClayToLeft() && IsThereClayToRight())
                         {
-                            if (Left == null)
+                            if (DiagonalLeft.Type == MaterialType.Clay || (DiagonalLeft.Type == MaterialType.Water && !((Water)DiagonalLeft).IsFlowing))
                             {
-                                AddWater(X - 1, Y).Propagate();
+                                if (DiagonalRight.Type == MaterialType.Clay || (DiagonalRight.Type == MaterialType.Water && !((Water)DiagonalRight).IsFlowing))
+                                    if (Left == null)
+                                    {
+                                        AddWater(X - 1, Y).Propagate();
+                                    }
                             }
-
-                            if (Right == null)
+                            if (DiagonalRight.Type == MaterialType.Clay || (DiagonalRight.Type == MaterialType.Water && !((Water)DiagonalRight).IsFlowing))
                             {
-                                AddWater(X + 1, Y).Propagate();
+                                if (DiagonalLeft.Type == MaterialType.Clay || (DiagonalLeft.Type == MaterialType.Water && !((Water)DiagonalLeft).IsFlowing))
+                                    if (Right == null)
+                                    {
+                                        AddWater(X + 1, Y).Propagate();
+                                    }
                             }
                         }
                         else
                         {
                             if (DiagonalLeft.Type == MaterialType.Clay || (DiagonalLeft.Type == MaterialType.Water && !((Water)DiagonalLeft).IsFlowing))
                             {
-                                if (Left == null)
-                                {
-                                    AddWater(X - 1, Y).Propagate();
-                                }
+                                if (DiagonalRight.Type == MaterialType.Clay || (DiagonalRight.Type == MaterialType.Water && !((Water)DiagonalRight).IsFlowing))
+                                    if (Left == null)
+                                    {
+                                        AddWater(X - 1, Y).Propagate();
+                                    }
                             }
                             if (DiagonalRight.Type == MaterialType.Clay || (DiagonalRight.Type == MaterialType.Water && !((Water)DiagonalRight).IsFlowing))
                             {
-                                if (Right == null)
-                                {
-                                    AddWater(X + 1, Y).Propagate();
-                                }
+                                if (DiagonalLeft.Type == MaterialType.Clay || (DiagonalLeft.Type == MaterialType.Water && !((Water)DiagonalLeft).IsFlowing))
+                                    if (Right == null)
+                                    {
+                                        AddWater(X + 1, Y).Propagate();
+                                    }
                             }
                         }
                     }
