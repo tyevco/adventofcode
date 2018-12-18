@@ -8,13 +8,21 @@ namespace Day15
     {
         static void Main(string[] args)
         {
-            if (args.Length > 0)
+            while (true)
             {
-                new Program().Start(args[0]);
-            }
+                if (args.Length > 0)
+                {
+                    new Program().Start(args[0]);
+                }
 
-            Console.WriteLine("Finished.");
-            Console.ReadLine();
+                Console.WriteLine("Finished.");
+                var info = Console.ReadKey();
+
+                if (info.Key == ConsoleKey.Q)
+                    break;
+
+                Console.Clear();
+            }
         }
 
         protected override void Execute(string file)
