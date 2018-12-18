@@ -7,9 +7,9 @@ namespace Day17
 {
     class Program : SelectableConsole
     {
-        public bool EnableDebug { get; private set; } = false;
+        public bool EnableDebug { get; private set; } = true;
         public bool FlowProgress { get; private set; } = true;
-        public bool Animate { get; private set; } = false;
+        public bool Animate { get; private set; } = true;
 
         static void Main(string[] args)
         {
