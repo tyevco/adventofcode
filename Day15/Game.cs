@@ -42,10 +42,10 @@ namespace Day15
                             var target = nearby.OrderBy(e => e.Health).ThenBy(e => e.X + e.Y * Map.Width).FirstOrDefault();
                             target.Health -= entity.Attack;
 
-                            if (target.Health > 0)
-                                System.Diagnostics.Debug.WriteLine($"{entity.Type} {entity.Id} attacks {target.Type} {target.Id} for {entity.Attack} damage, leaving {target.Health} health.");
-                            else
-                                System.Diagnostics.Debug.WriteLine($"{entity.Type} {entity.Id} kills {target.Type} {target.Id}.");
+                            //if (target.Health > 0)
+                            //    System.Diagnostics.Debug.WriteLine($"{entity.Type} {entity.Id} attacks {target.Type} {target.Id} for {entity.Attack} damage, leaving {target.Health} health.");
+                            //else
+                            //    System.Diagnostics.Debug.WriteLine($"{entity.Type} {entity.Id} kills {target.Type} {target.Id}.");
                         }
                         else
                         {
@@ -68,10 +68,10 @@ namespace Day15
                                 var target = moveNearby.OrderBy(e => e.Health).ThenBy(e => e.X + e.Y * Map.Width).FirstOrDefault();
                                 target.Health -= entity.Attack;
 
-                                if (target.Health > 0)
-                                    System.Diagnostics.Debug.WriteLine($"{entity.Type} {entity.Id} attacks {target.Type} {target.Id} for {entity.Attack} damage, leaving {target.Health} health.");
-                                else
-                                    System.Diagnostics.Debug.WriteLine($"{entity.Type} {entity.Id} kills {target.Type} {target.Id}.");
+                                //if (target.Health > 0)
+                                //    System.Diagnostics.Debug.WriteLine($"{entity.Type} {entity.Id} attacks {target.Type} {target.Id} for {entity.Attack} damage, leaving {target.Health} health.");
+                                //else
+                                //    System.Diagnostics.Debug.WriteLine($"{entity.Type} {entity.Id} kills {target.Type} {target.Id}.");
                             }
                         }
                     }
@@ -88,7 +88,7 @@ namespace Day15
 
             var roundEnd = DateTime.Now;
 
-            System.Diagnostics.Debug.WriteLine($"Round complete, took {(roundEnd - roundStart).Milliseconds}ms.");
+            //System.Diagnostics.Debug.WriteLine($"Round complete, took {(roundEnd - roundStart).Milliseconds}ms.");
 
             if (!roundOverEarly)
             {

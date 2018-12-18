@@ -31,15 +31,15 @@ namespace Day15
 
             var system = new Game(map);
 
-            Console.WriteLine(map);
+            //Console.WriteLine(map);
 
             while (!system.Finished)
             {
+                Console.WriteLine($"Round #{system.Round + 1}");
                 system.Tick();
 
                 //Console.Clear();
-                Console.WriteLine($"Round #{system.Round}");
-                Console.WriteLine(map);
+                //Console.WriteLine(map);
                 //System.Threading.Thread.Sleep(100);
             }
 
