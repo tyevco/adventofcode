@@ -74,6 +74,11 @@ namespace Advent.Utilities
                                 target++;
                             keyOkay = true;
                         }
+                        else if (info.Key == ConsoleKey.Q)
+                        {
+                            Environment.Exit(0);
+                            keyOkay = true;
+                        }
                     }
                 }
 
