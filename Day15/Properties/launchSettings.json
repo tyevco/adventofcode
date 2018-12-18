@@ -2,7 +2,7 @@
   "profiles": {
     "Day15": {
       "commandName": "Project",
-      "commandLineArgs": "\"$(ProjectDir)Maps/actual.txt\""
+      "commandLineArgs": "\"$(ProjectDir)Maps/\""
     }
   }
 }
