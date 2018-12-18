@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Day15
 {
@@ -15,30 +16,23 @@ namespace Day15
 
                 Console.WriteLine(map);
 
-                //while (!system.Finished)
+                while (!system.Finished)
                 {
                     system.Tick();
 
                     //Console.Clear();
+                    Console.WriteLine($"Round #{system.Round}");
                     Console.WriteLine(map);
-                    System.Threading.Thread.Sleep(500);
-
-
-                    system.Tick();
-
-                    //Console.Clear();
-                    Console.WriteLine(map);
-                    System.Threading.Thread.Sleep(500);
-
-                    system.Tick();
-
-                    //Console.Clear();
-                    Console.WriteLine(map);
-                    System.Threading.Thread.Sleep(500);
+                    //System.Threading.Thread.Sleep(100);
                 }
 
                 //Console.Clear();
                 //Console.WriteLine(map);
+                Console.WriteLine($"Combat ends after {system.Round} full rounds");
+                var type = system.Entities.Where(e => e.Health > 0).Select(t => t.Type).FirstOrDefault();
+                var healthRemaining = system.Entities.Where(e => e.Health > 0).Sum(e => e.Health);
+                Console.WriteLine($"{(type == EntityType.Elf ? "Elves" : "Goblins")} win with {healthRemaining} hit points left");
+                Console.WriteLine($"Outcome: {system.Round} * {healthRemaining} =  {healthRemaining * system.Round}");
             }
 
             Console.WriteLine("Finished.");

@@ -30,7 +30,8 @@ namespace Day15
 
                 if (nearby.Any())
                 {
-                    var target = nearby.OrderBy(e => e.Health).FirstOrDefault();
+                    var minHealth = nearby.Min(e => e.Health);
+                    var target = nearby.Where(e=>e.Health == minHealth).OrderBy(e => e.X + e.Y * Map.Width).FirstOrDefault();
                     target.Health -= entity.Attack;
 
                     if (target.Health > 0)
@@ -57,6 +58,9 @@ namespace Day15
             }
 
             CheckIfOver();
+
+            if (!Finished)
+                Round++;
         }
 
         private IEnumerable<Entity> NearbyEnemies(Entity entity, IEnumerable<Entity> enemies)
