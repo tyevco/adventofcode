@@ -25,7 +25,9 @@ namespace Day15
 
         public override string ToString()
         {
-            return Health > 0 ? (Type == EntityType.Elf ? "E" : "G") : " ";
+            return Health > 0 ?
+                "\x1b[38;5;" + (Type == EntityType.Elf ? "82" : "160") + "m" + (Type == EntityType.Elf ? "E" : "G") + Id + "\x1b[38;5;255m" :
+                "   ";
         }
     }
 }

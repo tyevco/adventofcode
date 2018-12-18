@@ -16,7 +16,7 @@
 
         public override string ToString()
         {
-            return Type == PlotType.Open ? " " : "#";
+            return Type == PlotType.Open ? "   " : "###";
         }
     }
 }

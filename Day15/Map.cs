@@ -67,6 +67,13 @@ namespace Day15
                         sb.Append(Plots[GetIndex(x, y)]);
                     }
                 }
+
+                sb.Append("   ");
+                foreach (var entity in Entities.Where(e => e.Y == y && e.Health > 0).OrderBy(e => e.X))
+                {
+                    sb.Append($"{entity}({entity.Health}), ");
+                }
+
                 sb.AppendLine();
             }
 

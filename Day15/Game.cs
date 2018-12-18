@@ -24,38 +24,52 @@ namespace Day15
         {
             var entities = Entities.Where(e => e.Health > 0).OrderBy(e => e.X + (e.Y * Map.Width));
 
+            var roundStart = DateTime.Now;
+
             foreach (var entity in entities)
             {
-                var nearby = NearbyEnemies(entity, entities.Where(e => e.Type != entity.Type));
-
-                if (nearby.Any())
+                if (entity.Health > 0)
                 {
-                    var minHealth = nearby.Min(e => e.Health);
-                    var target = nearby.Where(e=>e.Health == minHealth).OrderBy(e => e.X + e.Y * Map.Width).FirstOrDefault();
-                    target.Health -= entity.Attack;
+                    var entityStart = DateTime.Now;
 
-                    if (target.Health > 0)
-                        System.Diagnostics.Debug.WriteLine($"{entity.Type} {entity.Id} attacks {target.Type} {target.Id} for {entity.Attack} damage, leaving {target.Health} health.");
-                    else
-                        System.Diagnostics.Debug.WriteLine($"{entity.Type} {entity.Id} kills {target.Type} {target.Id}.");
-                }
-                else
-                {
-                    var point = FindPath(entity, entities);
-                    if (point != null)
+                    var nearby = NearbyEnemies(entity, entities.Where(e => e.Type != entity.Type));
+
+                    if (nearby.Any())
                     {
-                        if (IsLocationValid(point.X, point.Y))
-                        {
-                            entity.X = point.X;
-                            entity.Y = point.Y;
+                        var minHealth = nearby.Min(e => e.Health);
+                        var target = nearby.Where(e => e.Health == minHealth).OrderBy(e => e.X + e.Y * Map.Width).FirstOrDefault();
+                        target.Health -= entity.Attack;
 
-                            System.Diagnostics.Debug.WriteLine($"{entity.Type} {entity.Id} moves to location ({point.X},{point.Y}).");
+                        if (target.Health > 0)
+                            System.Diagnostics.Debug.WriteLine($"{entity.Type} {entity.Id} attacks {target.Type} {target.Id} for {entity.Attack} damage, leaving {target.Health} health.");
+                        else
+                            System.Diagnostics.Debug.WriteLine($"{entity.Type} {entity.Id} kills {target.Type} {target.Id}.");
+                    }
+                    else
+                    {
+                        var point = FindPath(entity, entities);
+                        if (point != null)
+                        {
+                            if (IsLocationValid(point.X, point.Y))
+                            {
+                                entity.X = point.X;
+                                entity.Y = point.Y;
+
+                                //System.Diagnostics.Debug.WriteLine($"{entity.Type} {entity.Id} moves to location ({point.X},{point.Y}).");
+                            }
                         }
                     }
-                }
 
-                System.Diagnostics.Debug.WriteLine(Map);
+                    var entityEnd = DateTime.Now;
+
+                    System.Diagnostics.Debug.WriteLine($"{entity.Type} {entity.Id} complete, took {(entityEnd - entityStart).Milliseconds}ms.");
+                }
+                //System.Diagnostics.Debug.WriteLine(Map);
             }
+
+            var roundEnd = DateTime.Now;
+
+            System.Diagnostics.Debug.WriteLine($"Round complete, took {(roundEnd - roundStart).Milliseconds}ms.");
 
             CheckIfOver();
 

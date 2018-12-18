@@ -1,15 +1,28 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Day15
 {
     class Program
     {
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool SetConsoleMode(IntPtr hConsoleHandle, int mode);
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool GetConsoleMode(IntPtr handle, out int mode);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern IntPtr GetStdHandle(int handle);
 
         static void Main(string[] args)
         {
             if (args.Length > 0)
             {
+                var handle = GetStdHandle(-11);
+                int mode;
+                GetConsoleMode(handle, out mode);
+                SetConsoleMode(handle, mode | 0x4);
+
                 var map = new BattleMapParser().ParseData(args[0]);
 
                 var system = new Game(map);

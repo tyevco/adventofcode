@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Day15
 {
@@ -58,18 +59,22 @@ namespace Day15
                 }
             }
 
+            object lockObject = new object();
             ICollection<Point> points = new List<Point>();
-            foreach (var plot in available)
+            Parallel.ForEach(available, plot =>
             {
                 var path = new Path(map);
                 path.CalculateDistance(plot.X, plot.Y, entity.X, entity.Y, entities, entity);
                 var closePoints = path.GetPointsClosestTo(entity.X, entity.Y);
                 if (closePoints.Any())
                 {
-                    foreach (var p in closePoints)
-                        points.Add(p);
+                    lock (lockObject)
+                    {
+                        foreach (var p in closePoints)
+                            points.Add(p);
+                    }
                 }
-            }
+            });
 
             if (points.Any())
             {
