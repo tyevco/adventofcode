@@ -44,7 +44,9 @@ namespace Day15
 
         public void AddEntity(int x, int y, EntityType type)
         {
-            Entities.Add(new Entity(x, y, type));
+            var e = new Entity(x, y, type);
+            e.Id = (Entities.Count + 1).ToString("X").PadLeft(2, '0');
+            Entities.Add(e);
         }
 
         public override string ToString()

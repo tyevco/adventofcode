@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Day15
 {
     public class Path
     {
-        Queue<Point> Points = new Queue<Point>();
+        Queue<Point> Points { get; } = new Queue<Point>();
+
         public Map Map { get; }
 
         private Path(Map map)
@@ -14,85 +14,86 @@ namespace Day15
             Map = map;
         }
 
-        private int GetIndex(int x, int y)
+        public static Point FindTargetPoint(Map map, IEnumerable<Entity> entities, Entity entity)
         {
-            return x + (y * Map.Width);
-        }
-
-        public static Point FindTargetPoint(Map map, IList<Entity> entities, Entity entity)
-        {
-            int x = entity.X;
-            int y = entity.Y;
-
-            IList<Plot> available = new List<Plot>();
+            ICollection<Plot> available = new List<Plot>();
 
             var targetEntities = entities.Where(e => e.Type != entity.Type);
             foreach (var target in targetEntities)
             {
                 if (target.X > 0)
                 {
-                    var plot = map[target.X - 1, target.Y];
-                    if (plot.Type == PlotType.Open)
+                    if (IsLocationValid(target.X - 1, target.Y, map, entities, entity))
                     {
+                        var plot = map[target.X - 1, target.Y];
                         available.Add(plot);
                     }
                 }
 
                 if (target.X < map.Width - 1)
                 {
-                    var plot = map[target.X + 1, target.Y];
-                    if (plot.Type == PlotType.Open)
+                    if (IsLocationValid(target.X + 1, target.Y, map, entities, entity))
                     {
+                        var plot = map[target.X + 1, target.Y];
                         available.Add(plot);
                     }
                 }
 
                 if (target.Y > 0)
                 {
-                    var plot = map[target.X, target.Y - 1];
-                    if (plot.Type == PlotType.Open)
+                    if (IsLocationValid(target.X, target.Y - 1, map, entities, entity))
                     {
+                        var plot = map[target.X, target.Y - 1];
                         available.Add(plot);
                     }
                 }
 
                 if (target.Y < map.Height - 1)
                 {
-                    var plot = map[target.X, target.Y + 1];
-                    if (plot.Type == PlotType.Open)
+                    if (IsLocationValid(target.X, target.Y + 1, map, entities, entity))
                     {
+                        var plot = map[target.X, target.Y + 1];
                         available.Add(plot);
                     }
                 }
             }
 
-            IList<Point> points = new List<Point>();
-            IList<Path> paths = new List<Path>();
+            ICollection<Point> points = new List<Point>();
             foreach (var plot in available)
             {
                 var path = new Path(map);
                 path.CalculateDistance(plot.X, plot.Y, entity.X, entity.Y, entities, entity);
-                var point = path.GetPointClosestTo(entity.X, entity.Y);
-                if (point != null)
+                var closePoints = path.GetPointsClosestTo(entity.X, entity.Y);
+                if (closePoints.Any())
                 {
-                    points.Add(point);
+                    foreach (var p in closePoints)
+                        points.Add(p);
                 }
             }
 
-            return points.OrderBy(p => p.Distance).FirstOrDefault();
+            if (points.Any())
+            {
+                int minDistance = points.Min(p => p.Distance);
+
+                return points.Where(p => p.Distance == minDistance).OrderBy(p => p.X + p.Y * map.Width).FirstOrDefault();
+            }
+            else
+            {
+                return null;
+            }
         }
 
-        private Point GetPointClosestTo(int x, int y)
+        private IEnumerable<Point> GetPointsClosestTo(int x, int y)
         {
             return Points.Where(p =>
                                 (p.X == x - 1 && p.Y == y) ||
                                 (p.X == x + 1 && p.Y == y) ||
                                 (p.X == x && p.Y == y - 1) ||
                                 (p.X == x && p.Y == y + 1)
-                                ).OrderBy(p => p.Distance).FirstOrDefault();
+                                );
         }
 
-        private void CalculateDistance(int x, int y, int targetX, int targetY, IList<Entity> entities, Entity entity)
+        private void CalculateDistance(int x, int y, int targetX, int targetY, IEnumerable<Entity> entities, Entity entity)
         {
             Points.Enqueue(new Point(x, y, 0));
             bool seeking = true;
@@ -100,63 +101,17 @@ namespace Day15
             int lastPointCount = 0;
             while (seeking)
             {
+                distance++;
                 var count = Points.Count;
 
                 for (int i = 0; i < count; i++)
                 {
                     var point = Points.ElementAt(i);
 
-                    {
-                        var p = TryAddPoint(point.X - 1, point.Y, distance, entities, entity);
-
-                        if (p != null)
-                        {
-                            if (p.X == targetX && p.Y == targetY)
-                            {
-                                seeking = false;
-                                break;
-                            }
-                        }
-                    }
-
-                    {
-                        var p = TryAddPoint(point.X + 1, point.Y, distance, entities, entity);
-
-                        if (p != null)
-                        {
-                            if (p.X == targetX && p.Y == targetY)
-                            {
-                                seeking = false;
-                                break;
-                            }
-                        }
-                    }
-
-                    {
-                        var p = TryAddPoint(point.X, point.Y - 1, distance, entities, entity);
-
-                        if (p != null)
-                        {
-                            if (p.X == targetX && p.Y == targetY)
-                            {
-                                seeking = false;
-                                break;
-                            }
-                        }
-                    }
-
-                    {
-                        var p = TryAddPoint(point.X, point.Y + 1, distance, entities, entity);
-
-                        if (p != null)
-                        {
-                            if (p.X == targetX && p.Y == targetY)
-                            {
-                                seeking = false;
-                                break;
-                            }
-                        }
-                    }
+                    TryAddPoint(point.X - 1, point.Y, distance, Map, entities, entity);
+                    TryAddPoint(point.X + 1, point.Y, distance, Map, entities, entity);
+                    TryAddPoint(point.X, point.Y - 1, distance, Map, entities, entity);
+                    TryAddPoint(point.X, point.Y + 1, distance, Map, entities, entity);
                 }
 
                 if (lastPointCount != Points.Count)
@@ -167,17 +122,16 @@ namespace Day15
                 {
                     break;
                 }
-                distance++;
             }
         }
 
-        private Point TryAddPoint(int x, int y, int d, IList<Entity> entities, Entity entity)
+        private Point TryAddPoint(int x, int y, int d, Map map, IEnumerable<Entity> entities, Entity entity)
         {
             Point p = null;
             if (!Points.Any(t => t.X == x && y == t.Y))
             {
                 p = new Point(x, y, d);
-                if (DetermineValid(p, entities, entity))
+                if (IsPointValid(p, map, entities, entity))
                 {
                     Points.Enqueue(p);
                 }
@@ -186,13 +140,19 @@ namespace Day15
             return p;
         }
 
-        private bool DetermineValid(Point p, IList<Entity> entities, Entity entity)
+        private static bool IsPointValid(Point p, Map map, IEnumerable<Entity> entities, Entity entity)
+        {
+            return IsLocationValid(p.X, p.Y, map, entities, entity);
+        }
+
+
+        private static bool IsLocationValid(int x, int y, Map map, IEnumerable<Entity> entities, Entity entity)
         {
             bool valid = true;
-            var other = entities.FirstOrDefault(e => e.X == p.X && e.Y == p.Y && e.Health > 0);
+            var other = entities.FirstOrDefault(e => e.X == x && e.Y == y && e.Health > 0);
             if (other == null)
             {
-                var space = Map[p.X, p.Y];
+                var space = map[x, y];
                 if (space.Type == PlotType.Tree)
                 {
                     valid = false;

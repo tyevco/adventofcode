@@ -22,40 +22,71 @@ namespace Day15
 
         public void Tick()
         {
-            var entities = Entities.Where(e => e.Health > 0).OrderBy(e => e.X + (e.Y * Map.Width)).ToList();
+            var entities = Entities.Where(e => e.Health > 0).OrderBy(e => e.X + (e.Y * Map.Width));
 
             foreach (var entity in entities)
             {
-                var nearby = NearbyEnemies(entity, entities.Where(e => e.Type != entity.Type).ToList());
+                var nearby = NearbyEnemies(entity, entities.Where(e => e.Type != entity.Type));
 
                 if (nearby.Any())
                 {
                     var target = nearby.OrderBy(e => e.Health).FirstOrDefault();
-
                     target.Health -= entity.Attack;
+
+                    if (target.Health > 0)
+                        System.Diagnostics.Debug.WriteLine($"{entity.Type} {entity.Id} attacks {target.Type} {target.Id} for {entity.Attack} damage, leaving {target.Health} health.");
+                    else
+                        System.Diagnostics.Debug.WriteLine($"{entity.Type} {entity.Id} kills {target.Type} {target.Id}.");
                 }
                 else
                 {
                     var point = FindPath(entity, entities);
                     if (point != null)
                     {
-                        entity.X = point.X;
-                        entity.Y = point.Y;
+                        if (IsLocationValid(point.X, point.Y))
+                        {
+                            entity.X = point.X;
+                            entity.Y = point.Y;
+
+                            System.Diagnostics.Debug.WriteLine($"{entity.Type} {entity.Id} moves to location ({point.X},{point.Y}).");
+                        }
                     }
                 }
+
+                System.Diagnostics.Debug.WriteLine(Map);
             }
 
             CheckIfOver();
         }
 
-        private IList<Entity> NearbyEnemies(Entity entity, IList<Entity> enemies)
+        private IEnumerable<Entity> NearbyEnemies(Entity entity, IEnumerable<Entity> enemies)
         {
             return enemies.Where(p =>
                 (p.X == entity.X - 1 && p.Y == entity.Y) ||
                 (p.X == entity.X + 1 && p.Y == entity.Y) ||
                 (p.X == entity.X && p.Y == entity.Y - 1) ||
                 (p.X == entity.X && p.Y == entity.Y + 1)
-                                    ).ToList();
+                                    );
+        }
+
+        private bool IsLocationValid(int x, int y)
+        {
+            bool valid = true;
+            var other = Entities.FirstOrDefault(e => e.X == x && e.Y == y && e.Health > 0);
+            if (other == null)
+            {
+                var space = Map[x, y];
+                if (space.Type == PlotType.Tree)
+                {
+                    valid = false;
+                }
+            }
+            else
+            {
+                valid = false;
+            }
+
+            return valid;
         }
 
         private void CheckIfOver()
@@ -67,11 +98,8 @@ namespace Day15
             }
         }
 
-        private Point FindPath(Entity entity, IList<Entity> entities)
+        private Point FindPath(Entity entity, IEnumerable<Entity> entities)
         {
-            int x = entity.X;
-            int y = entity.Y;
-
             return Path.FindTargetPoint(Map, entities, entity);
         }
     }

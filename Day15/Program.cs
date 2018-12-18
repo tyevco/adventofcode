@@ -15,19 +15,33 @@ namespace Day15
 
                 Console.WriteLine(map);
 
-                while (!system.Finished)
+                //while (!system.Finished)
                 {
                     system.Tick();
 
-                    Console.Clear();
+                    //Console.Clear();
+                    Console.WriteLine(map);
+                    System.Threading.Thread.Sleep(500);
+
+
+                    system.Tick();
+
+                    //Console.Clear();
+                    Console.WriteLine(map);
+                    System.Threading.Thread.Sleep(500);
+
+                    system.Tick();
+
+                    //Console.Clear();
                     Console.WriteLine(map);
                     System.Threading.Thread.Sleep(500);
                 }
 
-                Console.Clear();
-                Console.WriteLine(map);
+                //Console.Clear();
+                //Console.WriteLine(map);
             }
 
+            Console.WriteLine("Finished.");
             Console.ReadLine();
         }
     }

@@ -2,7 +2,7 @@
   "profiles": {
     "Day15": {
       "commandName": "Project",
-      "commandLineArgs": "\"$(ProjectDir)Maps/move-hard.txt\""
+      "commandLineArgs": "\"$(ProjectDir)Maps/largesample.txt\""
     }
   }
 }
