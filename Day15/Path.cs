@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Advent.Utilities.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -70,32 +71,6 @@ namespace Day15
                 var path = new Path(map);
                 var queuedPoints = path.CalculateDistance(plot.X, plot.Y, entity.X, entity.Y, entities, entity);
 
-                //for (int y = 0; y < map.Height; y++)
-                //{
-                //    for (int x = 0; x < map.Width; x++)
-                //    {
-                //        if (entity.X == x && entity.Y == y)
-                //        {
-                //            System.Diagnostics.Debug.Write("EE ");
-                //        }
-                //        else if (plot.X == x && plot.Y == y)
-                //        {
-                //            System.Diagnostics.Debug.Write("SS ");
-                //        }
-                //        else
-                //        {
-                //            var qp = queuedPoints.FirstOrDefault(q => q.X == x && q.Y == y);
-                //            if (qp != null)
-                //                System.Diagnostics.Debug.Write($"{qp.Distance.ToString("00")} ");
-                //            else
-                //                System.Diagnostics.Debug.Write("__ ");
-                //        }
-                //    }
-
-
-                //    System.Diagnostics.Debug.WriteLine("");
-                //}
-
                 var closePoints = GetPointsClosestTo(queuedPoints, entity.X, entity.Y);
                 if (closePoints.Any())
                 {
@@ -118,19 +93,14 @@ namespace Day15
             }
         }
 
-        private static IEnumerable<Point> GetPointsClosestTo(IEnumerable<Point> points, int x, int y)
+        private static IEnumerable<Point> GetPointsClosestTo(Grid<Point> points, int x, int y)
         {
-            return points.Where(p =>
-                                (p.X == x - 1 && p.Y == y) ||
-                                (p.X == x + 1 && p.Y == y) ||
-                                (p.X == x && p.Y == y - 1) ||
-                                (p.X == x && p.Y == y + 1)
-                                );
+            return new List<Point> { points[x - 1, y], points[x + 1, y], points[x, y - 1], points[x, y + 1] }.Where(p => p != null);
         }
 
-        private IEnumerable<Point> CalculateDistance(int x, int y, int targetX, int targetY, IEnumerable<Entity> entities, Entity entity)
+        private Grid<Point> CalculateDistance(int x, int y, int targetX, int targetY, IEnumerable<Entity> entities, Entity entity)
         {
-            Queue<Point> FinishedPoints = new Queue<Point>();
+            Grid<Point> FinishedPoints = new Grid<Point>(Map.Width, Map.Height);
             Queue<Point> PointsToProcess = new Queue<Point>();
             PointsToProcess.Enqueue(new Point(x, y, 0));
 
@@ -148,8 +118,8 @@ namespace Day15
                     TryAddPoint(FinishedPoints, nextQueue, point.X, point.Y - 1, distance, Map, entities, entity);
                     TryAddPoint(FinishedPoints, nextQueue, point.X, point.Y + 1, distance, Map, entities, entity);
 
-                    if (!FinishedPoints.Any(p => p.X == point.X && p.Y == point.Y))
-                        FinishedPoints.Enqueue(point);
+                    if (FinishedPoints[point.X, point.Y] == null)
+                        FinishedPoints[point.X, point.Y] = point;
 
                     if (PointsToProcess.Any())
                     {
@@ -174,10 +144,10 @@ namespace Day15
             return FinishedPoints;
         }
 
-        private static Point TryAddPoint(Queue<Point> finished, Queue<Point> process, int x, int y, int d, Map map, IEnumerable<Entity> entities, Entity entity)
+        private static Point TryAddPoint(Grid<Point> finished, Queue<Point> process, int x, int y, int d, Map map, IEnumerable<Entity> entities, Entity entity)
         {
             Point p = null;
-            if (!finished.Any(t => t.X == x && y == t.Y) && !process.Any(t => t.X == x && t.Y == y))
+            if (finished[x, y] == null && !process.Any(t => t.X == x && t.Y == y))
             {
                 p = new Point(x, y, d);
                 if (IsPointValid(p, map, entities, entity))

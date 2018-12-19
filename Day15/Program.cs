@@ -45,10 +45,15 @@ namespace Day15
 
                 var system = new Game(map);
 
+                var startTicks = DateTime.Now.Ticks;
+
                 while (!system.Finished)
                 {
                     system.Tick();
                 }
+
+                var ticks = DateTime.Now.Ticks - startTicks;
+                Console.WriteLine($"Simulation took {ticks} ticks, or { Math.Round(ticks / (double)TimeSpan.TicksPerSecond, 3)} seconds.");
 
                 Console.WriteLine($"Elves had \x1b[38;5;82m{ap}\x1b[38;5;255m attack power.");
                 Console.WriteLine($"Combat ends after {system.Round} full rounds");
