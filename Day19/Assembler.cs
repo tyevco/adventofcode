@@ -30,32 +30,52 @@ namespace Day19
             public const string EQRR = "eqrr";
         }
 
-        int PointerAddress = 0;
         MemoryRegister register;
+        public MemoryRegister Register => register;
 
         public Assembler()
         {
-            register = new MemoryRegister(6);
+            register = new MemoryRegister(6, 1);
         }
 
         public void Process(AssemblerInstructions instructions)
         {
-            PointerAddress = instructions.PointerAddress;
+            MemoryRegister.PointerAddress = instructions.PointerAddress;
 
-            int instructionPointer = register[PointerAddress];
-            Instruction instruction = instructions[instructionPointer];
+            register.InstructionPointer = register[MemoryRegister.PointerAddress];
+            Instruction instruction = instructions[register.InstructionPointer];
 
             while (instruction != null)
             {
-                var nextRegister = new MemoryRegister(6);
+                var nextRegister = register.Clone();
 
-                ApplyInstruction(instruction, nextRegister);
+                if (register.InstructionPointer == 2 && register[3] != 0)
+                {
+                    if (register[3] % register[5] == 0)
+                    {
+                        register[0] += register[5];
+                    }
+                    register[2] = 0;
+                    register[1] = register[3];
+                    register.InstructionPointer = 12;
+                }
+                //else
+                //if (register.InstructionPointer == 12 && register[5] < register[3] - 10)
+                //{
+                //    register[5] = register[3] - 10;
+                //}
+                else
+                {
 
-                PrintDebugStatement(instruction, nextRegister);
-                register = nextRegister;
+                    ApplyInstruction(instruction, nextRegister);
 
-                instructionPointer = register[PointerAddress];
-                instruction = instructions[instructionPointer];
+                    PrintDebugStatement(instruction, nextRegister);
+                    register = nextRegister;
+
+                    register.InstructionPointer++;
+                }
+
+                instruction = instructions[register.InstructionPointer];
             }
         }
 
@@ -64,25 +84,25 @@ namespace Day19
             switch (instruction.Command)
             {
                 case Commands.ADDR:
-                    nextRegister[instruction.C] = register[instruction.A] + register[instruction.B];
+                    nextRegister[instruction.C] = nextRegister[instruction.A] + nextRegister[instruction.B];
                     break;
 
                 case Commands.ADDI:
-                    nextRegister[instruction.C] = instruction.A + instruction.B;
+                    nextRegister[instruction.C] = nextRegister[instruction.A] + instruction.B;
                     break;
 
                 case Commands.MULR:
                     nextRegister[instruction.C] = register[instruction.A] * register[instruction.B];
                     break;
                 case Commands.MULI:
-                    nextRegister[instruction.C] = instruction.A * instruction.B;
+                    nextRegister[instruction.C] = register[instruction.A] * instruction.B;
                     break;
 
                 case Commands.BANR:
                     nextRegister[instruction.C] = register[instruction.A] & register[instruction.B];
                     break;
                 case Commands.BANI:
-                    nextRegister[instruction.C] = instruction.A & instruction.B;
+                    nextRegister[instruction.C] = register[instruction.A] & instruction.B;
                     break;
 
                 case Commands.BORR:
@@ -90,7 +110,7 @@ namespace Day19
 
                     break;
                 case Commands.BORI:
-                    nextRegister[instruction.C] = instruction.A | instruction.B;
+                    nextRegister[instruction.C] = register[instruction.A] | instruction.B;
                     break;
 
                 case Commands.SETR:
@@ -129,7 +149,7 @@ namespace Day19
 
         private void PrintDebugStatement(Instruction instruction, MemoryRegister nextRegister)
         {
-            Console.WriteLine($"ip={register[PointerAddress]} [{register}] {instruction.Command} {instruction.A} {instruction.B} {instruction.C} [{nextRegister}]");
+            Console.WriteLine($"ip={register.InstructionPointer} [{register}] {instruction.Command} {instruction.A} {instruction.B} {instruction.C} [{nextRegister}]");
         }
     }
 }

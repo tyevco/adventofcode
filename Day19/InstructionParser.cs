@@ -8,7 +8,7 @@ namespace Day19
     public class InstructionParser : DataParser<AssemblerInstructions>
     {
         Regex ipLine = new Regex("#ip ([0-9]+)");
-        Regex instructionLine = new Regex("([a-z]{4}) ([0-9]) ([0-9]) ([0-9])");
+        Regex instructionLine = new Regex("([a-z]{4}) ([0-9]+) ([0-9]+) ([0-9]+)");
         protected override AssemblerInstructions DeserializeData(IList<string> data)
         {
             AssemblerInstructions instructions = new AssemblerInstructions();

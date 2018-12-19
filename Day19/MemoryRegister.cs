@@ -4,10 +4,36 @@ namespace Day19
 {
     public class MemoryRegister
     {
+        public static int PointerAddress { get; set; }
+
         int[] register;
-        public MemoryRegister(int size)
+
+        public int InstructionPointer
+        {
+            get
+            {
+                return register[PointerAddress];
+            }
+            set
+            {
+                register[PointerAddress] = value;
+            }
+        }
+
+        public MemoryRegister(int size, params int[] registerValues)
         {
             register = new int[size];
+            for (int i = 0; i < registerValues.Length; i++)
+            {
+                if (i < register.Length)
+                {
+                    register[i] = registerValues[i];
+                }
+                else
+                {
+                    break;
+                }
+            }
         }
 
         public int this[int i]
@@ -37,6 +63,17 @@ namespace Day19
             }
 
             return sb.ToString();
+        }
+
+        public MemoryRegister Clone()
+        {
+            var clone = new MemoryRegister(register.Length)
+            {
+                register = (int[])register.Clone(),
+                InstructionPointer = InstructionPointer
+            };
+
+            return clone;
         }
     }
 }

@@ -20,6 +20,8 @@ namespace Day19
             var assembler = new Assembler();
 
             assembler.Process(instructions);
+
+            Console.WriteLine($"Final Values: [{assembler.Register}]");
         }
     }
 }
