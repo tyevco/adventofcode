@@ -15,6 +15,16 @@ namespace Day14
             return node;
         }
 
+        public static LinkedListNode<T> Rewind<T>(this LinkedListNode<T> node, int skip)
+        {
+            for (int i = 0; i < skip; i++)
+            {
+                node = node.PreviousOrFirst();
+            }
+
+            return node;
+        }
+
         public static IList<T> Take<T>(this LinkedListNode<T> node, int takeCount)
         {
             IList<T> values = new List<T>();

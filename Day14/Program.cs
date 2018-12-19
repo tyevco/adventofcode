@@ -84,7 +84,6 @@ namespace Day14
             };
 
             // PrintRecipeList(recipes, firstElf, secondElf);
-            int index = -1;
             int newRecipeCount = 0;
             bool seek = true;
             while (seek)
@@ -94,12 +93,12 @@ namespace Day14
                 {
                     recipes.AddLast(r);
 
-                    if (recipes.Count > 4)
+                    if (recipes.Count > recipeValue.Length)
                     {
-                        var latestAddition = string.Join("", recipes.Last.Previous.Previous.Previous.Previous.Take(5));
+                        var latestAddition = string.Join("", recipes.Last.Rewind(recipeValue.Length - 1).Take(recipeValue.Length));
                         if (recipeValue.Equals(latestAddition))
                         {
-                            newRecipeCount = recipes.Count - 5;
+                            newRecipeCount = recipes.Count - recipeValue.Length;
                             seek = false;
                             break;
                         }
@@ -124,7 +123,7 @@ namespace Day14
                 }
             }
 
-            Console.WriteLine($"Answer: {index}");
+            Console.WriteLine($"{recipeValue} first appears after {newRecipeCount} recipes.");
         }
 
         private void PrintRecipeList(LinkedList<char> recipes, Elf firstElf, Elf secondElf)
