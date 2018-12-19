@@ -63,5 +63,28 @@ namespace Day16
 
             return clone;
         }
+
+        public bool Equals(MemoryRegister other)
+        {
+            bool match = true;
+
+            if (register.Length == other.register.Length)
+            {
+                for (int i = 0; i < register.Length; i++)
+                {
+                    if (register[i] != other.register[i])
+                    {
+                        match = false;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                match = false;
+            }
+
+            return match;
+        }
     }
 }

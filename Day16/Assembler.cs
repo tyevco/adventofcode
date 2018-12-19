@@ -29,29 +29,51 @@ namespace Day16
             public const string EQIR = "eqir";
             public const string EQRI = "eqri";
             public const string EQRR = "eqrr";
+
+            public static IDictionary<string, int> CommandList { get; } = new Dictionary<string, int>()
+            {
+                { GTRI, 0 },
+                { BANI, 1 },
+                { EQRR, 2 },
+                { GTIR, 3 },
+                { EQIR, 4 },
+                { BORI, 5 },
+                { SETI, 6 },
+                { SETR, 7 },
+                { ADDR, 8 },
+                { BORR, 9 },
+                { MULI, 10 },
+                { BANR, 11 },
+                { ADDI, 12 },
+                { EQRI, 13 },
+                { MULR, 14 },
+                { GTRR, 15 }
+            };
         }
 
-        private static readonly IDictionary<string, Func<MemoryRegister, int, int, int>> CommandActions = new Dictionary<string, Func<MemoryRegister, int, int, int>>()
+        private static readonly IDictionary<int, Func<MemoryRegister, int, int, int>> CommandActions = new Dictionary<int, Func<MemoryRegister, int, int, int>>()
         {
-            { Commands.ADDR, (r, a, b) => r[a] + r[b] },
-            { Commands.ADDI, (r, a, b) => r[a] + b },
-            { Commands.MULR, (r, a, b) => r[a] * r[b] },
-            { Commands.MULI, (r, a, b) => r[a] * b },
-            { Commands.BANR, (r, a, b) => r[a] & r[b] },
-            { Commands.BANI, (r, a, b) => r[a] & b },
-            { Commands.BORR, (r, a, b) => r[a] | r[b] },
-            { Commands.BORI, (r, a, b) => r[a] | b },
-            { Commands.SETI, (r, a, b) => a },
-            { Commands.SETR, (r, a, b) => r[a] },
-            { Commands.GTIR, (r, a, b) => a > r[b] ? 1 : 0 },
-            { Commands.GTRI, (r, a, b) => r[a] > b ? 1 : 0 },
-            { Commands.GTRR, (r, a, b) => r[a] > r[b] ? 1 : 0 },
-            { Commands.EQIR, (r, a, b) => a == r[b] ? 1 : 0 },
-            { Commands.EQRI, (r, a, b) => r[a] == b ? 1 : 0 },
-            { Commands.EQRR, (r, a, b) => r[a] == r[b] ? 1 : 0 }
+            { Commands.CommandList[Commands.ADDR], (r, a, b) => r[a] + r[b] },
+            { Commands.CommandList[Commands.ADDI], (r, a, b) => r[a] + b },
+            { Commands.CommandList[Commands.MULR], (r, a, b) => r[a] * r[b] },
+            { Commands.CommandList[Commands.MULI], (r, a, b) => r[a] * b },
+            { Commands.CommandList[Commands.BANR], (r, a, b) => r[a] & r[b] },
+            { Commands.CommandList[Commands.BANI], (r, a, b) => r[a] & b },
+            { Commands.CommandList[Commands.BORR], (r, a, b) => r[a] | r[b] },
+            { Commands.CommandList[Commands.BORI], (r, a, b) => r[a] | b },
+            { Commands.CommandList[Commands.SETI], (r, a, b) => a },
+            { Commands.CommandList[Commands.SETR], (r, a, b) => r[a] },
+            { Commands.CommandList[Commands.GTIR], (r, a, b) => a > r[b] ? 1 : 0 },
+            { Commands.CommandList[Commands.GTRI], (r, a, b) => r[a] > b ? 1 : 0 },
+            { Commands.CommandList[Commands.GTRR], (r, a, b) => r[a] > r[b] ? 1 : 0 },
+            { Commands.CommandList[Commands.EQIR], (r, a, b) => a == r[b] ? 1 : 0 },
+            { Commands.CommandList[Commands.EQRI], (r, a, b) => r[a] == b ? 1 : 0 },
+            { Commands.CommandList[Commands.EQRR], (r, a, b) => r[a] == r[b] ? 1 : 0 }
         };
 
         MemoryRegister register;
+
+        public MemoryRegister Register => register;
 
         public Assembler()
         {

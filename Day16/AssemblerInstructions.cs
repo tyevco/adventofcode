@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Day16
 {
     public class AssemblerInstructions
     {
+        public IList<Sample> Samples { get; set; } = new List<Sample>();
         public IList<Instruction> Instructions { get; set; } = new List<Instruction>();
 
         public Instruction this[int i]
@@ -16,17 +18,22 @@ namespace Day16
             }
         }
 
-        public void AddInstruction(string value, int v1, int v2, int v3)
+        public void AddInstruction(int value, int a, int b, int c)
         {
             var instruction = new Instruction
             {
                 Command = value,
-                A = v1,
-                B = v2,
-                C = v3
+                A = a,
+                B = b,
+                C = c
             };
 
             Instructions.Add(instruction);
+        }
+
+        public void AddSample(Sample sample)
+        {
+            Samples.Add(sample);
         }
     }
 }
