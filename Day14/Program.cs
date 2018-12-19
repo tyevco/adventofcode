@@ -14,7 +14,7 @@ namespace Day14
             }
         }
 
-        protected override void Execute(string file)
+        protected void ExecuteOld(string file)
         {
             LinkedList<char> recipes = new LinkedList<char>();
 
@@ -30,7 +30,7 @@ namespace Day14
                 Node = recipes.AddLast('7')
             };
 
-           // PrintRecipeList(recipes, firstElf, secondElf);
+            // PrintRecipeList(recipes, firstElf, secondElf);
 
             int newRecipeCount = 0;
 
@@ -56,7 +56,7 @@ namespace Day14
                 }
                 secondElf.Node = nextSecondNode;
 
-               // PrintRecipeList(recipes, firstElf, secondElf);
+                // PrintRecipeList(recipes, firstElf, secondElf);
             }
 
             PrintRecipeList(recipes, firstElf, secondElf);
@@ -65,6 +65,66 @@ namespace Day14
             var end = recipes.Skip(recipeLength);
             IList<char> answer = end.Take(10);
             Console.WriteLine($"Answer: {string.Join("", answer)}");
+        }
+
+        protected override void Execute(string file)
+        {
+            LinkedList<char> recipes = new LinkedList<char>();
+
+            var recipeValue = System.IO.File.ReadAllText(file);
+
+            var firstElf = new Elf
+            {
+                Node = recipes.AddLast('3'),
+            };
+
+            var secondElf = new Elf
+            {
+                Node = recipes.AddLast('7')
+            };
+
+            // PrintRecipeList(recipes, firstElf, secondElf);
+            int index = -1;
+            int newRecipeCount = 0;
+            bool seek = true;
+            while (seek)
+            {
+                var newRecipe = (firstElf.RecipeValue + secondElf.RecipeValue).ToString().ToCharArray();
+                foreach (var r in newRecipe)
+                {
+                    recipes.AddLast(r);
+
+                    if (recipes.Count > 4)
+                    {
+                        var latestAddition = string.Join("", recipes.Last.Previous.Previous.Previous.Previous.Take(5));
+                        if (recipeValue.Equals(latestAddition))
+                        {
+                            newRecipeCount = recipes.Count - 5;
+                            seek = false;
+                            break;
+                        }
+                    }
+                }
+                if (seek)
+                {
+
+                    LinkedListNode<char> nextFirstNode = firstElf.Node;
+                    for (int f = 0; f < firstElf.NextRecipe; f++)
+                    {
+                        nextFirstNode = nextFirstNode.NextOrFirst();
+                    }
+                    firstElf.Node = nextFirstNode;
+
+                    LinkedListNode<char> nextSecondNode = secondElf.Node;
+                    for (int f = 0; f < secondElf.NextRecipe; f++)
+                    {
+                        nextSecondNode = nextSecondNode.NextOrFirst();
+                    }
+                    secondElf.Node = nextSecondNode;
+                }
+            }
+
+            Console.WriteLine($"Answer: {index}");
         }
 
         private void PrintRecipeList(LinkedList<char> recipes, Elf firstElf, Elf secondElf)
