@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Day16
 {
@@ -30,106 +31,66 @@ namespace Day16
             public const string EQRR = "eqrr";
         }
 
-        int PointerAddress = 0;
+        private static readonly IDictionary<string, Func<MemoryRegister, int, int, int>> CommandActions = new Dictionary<string, Func<MemoryRegister, int, int, int>>()
+        {
+            { Commands.ADDR, (r, a, b) => r[a] + r[b] },
+            { Commands.ADDI, (r, a, b) => r[a] + b },
+            { Commands.MULR, (r, a, b) => r[a] * r[b] },
+            { Commands.MULI, (r, a, b) => r[a] * b },
+            { Commands.BANR, (r, a, b) => r[a] & r[b] },
+            { Commands.BANI, (r, a, b) => r[a] & b },
+            { Commands.BORR, (r, a, b) => r[a] | r[b] },
+            { Commands.BORI, (r, a, b) => r[a] | b },
+            { Commands.SETI, (r, a, b) => a },
+            { Commands.SETR, (r, a, b) => r[a] },
+            { Commands.GTIR, (r, a, b) => a > r[b] ? 1 : 0 },
+            { Commands.GTRI, (r, a, b) => r[a] > b ? 1 : 0 },
+            { Commands.GTRR, (r, a, b) => r[a] > r[b] ? 1 : 0 },
+            { Commands.EQIR, (r, a, b) => a == r[b] ? 1 : 0 },
+            { Commands.EQRI, (r, a, b) => r[a] == b ? 1 : 0 },
+            { Commands.EQRR, (r, a, b) => r[a] == r[b] ? 1 : 0 }
+        };
+
         MemoryRegister register;
 
         public Assembler()
         {
-            register = new MemoryRegister(6);
+            register = new MemoryRegister(4);
         }
 
         public void Process(AssemblerInstructions instructions)
         {
-            PointerAddress = instructions.PointerAddress;
-
-            int instructionPointer = register[PointerAddress];
-            Instruction instruction = instructions[instructionPointer];
+            Instruction instruction = instructions[register.InstructionPointer];
 
             while (instruction != null)
             {
-                var nextRegister = new MemoryRegister(6);
+                var nextRegister = register.Clone();
 
-                ApplyInstruction(instruction, nextRegister);
+                ApplyInstruction(instruction, register, nextRegister);
 
-                PrintDebugStatement(instruction, nextRegister);
+                PrintDebugStatement(instruction, register, nextRegister);
                 register = nextRegister;
 
-                instructionPointer = register[PointerAddress];
-                instruction = instructions[instructionPointer];
+                register.InstructionPointer++;
+                instruction = instructions[register.InstructionPointer];
             }
         }
 
-        private void ApplyInstruction(Instruction instruction, MemoryRegister nextRegister)
+        public MemoryRegister TestInstruction(Instruction instruction, MemoryRegister register)
         {
-            switch (instruction.Command)
-            {
-                case Commands.ADDR:
-                    nextRegister[instruction.C] = register[instruction.A] + register[instruction.B];
-                    break;
-
-                case Commands.ADDI:
-                    nextRegister[instruction.C] = register[instruction.A] + instruction.B;
-                    break;
-
-                case Commands.MULR:
-                    nextRegister[instruction.C] = register[instruction.A] * register[instruction.B];
-                    break;
-                case Commands.MULI:
-                    nextRegister[instruction.C] = register[instruction.A] * instruction.B;
-                    break;
-
-                case Commands.BANR:
-                    nextRegister[instruction.C] = register[instruction.A] & register[instruction.B];
-                    break;
-                case Commands.BANI:
-                    nextRegister[instruction.C] = register[instruction.A] & instruction.B;
-                    break;
-
-                case Commands.BORR:
-                    nextRegister[instruction.C] = register[instruction.A] | register[instruction.B];
-
-                    break;
-                case Commands.BORI:
-                    nextRegister[instruction.C] = register[instruction.A] | instruction.B;
-                    break;
-
-                case Commands.SETR:
-                    nextRegister[instruction.C] = register[instruction.A];
-                    break;
-
-                case Commands.SETI:
-                    nextRegister[instruction.C] = instruction.A;
-                    break;
-
-                case Commands.GTIR:
-                    nextRegister[instruction.C] = instruction.A > register[instruction.B] ? 1 : 0;
-                    break;
-
-                case Commands.GTRI:
-                    nextRegister[instruction.C] = register[instruction.A] > instruction.B ? 1 : 0;
-                    break;
-
-                case Commands.GTRR:
-                    nextRegister[instruction.C] = register[instruction.A] > register[instruction.B] ? 1 : 0;
-                    break;
-
-                case Commands.EQIR:
-                    nextRegister[instruction.C] = instruction.A == register[instruction.B] ? 1 : 0;
-                    break;
-
-                case Commands.EQRI:
-                    nextRegister[instruction.C] = register[instruction.A] == instruction.B ? 1 : 0;
-                    break;
-
-                case Commands.EQRR:
-                    nextRegister[instruction.C] = register[instruction.A] == register[instruction.B] ? 1 : 0;
-                    break;
-            }
+            MemoryRegister clone = register.Clone();
+            ApplyInstruction(instruction, register, clone);
+            return clone;
         }
 
-        private void PrintDebugStatement(Instruction instruction, MemoryRegister nextRegister)
+        private static void ApplyInstruction(Instruction instruction, MemoryRegister register, MemoryRegister nextRegister)
         {
-            Console.WriteLine($"ip={register[PointerAddress]} [{register}] {instruction.Command} {instruction.A} {instruction.B} {instruction.C} [{nextRegister}]");
+            nextRegister[instruction.C] = CommandActions[instruction.Command](register, instruction.A, instruction.B);
+        }
+
+        private static void PrintDebugStatement(Instruction instruction, MemoryRegister register, MemoryRegister nextRegister)
+        {
+            Console.WriteLine($"ip={register.InstructionPointer} [{register}] {instruction.Command} {instruction.A} {instruction.B} {instruction.C} [{nextRegister}]");
         }
     }
 }

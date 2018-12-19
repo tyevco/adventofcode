@@ -4,8 +4,6 @@ namespace Day16
 {
     public class AssemblerInstructions
     {
-        public int PointerAddress { get; set; }
-
         public IList<Instruction> Instructions { get; set; } = new List<Instruction>();
 
         public Instruction this[int i]

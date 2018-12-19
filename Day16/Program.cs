@@ -16,5 +16,10 @@ namespace Day16
         protected override void Execute(string file)
         {
         }
+
+        private void RunCompare()
+        {
+
+        }
     }
 }
