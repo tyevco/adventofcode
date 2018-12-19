@@ -15,7 +15,11 @@ namespace Day19
 
         protected override void Execute(string file)
         {
-            
+            var instructions = new InstructionParser().ParseData(file);
+
+            var assembler = new Assembler();
+
+            assembler.Process(instructions);
         }
     }
 }
