@@ -23,9 +23,9 @@ namespace Day19
             var instruction = new Instruction
             {
                 Command = value,
-                Value1 = v1,
-                Value2 = v2,
-                Value3 = v3
+                A = v1,
+                B = v2,
+                C = v3
             };
 
             Instructions.Add(instruction);
