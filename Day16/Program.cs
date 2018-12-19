@@ -7,12 +7,14 @@ namespace Day16
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            if (args.Length > 0)
+            {
+                new Program().Start(args[0]);
+            }
         }
 
         protected override void Execute(string file)
         {
-
         }
     }
 }
