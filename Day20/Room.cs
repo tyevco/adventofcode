@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Day20
 {
@@ -28,6 +29,11 @@ namespace Day20
             X = x;
             Y = y;
             Building = building;
+        }
+
+        public int GetNumberOfDoors()
+        {
+            return Doorways.Count(d => d.Value);
         }
 
         public bool HasDoorwayTo(Direction direction)
