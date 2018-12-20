@@ -9,7 +9,6 @@ namespace Day20
     {
         protected override Building DeserializeData(IList<string> data)
         {
-            //^WNE$
             Building building = new Building();
 
             if (data.Any())
@@ -26,16 +25,38 @@ namespace Day20
             return building;
         }
 
+        //^WNE(E|N(E|W))$
         private void AddRooms(Building building, Room lastRoom, Queue<char> roomQueue)
         {
-            if (roomQueue.Any())
+            bool forceReturn = false;
+            while (roomQueue.Any() && !forceReturn)
             {
                 var command = roomQueue.Dequeue();
 
                 Console.WriteLine($"Managing {command}.");
 
+                Room nextRoom = null;
+
                 switch (command)
                 {
+                    case 'N':
+                        nextRoom = building.GetOrCreateRoomAt(lastRoom.X, lastRoom.Y - 1);
+                        break;
+                    case 'E':
+                        nextRoom = building.GetOrCreateRoomAt(lastRoom.X + 1, lastRoom.Y);
+                        break;
+                    case 'S':
+                        nextRoom = building.GetOrCreateRoomAt(lastRoom.X, lastRoom.Y + 1);
+                        break;
+                    case 'W':
+                        nextRoom = building.GetOrCreateRoomAt(lastRoom.X - 1, lastRoom.Y);
+                        break;
+                    case '|':
+                    case ')':
+                        // no-op, return to parent
+                        forceReturn = true;
+                        break;
+                    case '(':
                     case '^':
                     case '$':
                     default:
@@ -43,6 +64,10 @@ namespace Day20
                         break;
                 }
 
+                if (nextRoom != null)
+                {
+                    AddRooms(building, nextRoom, roomQueue);
+                }
             }
         }
     }

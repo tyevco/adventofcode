@@ -1,37 +1,78 @@
 ﻿using Advent.Utilities.Data;
+using System.Text;
 
 namespace Day20
 {
     public class Building
     {
-        public Grid<Room> Rooms { get; }
-        int StartX { get; }
-        int StartY { get; }
+        public Grid<Room> Rooms { get; private set; }
+        int StartX { get; set; }
+        int StartY { get; set; }
 
         public Building()
         {
-            Rooms = new Grid<Room>(1000, 1000);
+            Rooms = new Grid<Room>(20, 20);
             StartX = Rooms.Width / 2;
             StartY = Rooms.Height / 2;
-            Rooms[StartX, StartY] = new Room()
-            {
-                X = StartX,
-                Y = StartY
-            };
+            AddRoom(new Room(StartX, StartY, this));
         }
 
         public Room FirstRoom => Rooms[StartX, StartY];
 
-        public Room AddRoom(int x, int y, Room room)
+        public Room GetRoomAt(int x, int y)
         {
-            Rooms[x, y] = room;
+            return Rooms[x, y];
+        }
+
+        int RoomCount = 0;
+        public void AddRoom(Room room)
+        {
+            room.Id = RoomCount++;
+            Rooms[room.X, room.Y] = room;
+        }
+
+        public Room GetOrCreateRoomAt(int x, int y)
+        {
+            Room room;
+            if (Rooms[x, y] != null)
+            {
+                room = Rooms[x, y];
+            }
+            else
+            {
+                room = new Room(x, y, this);
+                AddRoom(room);
+            }
 
             return room;
         }
 
-        public Room GetRoomAt(int x, int y)
+        public override string ToString()
         {
-            return Rooms[x, y];
+            StringBuilder sb = new StringBuilder();
+
+            for (int y = 0; y < Rooms.Height; y++)
+            {
+                for (int x = 0; x < Rooms.Width; x++)
+                {
+                    var room = Rooms[x, y];
+
+                    if (room == null)
+                    {
+                        sb.Append("  ");
+                    }
+                    else
+                    {
+                        //if (room.X == StartX && room.Y == StartY)
+                            sb.Append(room.Id.ToString().PadLeft(2, '0'));
+                        //else
+                        //    sb.Append("+");
+                    }
+                }
+                sb.AppendLine();
+            }
+
+            return sb.ToString();
         }
     }
 }

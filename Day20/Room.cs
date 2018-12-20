@@ -1,22 +1,22 @@
-﻿using System.Collections.Generic;
-
-namespace Day20
+﻿namespace Day20
 {
     public class Room
     {
-        public Room Entrance { get; private set; }
-        public IDictionary<Direction, Room> Exits { get; } = new Dictionary<Direction, Room>();
-        public int Y { get; internal set; }
-        public int X { get; internal set; }
+        public Room North => Building.GetRoomAt(X, Y - 1);
+        public Room South => Building.GetRoomAt(X, Y + 1);
+        public Room East => Building.GetRoomAt(X - 1, Y);
+        public Room West => Building.GetRoomAt(X + 1, Y);
 
-        public void SetEntrance(Room room)
-        {
-            this.Entrance = room;
-        }
+        public int Y { get; private set; }
+        public int X { get; private set; }
+        private Building Building { get; set; }
+        public int Id { get; internal set; }
 
-        public void SetExit(Direction direction, Room room)
+        public Room(int x, int y, Building building)
         {
-            Exits.Add(direction, room);
+            X = x;
+            Y = y;
+            Building = building;
         }
     }
 }
