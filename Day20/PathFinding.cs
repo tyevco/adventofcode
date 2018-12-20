@@ -80,7 +80,7 @@ namespace Day20
 
             if (points.Any())
             {
-                return points.Where(x=>x.Distance >= roomAmount);
+                return points.Where(x => x.Distance >= roomAmount);
             }
             else
             {
@@ -94,14 +94,15 @@ namespace Day20
             Grid<Point> FinishedPoints = new Grid<Point>(rooms.Width, rooms.Height);
             Queue<Point> PointsToProcess = new Queue<Point>();
             PointsToProcess.Enqueue(new Point(x, y, distance));
-
-            while (true)
+            bool finished = false;
+            while (!finished)
             {
                 distance++;
 
                 Queue<Point> nextQueue = new Queue<Point>();
                 Point point = PointsToProcess.Dequeue();
-                while (point != null)
+
+                while (point != null && !finished)
                 {
                     if (point.X > 0)
                     {
@@ -140,7 +141,14 @@ namespace Day20
                     }
 
                     if (FinishedPoints[point.X, point.Y] == null)
+                    {
                         FinishedPoints[point.X, point.Y] = point;
+
+                        if (point.X == targetX && point.Y == targetY)
+                        {
+                            finished = true;
+                        }
+                    }
 
                     if (PointsToProcess.Any())
                     {
@@ -151,6 +159,7 @@ namespace Day20
                         point = null;
                     }
                 }
+
 
                 if (!nextQueue.Any())
                 {

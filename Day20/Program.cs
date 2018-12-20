@@ -60,6 +60,8 @@ namespace Day20
             var key = Console.ReadKey();
             Console.WriteLine();
 
+            var start = DateTime.Now.Ticks;
+
             if (key.Key == ConsoleKey.D1)
             {
                 // calculate the distance to the rooms with only 1 entrance
@@ -96,6 +98,10 @@ namespace Day20
                     Console.WriteLine("No rooms had at least {doorAmount} doors.");
                 }
             }
+
+            var ticks = DateTime.Now.Ticks - start;
+
+            Console.WriteLine($"Processing took {ticks} ticks, or {Math.Round((double)ticks / TimeSpan.TicksPerSecond, 3)} seconds.");
         }
     }
 }
