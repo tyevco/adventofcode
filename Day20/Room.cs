@@ -6,6 +6,8 @@ namespace Day20
     {
         public Room Entrance { get; private set; }
         public IDictionary<Direction, Room> Exits { get; } = new Dictionary<Direction, Room>();
+        public int Y { get; internal set; }
+        public int X { get; internal set; }
 
         public void SetEntrance(Room room)
         {

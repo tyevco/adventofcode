@@ -1,5 +1,5 @@
-﻿using System;
-using Advent.Utilities;
+﻿using Advent.Utilities;
+using System;
 
 namespace Day20
 {
@@ -15,7 +15,9 @@ namespace Day20
 
         protected override void Execute(string file)
         {
-            
+            var building = new BuildingParser().ParseData(file);
+
+            Console.WriteLine(building);
         }
     }
 }
