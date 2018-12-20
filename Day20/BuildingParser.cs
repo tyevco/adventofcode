@@ -5,11 +5,12 @@ using System.Linq;
 
 namespace Day20
 {
-    public class BuildingParser : DataParser<Building>
+    public class BuildingParser : DataParser<(Building, ExpectedResults)>
     {
-        protected override Building DeserializeData(IList<string> data)
+        protected override (Building, ExpectedResults) DeserializeData(IList<string> data)
         {
             Building building = new Building();
+            ExpectedResults results = null;
 
             if (data.Any())
             {
@@ -25,24 +26,27 @@ namespace Day20
 
                 if (data.Count > 1)
                 {
-                    building.Expected = string.Join("\r\n", data.Skip(2).Take(data.Count - 2).Select(l=>l.Trim()));
+                    results = new ExpectedResults
+                    {
+                        Building = string.Join("\r\n", data.Skip(2).Take(data.Count - 4).Select(l => l.Trim())),
+                        Doors = int.Parse(data.FirstOrDefault(s=>s.StartsWith("Doors:"))?.Substring(6) ?? "0")
+                    };
                 }
             }
 
 
 
-            return building;
+            return (building, results);
         }
 
         //^WNE(E|N(E|W))$
-        private char AddRooms(Building building, Room lastRoom, Queue<char> roomQueue)
+        private void AddRooms(Building building, Room parentRoom, Queue<char> roomQueue)
         {
-            char lastProcessedChildRoom = ' ';
             bool forceReturn = false;
+            Room lastRoom = parentRoom;
             while (roomQueue.Any() && !forceReturn)
             {
                 var command = roomQueue.Dequeue();
-                lastProcessedChildRoom = command;
 
                 Console.WriteLine(building);
 
@@ -74,37 +78,31 @@ namespace Day20
                         nextRoom.AddDoorway(Direction.East);
                         break;
                     case '|':
+                        var nextChar = roomQueue.Peek();
+                        if (nextChar == ')')
+                        {
+                            roomQueue.Dequeue();
+                        }
+                        // no-op, return to parent
+                        forceReturn = true;
+                        break;
                     case ')':
                         // no-op, return to parent
                         forceReturn = true;
                         break;
                     case '(':
-                        lastRoom.HasSplit = true;
-                        lastProcessedChildRoom = AddRooms(building, lastRoom, roomQueue);
-                        break;
                     case '^':
                     case '$':
                     default:
-                        lastProcessedChildRoom = AddRooms(building, lastRoom, roomQueue);
+                        AddRooms(building, lastRoom, roomQueue);
                         break;
                 }
 
                 if (nextRoom != null)
                 {
-                    lastProcessedChildRoom = AddRooms(building, nextRoom, roomQueue);
-                }
-
-                if (!lastRoom.HasSplit && lastProcessedChildRoom == '|')
-                {
-                    forceReturn = true;
-                }
-                else if (!lastRoom.HasSplit && lastProcessedChildRoom == ')')
-                {
-                    forceReturn = true;
+                    lastRoom = nextRoom;
                 }
             }
-
-            return lastProcessedChildRoom;
         }
     }
 }

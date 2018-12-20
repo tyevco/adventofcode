@@ -6,8 +6,6 @@ namespace Day20
 {
     public static class GridPrinter
     {
-        static readonly object lockObject = new object();
-
         public static void Print(Grid<Point> points)
         {
             var validPoints = points.Data.Where(r => r != null);
@@ -17,32 +15,28 @@ namespace Day20
             var top = validPoints.Min(r => r.Y);
             var bottom = validPoints.Max(r => r.Y);
 
-            lock (lockObject)
+            for (int y = top; y <= bottom; y++)
             {
-
-                for (int y = top; y <= bottom; y++)
+                for (int x = left; x <= right; x++)
                 {
-                    for (int x = left; x <= right; x++)
+                    var point = points[x, y];
+
+                    if (point != null)
                     {
-                        var point = points[x, y];
-
-                        if (point != null)
-                        {
-                            Console.Write(point.Distance.ToString().PadLeft(2, '0'));
-                        }
-                        else
-                        {
-                            Console.Write("__");
-                        }
-
-                        Console.Write(" ");
+                        Console.Write(point.Distance.ToString().PadLeft(2, '0'));
+                    }
+                    else
+                    {
+                        Console.Write("__");
                     }
 
-                    Console.WriteLine();
+                    Console.Write(" ");
                 }
 
                 Console.WriteLine();
             }
+
+            Console.WriteLine();
         }
     }
 }

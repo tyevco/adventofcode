@@ -15,7 +15,7 @@ namespace Day20
 
         protected override void Execute(string file)
         {
-            var building = new BuildingParser().ParseData(file);
+            (Building building, ExpectedResults expected) = new BuildingParser().ParseData(file);
 
             Console.WriteLine();
 
@@ -28,23 +28,36 @@ namespace Day20
 
             bool match = false;
 
-            if (building.Expected != null && actualOutput.Length == building.Expected.Length)
+            if (expected != null)
             {
-                match = actualOutput.Equals(building.Expected);
+                match = actualOutput.Equals(expected.Building);
+                Console.WriteLine($"Match: {(match ? ConsoleCodes.Colorize("YES", 0x0a) : ConsoleCodes.Colorize("NO", 0x4c))}");
             }
 
-            Console.WriteLine($"Match: {(match ? ConsoleCodes.Colorize("YES", 0x0a) : ConsoleCodes.Colorize("NO", 0x4c))}");
-
-            if (!match)
+            if (expected != null && !match)
             {
                 Console.WriteLine("Expected:");
-                Console.WriteLine(building.Expected);
+                Console.WriteLine(expected.Building);
             }
             else
             {
                 // calculate the distance to the rooms with only 1 entrance
                 var point = PathFinding.FindTargetPoint(building, building.FirstRoom);
-                Console.WriteLine(point);
+
+                if (expected != null)
+                {
+                    var doorCountMatch = expected.Doors == point.Distance;
+                    if (doorCountMatch)
+                    {
+                        Console.WriteLine($"{ConsoleCodes.Colorize("Correctly", 0x0a)} matched the expected door count.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{ConsoleCodes.Colorize("Incorrectly", 0x4c)} matched the expected door count.");
+                    }
+                }
+
+                Console.WriteLine($"Navigated through {point.Distance} doors to ({point.X},{point.Y})");
             }
         }
     }

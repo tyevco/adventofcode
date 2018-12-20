@@ -12,8 +12,6 @@ namespace Day20
         int StartX { get; set; }
         int StartY { get; set; }
 
-        public string Expected { get; set; } = null;
-
         public Building()
         {
             Rooms = new Grid<Room>(20, 20);
