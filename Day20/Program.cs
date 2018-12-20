@@ -17,7 +17,13 @@ namespace Day20
         {
             var building = new BuildingParser().ParseData(file);
 
+            Console.WriteLine("Actual:");
             Console.WriteLine(building);
+
+            Console.WriteLine();
+
+            Console.WriteLine("Expected:");
+            Console.WriteLine(building.Expected);
         }
     }
 }

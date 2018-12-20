@@ -20,7 +20,14 @@ namespace Day20
                 Room firstRoom = building.FirstRoom;
 
                 AddRooms(building, firstRoom, roomQueue);
+
+                if (data.Count > 1)
+                {
+                    building.Expected = string.Join("\n", data.Skip(2).Take(data.Count - 2));
+                }
             }
+
+
 
             return building;
         }
@@ -33,6 +40,9 @@ namespace Day20
             {
                 var command = roomQueue.Dequeue();
 
+                Console.WriteLine(building);
+
+                Console.WriteLine();
                 Console.WriteLine($"Managing {command}.");
 
                 Room nextRoom = null;

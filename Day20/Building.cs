@@ -1,5 +1,6 @@
 ﻿using Advent.Utilities;
 using Advent.Utilities.Data;
+using System.Linq;
 using System.Text;
 
 namespace Day20
@@ -10,6 +11,8 @@ namespace Day20
         public Grid<Room> Rooms { get; private set; }
         int StartX { get; set; }
         int StartY { get; set; }
+
+        public string Expected { get; set; } = null;
 
         public Building()
         {
@@ -57,11 +60,18 @@ namespace Day20
         {
             StringBuilder sb = new StringBuilder();
 
-            for (int y = 0; y < Rooms.Height; y++)
+            var rooms = Rooms.Data.Where(r => r != null);
+            var left = rooms.Min(r => r.X);
+            var right = rooms.Max(r => r.X);
+            var top = rooms.Min(r => r.Y);
+            var bottom = rooms.Max(r => r.Y);
+
+            for (int y = top; y <= bottom; y++)
             {
-                for (int i = 0; i < 2; i++)
+                int rowCount = y == bottom ? 3 : 2;
+                for (int i = 0; i < rowCount; i++)
                 {
-                    for (int x = 0; x < Rooms.Width; x++)
+                    for (int x = left; x <= right; x++)
                     {
                         var room = Rooms[x, y];
 
@@ -70,6 +80,10 @@ namespace Day20
                             if (room == null)
                             {
                                 sb.Append(ConsoleCodes.Colorize("##", WALL_COLOR));
+                                if (x == right)
+                                {
+                                    sb.Append(ConsoleCodes.Colorize("#", WALL_COLOR));
+                                }
                             }
                             else
                             {
@@ -82,9 +96,14 @@ namespace Day20
                                 {
                                     sb.Append(ConsoleCodes.Colorize("##", WALL_COLOR));
                                 }
+
+                                if (x == right)
+                                {
+                                    sb.Append(ConsoleCodes.Colorize("#", WALL_COLOR));
+                                }
                             }
                         }
-                        else
+                        else if (i == 1)
                         {
                             if (room == null)
                             {
@@ -99,10 +118,23 @@ namespace Day20
 
 
                                 if (room.X == StartX && room.Y == StartY)
-                                    sb.Append(ConsoleCodes.Colorize("S", START_COLOR));
+                                    sb.Append(ConsoleCodes.Colorize("X", START_COLOR));
                                 else
                                     sb.Append(ConsoleCodes.Colorize(".", ROOM_COLOR));
+                            }
 
+                            if (x == right)
+                            {
+                                sb.Append(ConsoleCodes.Colorize("#", WALL_COLOR));
+                            }
+                        }
+                        else
+                        {
+                            sb.Append(ConsoleCodes.Colorize("##", WALL_COLOR));
+
+                            if (x == right)
+                            {
+                                sb.Append(ConsoleCodes.Colorize("#", WALL_COLOR));
                             }
                         }
                     }

@@ -2,7 +2,7 @@
 {
     public class Grid<T>
     {
-        readonly T[] Data;
+        public T[] Data { get; }
 
         public int Width { get; }
         public int Height { get; }
