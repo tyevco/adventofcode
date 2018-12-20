@@ -1,5 +1,6 @@
 ﻿using Advent.Utilities;
 using System;
+using System.Collections.Generic;
 
 namespace Day20
 {
@@ -13,52 +14,65 @@ namespace Day20
             }
         }
 
+        private bool DisplayOutput { get; set; }
+
+        protected override IList<ConsoleOption> GetOptions()
+        {
+            return new List<ConsoleOption>()
+            {
+                CreateOption("Display Output", () => DisplayOutput = !DisplayOutput, () => DisplayOutput)
+            };
+        }
+
         protected override void Execute(string file)
         {
             (Building building, ExpectedResults expected) = new BuildingParser().ParseData(file);
 
+            if (DisplayOutput)
+            {
+                Console.WriteLine();
+
+                Console.WriteLine(building.Id);
+                Console.WriteLine(building);
+            }
+
             Console.WriteLine();
 
-            Console.WriteLine(building.Id);
-            Console.WriteLine(building);
-
-            Console.WriteLine();
-
-            var actualOutput = building.GetLayout();
-
-            bool match = false;
 
             if (expected != null)
             {
+                var actualOutput = building.GetLayout();
+
+                bool match = false;
+
                 match = actualOutput.Equals(expected.Building);
                 Console.WriteLine($"Match: {(match ? ConsoleCodes.Colorize("YES", 0x0a) : ConsoleCodes.Colorize("NO", 0x4c))}");
-            }
 
-            if (expected != null && !match)
-            {
-                Console.WriteLine("Expected:");
-                Console.WriteLine(expected.Building);
-            }
-            else
-            {
-                // calculate the distance to the rooms with only 1 entrance
-                var point = PathFinding.FindTargetPoint(building, building.FirstRoom);
-
-                if (expected != null)
+                if (!match)
                 {
-                    var doorCountMatch = expected.Doors == point.Distance;
-                    if (doorCountMatch)
-                    {
-                        Console.WriteLine($"{ConsoleCodes.Colorize("Correctly", 0x0a)} matched the expected door count.");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"{ConsoleCodes.Colorize("Incorrectly", 0x4c)} matched the expected door count.");
-                    }
+                    Console.WriteLine("Expected:");
+                    Console.WriteLine(expected.Building);
                 }
-
-                Console.WriteLine($"Navigated through {point.Distance} doors to ({point.X},{point.Y})");
             }
+
+            // calculate the distance to the rooms with only 1 entrance
+            var point = PathFinding.FindTargetPoint(building, building.FirstRoom);
+
+            if (expected != null)
+            {
+                var doorCountMatch = expected.Doors == point.Distance;
+                if (doorCountMatch)
+                {
+                    Console.WriteLine($"{ConsoleCodes.Colorize("Correctly", 0x0a)} matched the expected door count.");
+                }
+                else
+                {
+                    Console.WriteLine($"{ConsoleCodes.Colorize("Incorrectly", 0x4c)} matched the expected door count.");
+                }
+            }
+
+            Console.WriteLine($"Navigated through {point.Distance} doors to ({point.X},{point.Y})");
         }
     }
 }
+

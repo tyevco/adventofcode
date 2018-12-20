@@ -48,11 +48,6 @@ namespace Day20
             {
                 var command = roomQueue.Dequeue();
 
-                Console.WriteLine(building);
-
-                Console.WriteLine();
-                Console.WriteLine($"Managing {command}.");
-
                 Room nextRoom = null;
 
                 switch (command)
@@ -78,12 +73,8 @@ namespace Day20
                         nextRoom.AddDoorway(Direction.East);
                         break;
                     case '|':
-                        var nextChar = roomQueue.Peek();
-                        if (nextChar == ')')
-                        {
-                            roomQueue.Dequeue();
-                        }
                         // no-op, return to parent
+                        AddRooms(building, parentRoom, roomQueue);
                         forceReturn = true;
                         break;
                     case ')':

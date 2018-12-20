@@ -22,11 +22,11 @@ namespace Day20
             {
                 var scoredGrid = CalculateDistance(room.X, room.Y, firstRoom.X, firstRoom.Y, building.Rooms);
 
-                lock (lockObject)
-                {
-                    Console.WriteLine($"Room #{room.Id.ToString().PadLeft(2, '0')} ({room.X},{room.Y})");
-                    GridPrinter.Print(scoredGrid);
-                }
+                //lock (lockObject)
+                //{
+                //  Console.WriteLine($"Room #{room.Id.ToString().PadLeft(2, '0')} ({room.X},{room.Y})");
+                //  GridPrinter.Print(scoredGrid);
+                //}
 
                 // does this need changed to return the firstRoom distance?
                 var targetPoint = scoredGrid.Data.FirstOrDefault(r => r != null && r.X == firstRoom.X && r.Y == firstRoom.Y);
