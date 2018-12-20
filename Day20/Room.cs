@@ -1,4 +1,6 @@
-﻿namespace Day20
+﻿using System.Collections.Generic;
+
+namespace Day20
 {
     public class Room
     {
@@ -7,16 +9,34 @@
         public Room East => Building.GetRoomAt(X - 1, Y);
         public Room West => Building.GetRoomAt(X + 1, Y);
 
-        public int Y { get; private set; }
-        public int X { get; private set; }
-        private Building Building { get; set; }
-        public int Id { get; internal set; }
+        private IDictionary<Direction, bool> Doorways { get; } = new Dictionary<Direction, bool>()
+        {
+            { Direction.North, false },
+            { Direction.West, false },
+            { Direction.South, false },
+            { Direction.East, false }
+        };
+
+        public int Y { get; }
+        public int X { get; }
+        private Building Building { get; }
+        public int Id { get; set; }
 
         public Room(int x, int y, Building building)
         {
             X = x;
             Y = y;
             Building = building;
+        }
+
+        public bool HasDoorwayTo(Direction direction)
+        {
+            return Doorways[direction];
+        }
+
+        public void AddDoorway(Direction direction)
+        {
+            Doorways[direction] = true;
         }
     }
 }

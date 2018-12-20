@@ -41,15 +41,23 @@ namespace Day20
                 {
                     case 'N':
                         nextRoom = building.GetOrCreateRoomAt(lastRoom.X, lastRoom.Y - 1);
+                        lastRoom.AddDoorway(Direction.North);
+                        nextRoom.AddDoorway(Direction.South);
                         break;
                     case 'E':
                         nextRoom = building.GetOrCreateRoomAt(lastRoom.X + 1, lastRoom.Y);
+                        lastRoom.AddDoorway(Direction.East);
+                        nextRoom.AddDoorway(Direction.West);
                         break;
                     case 'S':
                         nextRoom = building.GetOrCreateRoomAt(lastRoom.X, lastRoom.Y + 1);
+                        lastRoom.AddDoorway(Direction.South);
+                        nextRoom.AddDoorway(Direction.North);
                         break;
                     case 'W':
                         nextRoom = building.GetOrCreateRoomAt(lastRoom.X - 1, lastRoom.Y);
+                        lastRoom.AddDoorway(Direction.West);
+                        nextRoom.AddDoorway(Direction.East);
                         break;
                     case '|':
                     case ')':
