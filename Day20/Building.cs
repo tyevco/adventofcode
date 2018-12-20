@@ -6,6 +6,7 @@ namespace Day20
 {
     public class Building
     {
+        public int RoomCount { get; private set; } = 0;
         public Grid<Room> Rooms { get; private set; }
         int StartX { get; set; }
         int StartY { get; set; }
@@ -25,7 +26,6 @@ namespace Day20
             return Rooms[x, y];
         }
 
-        int RoomCount = 0;
         public void AddRoom(Room room)
         {
             room.Id = RoomCount++;
@@ -48,6 +48,11 @@ namespace Day20
             return room;
         }
 
+        private const int WALL_COLOR = 0x41;
+        private const int START_COLOR = 0x2a;
+        private const int DOOR_COLOR = 0x2e;
+        private const int ROOM_COLOR = 0x90;
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
@@ -64,16 +69,18 @@ namespace Day20
                         {
                             if (room == null)
                             {
-                                sb.Append(ConsoleCodes.Colorize("##", 1));
+                                sb.Append(ConsoleCodes.Colorize("##", WALL_COLOR));
                             }
                             else
                             {
                                 if (room.HasDoorwayTo(Direction.North))
                                 {
-                                    sb.Append($"{ConsoleCodes.Colorize("#", 1)}{ConsoleCodes.Colorize("-", 68)}");
-                                } else
+                                    sb.Append(ConsoleCodes.Colorize("#", WALL_COLOR));
+                                    sb.Append(ConsoleCodes.Colorize("-", DOOR_COLOR));
+                                }
+                                else
                                 {
-                                    sb.Append(ConsoleCodes.Colorize("##", 1));
+                                    sb.Append(ConsoleCodes.Colorize("##", WALL_COLOR));
                                 }
                             }
                         }
@@ -81,27 +88,21 @@ namespace Day20
                         {
                             if (room == null)
                             {
-                                sb.Append(ConsoleCodes.Colorize("##", 1));
+                                sb.Append(ConsoleCodes.Colorize("##", WALL_COLOR));
                             }
                             else
                             {
-                                string roomMarker = ConsoleCodes.Colorize(".", 35);
+                                if (room.HasDoorwayTo(Direction.West))
+                                    sb.Append(ConsoleCodes.Colorize("|", DOOR_COLOR));
+                                else
+                                    sb.Append(ConsoleCodes.Colorize("#", WALL_COLOR));
+
 
                                 if (room.X == StartX && room.Y == StartY)
-                                    roomMarker = ConsoleCodes.Colorize("S", 45);
+                                    sb.Append(ConsoleCodes.Colorize("S", START_COLOR));
+                                else
+                                    sb.Append(ConsoleCodes.Colorize(".", ROOM_COLOR));
 
-                                if (room.HasDoorwayTo(Direction.West))
-                                {
-                                    sb.Append(ConsoleCodes.Colorize("|", 56));
-                                } else
-                                {
-                                    sb.Append(ConsoleCodes.Colorize("#", 1));
-                                }
-
-                                sb.Append(roomMarker);
-                                //sb.Append(room.Id.ToString().PadLeft(2, '0'));
-                                //else
-                                //    sb.Append("+");
                             }
                         }
                     }
