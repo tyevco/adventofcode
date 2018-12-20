@@ -1,5 +1,4 @@
 ﻿using Advent.Utilities.Data;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,11 +10,10 @@ namespace Day20
         private readonly static object lockObject = new object();
 
         // Need to make sure that it uses the /longest/ distance.
-        public static Point FindTargetPoint(Building building, Room firstRoom)
+        public static Point FindRoomThroughMostDoors(Building building, Room firstRoom)
         {
             IEnumerable<Room> targets = building.Rooms.Data.Where(r => r != null && r.DoorCount == 1 && !(r.X == firstRoom.X && r.Y == firstRoom.Y)).ToList();
 
-            object lockObject = new object();
             ICollection<Point> points = new List<Point>();
             Parallel.ForEach(targets, room =>
             //foreach (var plot in available)
@@ -43,6 +41,46 @@ namespace Day20
             if (points.Any())
             {
                 return points.OrderByDescending(p => p.Distance).FirstOrDefault();
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+
+        // Need to make sure that it uses the /longest/ distance.
+        public static IEnumerable<Point> FindRoomsThroughAtLeastSpecifiedDoorAmount(Building building, Room firstRoom, int roomAmount)
+        {
+            IEnumerable<Room> targets = building.Rooms.Data.Where(r => r != null && !(r.X == firstRoom.X && r.Y == firstRoom.Y)).ToList();
+
+            IList<Point> points = new List<Point>();
+            Parallel.ForEach(targets, room =>
+            //foreach (var plot in available)
+            {
+                var scoredGrid = CalculateDistance(room.X, room.Y, firstRoom.X, firstRoom.Y, building.Rooms);
+
+                //lock (lockObject)
+                //{
+                //  Console.WriteLine($"Room #{room.Id.ToString().PadLeft(2, '0')} ({room.X},{room.Y})");
+                //  GridPrinter.Print(scoredGrid);
+                //}
+
+                // does this need changed to return the firstRoom distance?
+                var targetPoint = scoredGrid.Data.FirstOrDefault(r => r != null && r.X == firstRoom.X && r.Y == firstRoom.Y);
+                if (targetPoint != null)
+                {
+                    lock (lockObject)
+                    {
+                        points.Add(new Point(room.X, room.Y, targetPoint.Distance));
+                    }
+                }
+            });
+            //});
+
+            if (points.Any())
+            {
+                return points.Where(x=>x.Distance >= roomAmount);
             }
             else
             {

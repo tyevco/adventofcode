@@ -1,6 +1,7 @@
 ﻿using Advent.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Day20
 {
@@ -55,23 +56,46 @@ namespace Day20
                 }
             }
 
-            // calculate the distance to the rooms with only 1 entrance
-            var point = PathFinding.FindTargetPoint(building, building.FirstRoom);
+            Console.WriteLine("Which problem to solve? [1] Room with Most Doors, [2] Rooms with at least 1000 doors.");
+            var key = Console.ReadKey();
+            Console.WriteLine();
 
-            if (expected != null)
+            if (key.Key == ConsoleKey.D1)
             {
-                var doorCountMatch = expected.Doors == point.Distance;
-                if (doorCountMatch)
+                // calculate the distance to the rooms with only 1 entrance
+                var point = PathFinding.FindRoomThroughMostDoors(building, building.FirstRoom);
+
+                if (expected != null)
                 {
-                    Console.WriteLine($"{ConsoleCodes.Colorize("Correctly", 0x0a)} matched the expected door count.");
+                    var doorCountMatch = expected.Doors == point.Distance;
+                    if (doorCountMatch)
+                    {
+                        Console.WriteLine($"{ConsoleCodes.Colorize("Correctly", 0x0a)} matched the expected door count.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{ConsoleCodes.Colorize("Incorrectly", 0x4c)} matched the expected door count.");
+                    }
+                }
+
+
+                Console.WriteLine($"Navigated through {point.Distance} doors to ({point.X},{point.Y})");
+            }
+            else if (key.Key == ConsoleKey.D2)
+            {
+                int doorAmount = 1000;
+
+                var points = PathFinding.FindRoomsThroughAtLeastSpecifiedDoorAmount(building, building.FirstRoom, doorAmount);
+
+                if (points != null && points.Any())
+                {
+                    Console.WriteLine($"Found {points.Count()} rooms with at least {doorAmount} doors.");
                 }
                 else
                 {
-                    Console.WriteLine($"{ConsoleCodes.Colorize("Incorrectly", 0x4c)} matched the expected door count.");
+                    Console.WriteLine("No rooms had at least {doorAmount} doors.");
                 }
             }
-
-            Console.WriteLine($"Navigated through {point.Distance} doors to ({point.X},{point.Y})");
         }
     }
 }
