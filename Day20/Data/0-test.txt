@@ -1,1 +1,1 @@
-^WNE(E|N(E|W))$
+^WNE(ESEN|N(E|W|)N)$

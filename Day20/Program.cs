@@ -17,13 +17,29 @@ namespace Day20
         {
             var building = new BuildingParser().ParseData(file);
 
-            Console.WriteLine("Actual:");
+            Console.WriteLine();
+
+            Console.WriteLine(building.Id);
             Console.WriteLine(building);
 
             Console.WriteLine();
 
-            Console.WriteLine("Expected:");
-            Console.WriteLine(building.Expected);
+            var actualOutput = building.GetLayout();
+
+            bool match = false;
+
+            if (building.Expected != null && actualOutput.Length == building.Expected.Length)
+            {
+                match = actualOutput.Equals(building.Expected);
+            }
+
+            Console.WriteLine($"Match: {(match ? ConsoleCodes.Colorize("YES", 0x0a) : ConsoleCodes.Colorize("NO", 0x4c))}");
+
+            if (!match)
+            {
+                Console.WriteLine("Expected:");
+                Console.WriteLine(building.Expected);
+            }
         }
     }
 }

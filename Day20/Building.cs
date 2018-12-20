@@ -24,6 +24,8 @@ namespace Day20
 
         public Room FirstRoom => Rooms[StartX, StartY];
 
+        public string Id { get; set; }
+
         public Room GetRoomAt(int x, int y)
         {
             return Rooms[x, y];
@@ -56,6 +58,7 @@ namespace Day20
         private const int DOOR_COLOR = 0x2e;
         private const int ROOM_COLOR = 0x90;
 
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
@@ -79,27 +82,27 @@ namespace Day20
                         {
                             if (room == null)
                             {
-                                sb.Append(ConsoleCodes.Colorize("##", WALL_COLOR));
+                                sb.Append(ConsoleCodes.Colorize("####", WALL_COLOR));
                                 if (x == right)
                                 {
-                                    sb.Append(ConsoleCodes.Colorize("#", WALL_COLOR));
+                                    sb.Append(ConsoleCodes.Colorize("##", WALL_COLOR));
                                 }
                             }
                             else
                             {
                                 if (room.HasDoorwayTo(Direction.North))
                                 {
-                                    sb.Append(ConsoleCodes.Colorize("#", WALL_COLOR));
-                                    sb.Append(ConsoleCodes.Colorize("-", DOOR_COLOR));
+                                    sb.Append(ConsoleCodes.Colorize("##", WALL_COLOR));
+                                    sb.Append(ConsoleCodes.Colorize("--", DOOR_COLOR));
                                 }
                                 else
                                 {
-                                    sb.Append(ConsoleCodes.Colorize("##", WALL_COLOR));
+                                    sb.Append(ConsoleCodes.Colorize("####", WALL_COLOR));
                                 }
 
                                 if (x == right)
                                 {
-                                    sb.Append(ConsoleCodes.Colorize("#", WALL_COLOR));
+                                    sb.Append(ConsoleCodes.Colorize("##", WALL_COLOR));
                                 }
                             }
                         }
@@ -107,39 +110,135 @@ namespace Day20
                         {
                             if (room == null)
                             {
-                                sb.Append(ConsoleCodes.Colorize("##", WALL_COLOR));
+                                sb.Append(ConsoleCodes.Colorize("####", WALL_COLOR));
                             }
                             else
                             {
                                 if (room.HasDoorwayTo(Direction.West))
-                                    sb.Append(ConsoleCodes.Colorize("|", DOOR_COLOR));
+                                    sb.Append(ConsoleCodes.Colorize("||", DOOR_COLOR));
                                 else
-                                    sb.Append(ConsoleCodes.Colorize("#", WALL_COLOR));
+                                    sb.Append(ConsoleCodes.Colorize("##", WALL_COLOR));
 
 
                                 if (room.X == StartX && room.Y == StartY)
-                                    sb.Append(ConsoleCodes.Colorize("X", START_COLOR));
+                                    sb.Append(ConsoleCodes.Colorize(room.Id.ToString().PadLeft(2, '0'), START_COLOR));
                                 else
-                                    sb.Append(ConsoleCodes.Colorize(".", ROOM_COLOR));
+                                    sb.Append(ConsoleCodes.Colorize(room.Id.ToString().PadLeft(2, '0'), ROOM_COLOR));
                             }
 
                             if (x == right)
                             {
-                                sb.Append(ConsoleCodes.Colorize("#", WALL_COLOR));
+                                sb.Append(ConsoleCodes.Colorize("##", WALL_COLOR));
                             }
                         }
                         else
                         {
-                            sb.Append(ConsoleCodes.Colorize("##", WALL_COLOR));
+                            sb.Append(ConsoleCodes.Colorize("####", WALL_COLOR));
 
                             if (x == right)
                             {
-                                sb.Append(ConsoleCodes.Colorize("#", WALL_COLOR));
+                                sb.Append(ConsoleCodes.Colorize("##", WALL_COLOR));
                             }
                         }
                     }
 
-                    sb.AppendLine();
+                    if (y < bottom || (y == bottom && i < 2))
+                    {
+                        sb.AppendLine();
+                    }
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        public string GetLayout()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            var rooms = Rooms.Data.Where(r => r != null);
+            var left = rooms.Min(r => r.X);
+            var right = rooms.Max(r => r.X);
+            var top = rooms.Min(r => r.Y);
+            var bottom = rooms.Max(r => r.Y);
+
+            for (int y = top; y <= bottom; y++)
+            {
+                int rowCount = y == bottom ? 3 : 2;
+                for (int i = 0; i < rowCount; i++)
+                {
+                    for (int x = left; x <= right; x++)
+                    {
+                        var room = Rooms[x, y];
+
+                        if (i == 0)
+                        {
+                            if (room == null)
+                            {
+                                sb.Append("##");
+                                if (x == right)
+                                {
+                                    sb.Append("#");
+                                }
+                            }
+                            else
+                            {
+                                if (room.HasDoorwayTo(Direction.North))
+                                {
+                                    sb.Append("#");
+                                    sb.Append("-");
+                                }
+                                else
+                                {
+                                    sb.Append("##");
+                                }
+
+                                if (x == right)
+                                {
+                                    sb.Append("#");
+                                }
+                            }
+                        }
+                        else if (i == 1)
+                        {
+                            if (room == null)
+                            {
+                                sb.Append("##");
+                            }
+                            else
+                            {
+                                if (room.HasDoorwayTo(Direction.West))
+                                    sb.Append("|");
+                                else
+                                    sb.Append("#");
+
+
+                                if (room.X == StartX && room.Y == StartY)
+                                    sb.Append("X");
+                                else
+                                    sb.Append(".");
+                            }
+
+                            if (x == right)
+                            {
+                                sb.Append("#");
+                            }
+                        }
+                        else
+                        {
+                            sb.Append("##");
+
+                            if (x == right)
+                            {
+                                sb.Append("#");
+                            }
+                        }
+                    }
+
+                    if (y < bottom || (y == bottom && i < 2))
+                    {
+                        sb.AppendLine();
+                    }
                 }
             }
 

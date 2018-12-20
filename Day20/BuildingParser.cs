@@ -17,13 +17,15 @@ namespace Day20
 
                 Queue<char> roomQueue = new Queue<char>(line);
 
+                building.Id = line;
+
                 Room firstRoom = building.FirstRoom;
 
                 AddRooms(building, firstRoom, roomQueue);
 
                 if (data.Count > 1)
                 {
-                    building.Expected = string.Join("\n", data.Skip(2).Take(data.Count - 2));
+                    building.Expected = string.Join("\r\n", data.Skip(2).Take(data.Count - 2).Select(l=>l.Trim()));
                 }
             }
 
@@ -33,12 +35,14 @@ namespace Day20
         }
 
         //^WNE(E|N(E|W))$
-        private void AddRooms(Building building, Room lastRoom, Queue<char> roomQueue)
+        private char AddRooms(Building building, Room lastRoom, Queue<char> roomQueue)
         {
+            char lastProcessedChildRoom = ' ';
             bool forceReturn = false;
             while (roomQueue.Any() && !forceReturn)
             {
                 var command = roomQueue.Dequeue();
+                lastProcessedChildRoom = command;
 
                 Console.WriteLine(building);
 
@@ -75,18 +79,32 @@ namespace Day20
                         forceReturn = true;
                         break;
                     case '(':
+                        lastRoom.HasSplit = true;
+                        lastProcessedChildRoom = AddRooms(building, lastRoom, roomQueue);
+                        break;
                     case '^':
                     case '$':
                     default:
-                        AddRooms(building, lastRoom, roomQueue);
+                        lastProcessedChildRoom = AddRooms(building, lastRoom, roomQueue);
                         break;
                 }
 
                 if (nextRoom != null)
                 {
-                    AddRooms(building, nextRoom, roomQueue);
+                    lastProcessedChildRoom = AddRooms(building, nextRoom, roomQueue);
+                }
+
+                if (!lastRoom.HasSplit && lastProcessedChildRoom == '|')
+                {
+                    forceReturn = true;
+                }
+                else if (!lastRoom.HasSplit && lastProcessedChildRoom == ')')
+                {
+                    forceReturn = true;
                 }
             }
+
+            return lastProcessedChildRoom;
         }
     }
 }

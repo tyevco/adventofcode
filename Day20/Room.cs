@@ -21,6 +21,7 @@ namespace Day20
         public int X { get; }
         private Building Building { get; }
         public int Id { get; set; }
+        public bool HasSplit { get; set; }
 
         public Room(int x, int y, Building building)
         {
