@@ -40,6 +40,12 @@ namespace Day20
                 Console.WriteLine("Expected:");
                 Console.WriteLine(building.Expected);
             }
+            else
+            {
+                // calculate the distance to the rooms with only 1 entrance
+                var point = PathFinding.FindTargetPoint(building, building.FirstRoom);
+                Console.WriteLine(point);
+            }
         }
     }
 }
