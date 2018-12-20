@@ -26,10 +26,11 @@ namespace Advent.Utilities
             SetConsoleMode(handle, mode | 0x4);
         }
 
+        private int target = 0;
         private IList<string> files;
+
         public string SelectFileFromFolder(string folder)
         {
-            int target = 0;
             files = Directory.GetFiles(folder);
             bool seekFile = true;
 
