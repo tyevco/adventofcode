@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Advent.Utilities.Assembler
 {
@@ -71,34 +72,57 @@ namespace Advent.Utilities.Assembler
             { Commands.CommandList[Commands.EQRR], (r, a, b) => r[a] == r[b] ? 1 : 0 }
         };
 
-        MemoryRegister register;
+        public MemoryRegister Register { get; private set; }
 
-        public MemoryRegister Register => register;
+        private IList<Func<Instruction, MemoryRegister, bool>> InstructionOverrides = new List<Func<Instruction, MemoryRegister, bool>>();
 
-        public Assembler(int registerSize = 4)
+        public Assembler(int registerSize = 4, int instructionPointer = -1)
         {
-            register = new MemoryRegister(registerSize);
+            Register = new MemoryRegister(registerSize);
+            Register.InstructionPointer = instructionPointer;
         }
 
         public void Process(IList<Instruction> instructions)
         {
-            Instruction instruction = instructions[register.InstructionPointer];
+            Instruction instruction = instructions[Register.InstructionPointer];
 
             while (instruction != null)
             {
-                var nextRegister = register.Clone();
+                bool isInstructionOverriden = false;
+                if (InstructionOverrides.Any())
+                {
+                    foreach (var instructionOverride in InstructionOverrides)
+                    {
+                        if (instructionOverride(instruction, Register))
+                        {
+                            isInstructionOverriden = true;
+                            break;
+                        }
+                    }
+                }
 
-                ApplyInstruction(instruction, register, nextRegister);
+                if (!isInstructionOverriden)
+                {
+                    var nextRegister = Register.Clone();
 
-                PrintDebugStatement(instruction, register, nextRegister);
-                register = nextRegister;
+                    ApplyInstruction(instruction, Register, nextRegister);
 
-                register.InstructionPointer++;
-                instruction = instructions[register.InstructionPointer];
+                    PrintDebugStatement(instruction, Register, nextRegister);
+                    Register = nextRegister;
+
+                    Register.InstructionPointer++;
+                }
+
+                instruction = instructions[Register.InstructionPointer];
             }
         }
 
-        public MemoryRegister TestInstruction(Instruction instruction, MemoryRegister register)
+        public void AddInstructionOverride(Func<Instruction, MemoryRegister, bool> overrideFunc)
+        {
+            InstructionOverrides.Add(overrideFunc);
+        }
+
+        public static MemoryRegister TestInstruction(Instruction instruction, MemoryRegister register)
         {
             MemoryRegister clone = register.Clone();
             ApplyInstruction(instruction, register, clone);

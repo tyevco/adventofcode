@@ -4,10 +4,21 @@ namespace Advent.Utilities.Assembler
 {
     public class MemoryRegister
     {
-        int[] register;
+        private int[] register;
 
-        public int InstructionPointer { get; set; }
+        public static int PointerAddress { get; set; }
 
+        public int InstructionPointer
+        {
+            get
+            {
+                return register[PointerAddress];
+            }
+            set
+            {
+                register[PointerAddress] = value;
+            }
+        }
         public MemoryRegister(int size, params int[] registerValues)
         {
             register = new int[size];
