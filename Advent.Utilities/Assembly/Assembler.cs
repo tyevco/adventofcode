@@ -124,6 +124,11 @@ namespace Advent.Utilities.Assembler
             }
         }
 
+        public void SetRegisterValues(params int[] registerValues)
+        {
+            Register.SetRegisterValues(registerValues);
+        }
+
         public void AddInstructionOverride(Func<Instruction, MemoryRegister, bool> overrideFunc)
         {
             InstructionOverrides.Add(overrideFunc);

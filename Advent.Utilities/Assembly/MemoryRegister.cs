@@ -31,6 +31,11 @@ namespace Advent.Utilities.Assembler
         public MemoryRegister(int size, params int[] registerValues)
         {
             register = new int[size];
+            SetRegisterValues(registerValues);
+        }
+
+        public void SetRegisterValues(params int[] registerValues)
+        {
             for (int i = 0; i < registerValues.Length; i++)
             {
                 if (i < register.Length)
