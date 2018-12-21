@@ -144,7 +144,7 @@ namespace Advent.Utilities.Assembler
 
         private static void PrintDebugStatement(Instruction instruction, MemoryRegister register, MemoryRegister nextRegister)
         {
-            Console.WriteLine($"ip={register.InstructionPointer} [{register}] {instruction.Command} {instruction.A} {instruction.B} {instruction.C} [{nextRegister}]");
+            Console.WriteLine($"ip={register.InstructionPointer} [{register}] {Commands.CommandList.FirstOrDefault(c => c.Value == instruction.Command).Key} {instruction.A} {instruction.B} {instruction.C} [{nextRegister}]");
         }
     }
 }
