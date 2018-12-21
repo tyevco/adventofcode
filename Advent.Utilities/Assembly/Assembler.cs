@@ -74,6 +74,8 @@ namespace Advent.Utilities.Assembler
 
         public MemoryRegister Register { get; private set; }
 
+        public int InstructionsExecuted { get; private set; }
+
         private IList<Func<Instruction, MemoryRegister, bool>> InstructionOverrides { get; } = new List<Func<Instruction, MemoryRegister, bool>>();
 
         public Assembler(int registerSize = 4, int? pointerAddress = null)
@@ -103,9 +105,8 @@ namespace Advent.Utilities.Assembler
 
                 if (!isInstructionOverriden)
                 {
-                    var nextRegister = Register.Clone();
-
-                    ApplyInstruction(instruction, Register, nextRegister);
+                    var nextRegister = RunInstruction(instruction, Register);
+                    InstructionsExecuted++;
 
                     PrintDebugStatement(instruction, Register, nextRegister);
                     Register = nextRegister;
@@ -134,16 +135,11 @@ namespace Advent.Utilities.Assembler
             InstructionOverrides.Add(overrideFunc);
         }
 
-        public static MemoryRegister TestInstruction(Instruction instruction, MemoryRegister register)
+        public static MemoryRegister RunInstruction(Instruction instruction, MemoryRegister register)
         {
             MemoryRegister clone = register.Clone();
-            ApplyInstruction(instruction, register, clone);
+            clone[instruction.C] = CommandActions[instruction.Command](register, instruction.A, instruction.B);
             return clone;
-        }
-
-        private static void ApplyInstruction(Instruction instruction, MemoryRegister register, MemoryRegister nextRegister)
-        {
-            nextRegister[instruction.C] = CommandActions[instruction.Command](register, instruction.A, instruction.B);
         }
 
         private static void PrintDebugStatement(Instruction instruction, MemoryRegister register, MemoryRegister nextRegister)
