@@ -6,6 +6,8 @@ namespace Advent.Utilities.Assembler
 {
     public class Assembler
     {
+        public static bool DisplayDebugOutput { get; set; } = false;
+
         public static class Commands
         {
             public const string ADDR = "addr";
@@ -74,7 +76,7 @@ namespace Advent.Utilities.Assembler
 
         public MemoryRegister Register { get; private set; }
 
-        public int InstructionsExecuted { get; private set; }
+        public int InstructionsExecuted { get; set; }
 
         private IList<Func<Instruction, MemoryRegister, bool>> InstructionOverrides { get; } = new List<Func<Instruction, MemoryRegister, bool>>();
 
@@ -86,10 +88,10 @@ namespace Advent.Utilities.Assembler
 
         public void Process(IList<Instruction> instructions)
         {
-            Instruction instruction = instructions[Register.InstructionPointer];
-
-            while (instruction != null)
+            while (Register.InstructionPointer >= 0 && Register.InstructionPointer < instructions.Count)
             {
+                Instruction instruction = instructions[Register.InstructionPointer];
+
                 bool isInstructionOverriden = false;
                 if (InstructionOverrides.Any())
                 {
@@ -108,19 +110,14 @@ namespace Advent.Utilities.Assembler
                     var nextRegister = RunInstruction(instruction, Register);
                     InstructionsExecuted++;
 
-                    PrintDebugStatement(instruction, Register, nextRegister);
+                    if (DisplayDebugOutput)
+                    {
+                        PrintDebugStatement(instruction, Register, nextRegister);
+                    }
+
                     Register = nextRegister;
 
                     Register.InstructionPointer++;
-                }
-
-                if (Register.InstructionPointer < instructions.Count)
-                {
-                    instruction = instructions[Register.InstructionPointer];
-                }
-                else
-                {
-                    instruction = null;
                 }
             }
         }

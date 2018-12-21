@@ -1,6 +1,8 @@
-﻿using System;
-using Advent.Utilities;
+﻿using Advent.Utilities;
 using Advent.Utilities.Assembler;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Day21
 {
@@ -19,24 +21,28 @@ namespace Day21
             (var instructions, int instructionPointer) = new InstructionParser().ParseData(file);
 
             var assembler = new Assembler(6, instructionPointer);
-            assembler.SetRegisterValues(1);
-            //assembler.AddInstructionOverride((i, r) =>
-            //{
-            //    if (r.InstructionPointer == 2 && r[3] != 0)
-            //    {
-            //        if (r[3] % r[5] == 0)
-            //        {
-            //            r[0] += r[5];
-            //        }
-            //        r[2] = 0;
-            //        r[1] = r[3];
-            //        r.InstructionPointer = 12;
+            //assembler.SetRegisterValues(65536);
+            HashSet<int> values = new HashSet<int>();
 
-            //        return true;
-            //    }
+            assembler.AddInstructionOverride((i, r) =>
+            {
+                if (r.InstructionPointer == 28)
+                {
+                    if (values.Contains(r[4]))
+                    {
+                        r.InstructionPointer = 100;
+                        return true;
+                    }
+                    else
+                    {
+                        values.Add(r[4]);
+                    }
+                }
+                return false;
+            });
 
-            //    return false;
-            //});
+            Console.WriteLine($"First Value is: {values.FirstOrDefault()}");
+            Console.WriteLine($"Last Value is: {values.FirstOrDefault()}");
 
             assembler.Process(instructions);
 
