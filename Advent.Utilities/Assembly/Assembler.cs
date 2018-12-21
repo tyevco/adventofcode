@@ -52,7 +52,7 @@ namespace Advent.Utilities.Assembler
             };
         }
 
-        private static readonly IDictionary<int, Func<MemoryRegister, int, int, int>> CommandActions = new Dictionary<int, Func<MemoryRegister, int, int, int>>()
+        private static IDictionary<int, Func<MemoryRegister, int, int, int>> CommandActions { get; } = new Dictionary<int, Func<MemoryRegister, int, int, int>>()
         {
             { Commands.CommandList[Commands.ADDR], (r, a, b) => r[a] + r[b] },
             { Commands.CommandList[Commands.ADDI], (r, a, b) => r[a] + b },
@@ -74,12 +74,12 @@ namespace Advent.Utilities.Assembler
 
         public MemoryRegister Register { get; private set; }
 
-        private IList<Func<Instruction, MemoryRegister, bool>> InstructionOverrides = new List<Func<Instruction, MemoryRegister, bool>>();
+        private IList<Func<Instruction, MemoryRegister, bool>> InstructionOverrides { get; } = new List<Func<Instruction, MemoryRegister, bool>>();
 
-        public Assembler(int registerSize = 4, int instructionPointer = -1)
+        public Assembler(int registerSize = 4, int? pointerAddress = null)
         {
             Register = new MemoryRegister(registerSize);
-            Register.InstructionPointer = instructionPointer;
+            MemoryRegister.PointerAddress = pointerAddress;
         }
 
         public void Process(IList<Instruction> instructions)
@@ -113,7 +113,14 @@ namespace Advent.Utilities.Assembler
                     Register.InstructionPointer++;
                 }
 
-                instruction = instructions[Register.InstructionPointer];
+                if (Register.InstructionPointer < instructions.Count)
+                {
+                    instruction = instructions[Register.InstructionPointer];
+                }
+                else
+                {
+                    instruction = null;
+                }
             }
         }
 

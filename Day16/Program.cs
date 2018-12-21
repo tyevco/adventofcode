@@ -64,7 +64,7 @@ namespace Day16
                 {
                     var testInstruction = new Instruction(command.Value, instruction.A, instruction.B, instruction.C);
 
-                    var after = assembler.TestInstruction(testInstruction, sample.Before);
+                    var after = Assembler.TestInstruction(testInstruction, sample.Before);
                     if (after.Equals(sample.After))
                     {
                         sampleMatchCount++;

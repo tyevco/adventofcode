@@ -6,17 +6,26 @@ namespace Advent.Utilities.Assembler
     {
         private int[] register;
 
-        public static int PointerAddress { get; set; }
+        public static int? PointerAddress { get; set; } = null;
+
+        private int instructionPointer { get; set; }
 
         public int InstructionPointer
         {
             get
             {
-                return register[PointerAddress];
+                if (PointerAddress == null || !PointerAddress.HasValue)
+                    return instructionPointer;
+                else
+                    return register[PointerAddress.Value];
             }
             set
             {
-                register[PointerAddress] = value;
+                if (PointerAddress == null || !PointerAddress.HasValue)
+                    instructionPointer = value;
+                else
+                    register[PointerAddress.Value] = value;
+
             }
         }
         public MemoryRegister(int size, params int[] registerValues)
