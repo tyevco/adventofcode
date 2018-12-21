@@ -1,7 +1,6 @@
 ﻿using Advent.Utilities.Data;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Day20
 {
@@ -14,95 +13,37 @@ namespace Day20
         {
             IEnumerable<Room> targets = building.Rooms.Data.Where(r => r != null && r.DoorCount == 1 && !(r.X == firstRoom.X && r.Y == firstRoom.Y)).ToList();
 
-            ICollection<Point> points = new List<Point>();
-            Parallel.ForEach(targets, room =>
-            //foreach (var plot in available)
-            {
-                var scoredGrid = CalculateDistance(room.X, room.Y, firstRoom.X, firstRoom.Y, building.Rooms);
+            var scoredList = CalculateDistance(firstRoom.X, firstRoom.Y, building.Rooms).Data.Where(r => r != null);
+            var targetPoint = scoredList.Where(r => targets.Any(t => t.X == r.X && t.Y == r.Y)).OrderByDescending(r => r.Distance).FirstOrDefault();
 
-                //lock (lockObject)
-                //{
-                //  Console.WriteLine($"Room #{room.Id.ToString().PadLeft(2, '0')} ({room.X},{room.Y})");
-                //  GridPrinter.Print(scoredGrid);
-                //}
-
-                // does this need changed to return the firstRoom distance?
-                var targetPoint = scoredGrid.Data.FirstOrDefault(r => r != null && r.X == firstRoom.X && r.Y == firstRoom.Y);
-                if (targetPoint != null)
-                {
-                    lock (lockObject)
-                    {
-                        points.Add(new Point(room.X, room.Y, targetPoint.Distance));
-                    }
-                }
-            });
-            //});
-
-            if (points.Any())
-            {
-                return points.OrderByDescending(p => p.Distance).FirstOrDefault();
-            }
-            else
-            {
-                return null;
-            }
+            return targetPoint;
         }
-
 
         // Need to make sure that it uses the /longest/ distance.
         public static IEnumerable<Point> FindRoomsThroughAtLeastSpecifiedDoorAmount(Building building, Room firstRoom, int roomAmount)
         {
-            IEnumerable<Room> targets = building.Rooms.Data.Where(r => r != null && !(r.X == firstRoom.X && r.Y == firstRoom.Y)).ToList();
-
             IList<Point> points = new List<Point>();
-            Parallel.ForEach(targets, room =>
-            //foreach (var plot in available)
-            {
-                var scoredGrid = CalculateDistance(room.X, room.Y, firstRoom.X, firstRoom.Y, building.Rooms);
 
-                //lock (lockObject)
-                //{
-                //  Console.WriteLine($"Room #{room.Id.ToString().PadLeft(2, '0')} ({room.X},{room.Y})");
-                //  GridPrinter.Print(scoredGrid);
-                //}
+            var scoredList = CalculateDistance(firstRoom.X, firstRoom.Y, building.Rooms).Data.Where(r => r != null);
 
-                // does this need changed to return the firstRoom distance?
-                var targetPoint = scoredGrid.Data.FirstOrDefault(r => r != null && r.X == firstRoom.X && r.Y == firstRoom.Y);
-                if (targetPoint != null)
-                {
-                    lock (lockObject)
-                    {
-                        points.Add(new Point(room.X, room.Y, targetPoint.Distance));
-                    }
-                }
-            });
-            //});
-
-            if (points.Any())
-            {
-                return points.Where(x => x.Distance >= roomAmount);
-            }
-            else
-            {
-                return null;
-            }
+            return scoredList.Where(r => r.Distance >= roomAmount);
         }
 
-        private static Grid<Point> CalculateDistance(int x, int y, int targetX, int targetY, Grid<Room> rooms)
+        private static Grid<Point> CalculateDistance(int x, int y, Grid<Room> rooms)
         {
             int distance = 0;
             Grid<Point> FinishedPoints = new Grid<Point>(rooms.Width, rooms.Height);
             Queue<Point> PointsToProcess = new Queue<Point>();
             PointsToProcess.Enqueue(new Point(x, y, distance));
-            bool finished = false;
-            while (!finished)
+
+            while (true)
             {
                 distance++;
 
                 Queue<Point> nextQueue = new Queue<Point>();
                 Point point = PointsToProcess.Dequeue();
 
-                while (point != null && !finished)
+                while (point != null)
                 {
                     if (point.X > 0)
                     {
@@ -143,11 +84,6 @@ namespace Day20
                     if (FinishedPoints[point.X, point.Y] == null)
                     {
                         FinishedPoints[point.X, point.Y] = point;
-
-                        if (point.X == targetX && point.Y == targetY)
-                        {
-                            finished = true;
-                        }
                     }
 
                     if (PointsToProcess.Any())
@@ -170,6 +106,8 @@ namespace Day20
                     PointsToProcess = nextQueue;
                 }
             }
+
+            GridPrinter.Print(FinishedPoints);
 
             return FinishedPoints;
         }
