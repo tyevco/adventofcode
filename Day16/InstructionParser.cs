@@ -1,20 +1,21 @@
 ﻿using Advent.Utilities;
+using Advent.Utilities.Assembler;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Day16
 {
-    public class InstructionParser : DataParser<AssemblerInstructions>
+    public class InstructionParser : DataParser<(IList<Instruction>, IList<Sample>)>
     {
         Regex instructionLine = new Regex("([0-9]+) ([0-9]+) ([0-9]+) ([0-9]+)");
 
         Regex sampleLine = new Regex(@"(?:Before|After): ? \[([0-9]+), ([0-9]+), ([0-9]+), ([0-9]+)\]");
 
-        protected override AssemblerInstructions DeserializeData(IList<string> data)
+        protected override (IList<Instruction>, IList<Sample>) DeserializeData(IList<string> data)
         {
-            AssemblerInstructions instructions = new AssemblerInstructions();
+            IList<Instruction> instructions = new List<Instruction>();
+            IList<Sample> samples = new List<Sample>();
 
             bool secondHalf = false;
             int newLineCount = 0;
@@ -55,13 +56,7 @@ namespace Day16
                         else if (count == 1)
                         {
                             var match = instructionLine.Match(line);
-                            sample.Instruction = new Instruction
-                            {
-                                Command = int.Parse(match.Groups[1].Value),
-                                A = int.Parse(match.Groups[2].Value),
-                                B = int.Parse(match.Groups[3].Value),
-                                C = int.Parse(match.Groups[4].Value)
-                            };
+                            sample.Instruction = new Instruction(int.Parse(match.Groups[1].Value), int.Parse(match.Groups[2].Value), int.Parse(match.Groups[3].Value), int.Parse(match.Groups[4].Value));
                             count++;
                         }
                         else
@@ -74,7 +69,7 @@ namespace Day16
                                 int.Parse(match.Groups[3].Value),
                                 int.Parse(match.Groups[4].Value));
 
-                            instructions.AddSample(sample);
+                            samples.Add(sample);
                             sample = new Sample();
                             count = 0;
                         }
@@ -82,11 +77,8 @@ namespace Day16
                     else
                     {
                         var instructionLineMatch = instructionLine.Match(line);
-                        instructions.AddInstruction(
-                             int.Parse(instructionLineMatch.Groups[1].Value),
-                            int.Parse(instructionLineMatch.Groups[2].Value),
-                            int.Parse(instructionLineMatch.Groups[3].Value),
-                            int.Parse(instructionLineMatch.Groups[4].Value)
+                        instructions.Add(
+                            new Instruction(int.Parse(instructionLineMatch.Groups[1].Value), int.Parse(instructionLineMatch.Groups[2].Value), int.Parse(instructionLineMatch.Groups[3].Value), int.Parse(instructionLineMatch.Groups[4].Value))
                             );
                     }
                 }
@@ -96,7 +88,7 @@ namespace Day16
                 throw ex;
             }
 
-            return instructions;
+            return (instructions, samples);
         }
     }
 }

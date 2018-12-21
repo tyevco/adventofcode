@@ -1,4 +1,4 @@
-﻿namespace Day16
+﻿namespace Advent.Utilities.Assembler
 {
     public class Instruction
     {
@@ -8,15 +8,17 @@
         public int B { get; internal set; }
         public int C { get; internal set; }
 
+        public Instruction(int Command, int A, int B, int C)
+        {
+            this.Command = Command;
+            this.A = A;
+            this.B = B;
+            this.C = C;
+        }
+
         public Instruction Clone()
         {
-            return new Instruction
-            {
-                Command = Command,
-                A = A,
-                B = B,
-                C = C
-            };
+            return new Instruction(Command, A, B, C);
         }
 
         public override string ToString()

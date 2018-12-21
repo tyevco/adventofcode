@@ -1,4 +1,6 @@
-﻿namespace Day16
+﻿using Advent.Utilities.Assembler;
+
+namespace Day16
 {
     public class Sample
     {

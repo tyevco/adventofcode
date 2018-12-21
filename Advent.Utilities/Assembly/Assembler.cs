@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Day16
+namespace Advent.Utilities.Assembler
 {
     public class Assembler
     {
@@ -75,12 +75,12 @@ namespace Day16
 
         public MemoryRegister Register => register;
 
-        public Assembler()
+        public Assembler(int registerSize = 4)
         {
-            register = new MemoryRegister(4);
+            register = new MemoryRegister(registerSize);
         }
 
-        public void Process(AssemblerInstructions instructions)
+        public void Process(IList<Instruction> instructions)
         {
             Instruction instruction = instructions[register.InstructionPointer];
 

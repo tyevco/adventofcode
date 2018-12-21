@@ -1,4 +1,5 @@
 ﻿using Advent.Utilities;
+using Advent.Utilities.Assembler;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace Day16
 
         protected override void Execute(string file)
         {
-            var instructions = new InstructionParser().ParseData(file);
+            (IList<Instruction> instructions, IList<Sample> samples) = new InstructionParser().ParseData(file);
 
             Console.WriteLine("Press 1 to run compare, 2 to run evaluation.");
 
@@ -27,7 +28,7 @@ namespace Day16
 
             if (partInfo.Key == ConsoleKey.D1)
             {
-                RunCompare(instructions);
+                RunCompare(instructions, samples);
             }
             else if (partInfo.Key == ConsoleKey.D2)
             {
@@ -35,7 +36,7 @@ namespace Day16
             }
         }
 
-        private void RunCompare(AssemblerInstructions instructions)
+        private void RunCompare(IList<Instruction> instructions, IList<Sample> samples)
         {
             Console.WriteLine("Running compare...");
             Assembler assembler = new Assembler();
@@ -43,7 +44,7 @@ namespace Day16
 
             IDictionary<int, IList<(string, bool)>> OpResults = new Dictionary<int, IList<(string, bool)>>();
 
-            foreach (var sample in instructions.Samples)
+            foreach (var sample in samples)
             {
                 int sampleMatchCount = 0;
 
@@ -61,8 +62,9 @@ namespace Day16
 
                 foreach (var command in Assembler.Commands.CommandList)
                 {
-                    instruction.Command = command.Value;
-                    var after = assembler.TestInstruction(instruction, sample.Before);
+                    var testInstruction = new Instruction(command.Value, instruction.A, instruction.B, instruction.C);
+
+                    var after = assembler.TestInstruction(testInstruction, sample.Before);
                     if (after.Equals(sample.After))
                     {
                         sampleMatchCount++;
@@ -92,7 +94,7 @@ namespace Day16
             Console.WriteLine($"{totalMatchCount} samples matched 3 or more operations.");
         }
 
-        private void RunEvaluation(AssemblerInstructions instructions)
+        private void RunEvaluation(IList<Instruction> instructions)
         {
             Console.WriteLine("Running evaluation...");
 
