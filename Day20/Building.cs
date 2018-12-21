@@ -17,7 +17,7 @@ namespace Day20
             Rooms = new Grid<Room>(150, 150);
             StartX = (Rooms.Width / 2) - 1;
             StartY = (Rooms.Height / 2) - 1;
-            AddRoom(new Room(StartX, StartY, this));
+            AddRoom(new Room(StartX, StartY, this, 0));
         }
 
         public Room FirstRoom => Rooms[StartX, StartY];
@@ -35,7 +35,7 @@ namespace Day20
             Rooms[room.X, room.Y] = room;
         }
 
-        public Room GetOrCreateRoomAt(int x, int y)
+        public Room GetOrCreateRoomAt(int x, int y, int numOfDoors)
         {
             Room room;
             if (Rooms[x, y] != null)
@@ -44,7 +44,7 @@ namespace Day20
             }
             else
             {
-                room = new Room(x, y, this);
+                room = new Room(x, y, this, numOfDoors);
                 AddRoom(room);
             }
 
@@ -121,9 +121,9 @@ namespace Day20
 
 
                                 if (room.X == StartX && room.Y == StartY)
-                                    sb.Append(ConsoleCodes.Colorize(room.Id.ToString().PadLeft(padding, '0'), START_COLOR));
+                                    sb.Append(ConsoleCodes.Colorize(room.DoorsNavigated.ToString().PadLeft(padding, '0'), START_COLOR));
                                 else
-                                    sb.Append(ConsoleCodes.Colorize(room.Id.ToString().PadLeft(padding, '0'), ROOM_COLOR));
+                                    sb.Append(ConsoleCodes.Colorize(room.DoorsNavigated.ToString().PadLeft(padding, '0'), ROOM_COLOR));
                             }
 
                             if (x == right)

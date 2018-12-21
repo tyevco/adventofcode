@@ -65,11 +65,11 @@ namespace Day20
             if (key.Key == ConsoleKey.D1)
             {
                 // calculate the distance to the rooms with only 1 entrance
-                var point = PathFinding.FindRoomThroughMostDoors(building, building.FirstRoom);
+                var point = building.Rooms.Data.Where(r => r != null && r.DoorCount == 1).OrderByDescending(r => r.DoorsNavigated).FirstOrDefault();
 
                 if (expected != null)
                 {
-                    var doorCountMatch = expected.Doors == point.Distance;
+                    var doorCountMatch = expected.Doors == point.DoorsNavigated;
                     if (doorCountMatch)
                     {
                         Console.WriteLine($"{ConsoleCodes.Colorize("Correctly", 0x0a)} matched the expected door count.");
@@ -81,13 +81,13 @@ namespace Day20
                 }
 
 
-                Console.WriteLine($"Navigated through {point.Distance} doors to ({point.X},{point.Y})");
+                Console.WriteLine($"Navigated through {point.DoorsNavigated} doors to ({point.X},{point.Y})");
             }
             else if (key.Key == ConsoleKey.D2)
             {
                 int doorAmount = 1000;
 
-                var points = PathFinding.FindRoomsThroughAtLeastSpecifiedDoorAmount(building, building.FirstRoom, doorAmount);
+                var points = building.Rooms.Data.Where(r => r != null && r.DoorsNavigated >= doorAmount);
 
                 if (points != null && points.Any())
                 {

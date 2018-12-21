@@ -25,12 +25,14 @@ namespace Day20
         public bool HasSplit { get; set; }
         public int DoorCount => Doorways.Count(d => d.Value);
 
+        public int DoorsNavigated { get; private set; }
 
-        public Room(int x, int y, Building building)
+        public Room(int x, int y, Building building, int doorsNavigated)
         {
             X = x;
             Y = y;
             Building = building;
+            DoorsNavigated = doorsNavigated;
         }
 
         public bool HasDoorwayTo(Direction direction)
