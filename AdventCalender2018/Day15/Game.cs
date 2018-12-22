@@ -139,7 +139,7 @@ namespace Day15
 
         private Point FindPath(Entity entity, IEnumerable<Entity> entities)
         {
-            return Path.FindTargetPoint(Map, entities, entity);
+            return Pathfinding.FindTargetPoint(Map, entities, entity);
         }
     }
 }

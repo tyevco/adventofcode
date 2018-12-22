@@ -1,20 +1,12 @@
 ﻿using Advent.Utilities.Data;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Day15
 {
-    public class Path
+    public static class Pathfinding
     {
-        public Map Map { get; }
-
-        private Path(Map map)
-        {
-            Map = map;
-        }
-
         public static Point FindTargetPoint(Map map, IEnumerable<Entity> entities, Entity entity)
         {
             ICollection<Plot> available = new List<Plot>();
@@ -68,8 +60,7 @@ namespace Day15
             Parallel.ForEach(available, plot =>
             //foreach (var plot in available)
             {
-                var path = new Path(map);
-                var queuedPoints = path.CalculateDistance(plot.X, plot.Y, entity.X, entity.Y, entities, entity);
+                var queuedPoints = CalculateDistance(plot.X, plot.Y, map, entities, entity);
 
                 var closePoints = GetPointsClosestTo(queuedPoints, entity.X, entity.Y);
                 if (closePoints.Any())
@@ -98,9 +89,9 @@ namespace Day15
             return new List<Point> { points[x - 1, y], points[x + 1, y], points[x, y - 1], points[x, y + 1] }.Where(p => p != null);
         }
 
-        private Grid<Point> CalculateDistance(int x, int y, int targetX, int targetY, IEnumerable<Entity> entities, Entity entity)
+        private static Grid<Point> CalculateDistance(int x, int y, Map map, IEnumerable<Entity> entities, Entity entity)
         {
-            Grid<Point> FinishedPoints = new Grid<Point>(Map.Width, Map.Height);
+            Grid<Point> FinishedPoints = new Grid<Point>(map.Width, map.Height);
             Queue<Point> PointsToProcess = new Queue<Point>();
             PointsToProcess.Enqueue(new Point(x, y, 0));
 
@@ -113,10 +104,10 @@ namespace Day15
                 Point point = PointsToProcess.Dequeue();
                 while (point != null)
                 {
-                    TryAddPoint(FinishedPoints, nextQueue, point.X - 1, point.Y, distance, Map, entities, entity);
-                    TryAddPoint(FinishedPoints, nextQueue, point.X + 1, point.Y, distance, Map, entities, entity);
-                    TryAddPoint(FinishedPoints, nextQueue, point.X, point.Y - 1, distance, Map, entities, entity);
-                    TryAddPoint(FinishedPoints, nextQueue, point.X, point.Y + 1, distance, Map, entities, entity);
+                    TryAddPoint(FinishedPoints, nextQueue, point.X - 1, point.Y, distance, map, entities, entity);
+                    TryAddPoint(FinishedPoints, nextQueue, point.X + 1, point.Y, distance, map, entities, entity);
+                    TryAddPoint(FinishedPoints, nextQueue, point.X, point.Y - 1, distance, map, entities, entity);
+                    TryAddPoint(FinishedPoints, nextQueue, point.X, point.Y + 1, distance, map, entities, entity);
 
                     if (FinishedPoints[point.X, point.Y] == null)
                         FinishedPoints[point.X, point.Y] = point;
