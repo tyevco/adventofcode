@@ -1,5 +1,5 @@
-﻿using System;
-using Advent.Utilities;
+﻿using Advent.Utilities;
+using System;
 
 namespace Day22
 {
@@ -24,8 +24,15 @@ namespace Day22
             if (actualCave.Equals(expectedLayout))
             {
                 Console.WriteLine($"The cave layouts matched!");
+            }
 
-                Console.WriteLine($"The risk level {(cave.RiskLevel == riskLevel ? "matches" : "does not match")}.");
+            if (riskLevel > 0)
+            {
+                Console.WriteLine($"The risk level [{cave.RiskLevel}] {(cave.RiskLevel == riskLevel ? "matches" : "does not match")}.");
+            }
+            else
+            {
+                Console.WriteLine($"The risk level is {(cave.RiskLevel)}.");
             }
         }
     }

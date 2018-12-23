@@ -26,13 +26,19 @@ namespace Day22
                 if (data.Count > 2)
                 {
                     risk = int.Parse(riskRegex.Match(data[2]).Groups[1].Value);
+                }
 
+                if (data.Count > 3)
+                {
                     expected = string.Join("\r\n", data.Skip(3).Take(data.Count - 3));
                 }
 
                 // build cave
-                cave = new Cave(targetX + 5, targetY + 5, depth);
-                cave.TargetPosition = (targetX, targetY);
+                cave = new Cave(targetX + 5 + 1, targetY + 5 + 1, depth)
+                {
+                    TargetPosition = (targetX, targetY)
+                };
+
                 for (int y = 0; y < cave.Height; y++)
                 {
                     for (int x = 0; x < cave.Width; x++)

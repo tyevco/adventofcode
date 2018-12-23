@@ -1,4 +1,5 @@
 ﻿using Advent.Utilities.Data;
+using System;
 using System.Text;
 
 namespace Day22
@@ -17,9 +18,9 @@ namespace Day22
             get
             {
                 int riskLevel = 0;
-                for (int y = 0; y < Height; y++)
+                for (int y = 0; y < Math.Min(Height, TargetPosition.Item2 + 1); y++)
                 {
-                    for (int x = 0; x < Width; x++)
+                    for (int x = 0; x < Math.Min(Width, TargetPosition.Item1 + 1); x++)
                     {
                         riskLevel += (int)Regions[x, y].Type;
                     }
