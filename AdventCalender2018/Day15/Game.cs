@@ -24,13 +24,13 @@ namespace Day15
         {
             var entities = Entities.Where(e => e.Health > 0).OrderBy(e => e.X + (e.Y * Map.Width));
             bool roundOverEarly = false;
-            //var roundStart = DateTime.Now;
+            var roundStart = DateTime.Now;
 
             foreach (var entity in entities)
             {
                 if (entity.Health > 0)
                 {
-                    //var entityStart = DateTime.Now;
+                    var entityStart = DateTime.Now;
 
                     if (entities.Any(e => e.Type != entity.Type))
                     {
@@ -79,16 +79,16 @@ namespace Day15
                     {
                         roundOverEarly = true;
                     }
-                    //var entityEnd = DateTime.Now;
+                    var entityEnd = DateTime.Now;
 
-                    //System.Diagnostics.Debug.WriteLine($"{entity.Type} {entity.Id} complete, took {(entityEnd - entityStart).Milliseconds}ms.");
+                    System.Diagnostics.Debug.WriteLine($"{entity.Type} {entity.Id} complete, took {(entityEnd - entityStart).Milliseconds}ms.");
                 }
                 //System.Diagnostics.Debug.WriteLine(Map);
             }
 
-            //            var roundEnd = DateTime.Now;
+            var roundEnd = DateTime.Now;
 
-            //System.Diagnostics.Debug.WriteLine($"Round complete, took {(roundEnd - roundStart).Milliseconds}ms.");
+            System.Diagnostics.Debug.WriteLine($"Round complete, took {(roundEnd - roundStart).Milliseconds}ms.");
 
             if (!roundOverEarly)
             {

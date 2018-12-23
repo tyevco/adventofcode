@@ -9,8 +9,4 @@
     <ProjectReference Include="..\..\Advent.Utilities\Advent.Utilities.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Data\" />
-  </ItemGroup>
-
 </Project>
