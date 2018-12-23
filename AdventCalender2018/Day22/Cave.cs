@@ -22,7 +22,8 @@ namespace Day22
                 {
                     for (int x = 0; x < Math.Min(Width, TargetPosition.Item1 + 1); x++)
                     {
-                        riskLevel += (int)Regions[x, y].Type;
+                        if (!(x == TargetPosition.Item1 && y == TargetPosition.Item2))
+                            riskLevel += (int)Regions[x, y].Type;
                     }
                 }
 
