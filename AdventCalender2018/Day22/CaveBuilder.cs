@@ -48,6 +48,10 @@ namespace Day22
                         {
                             geologicalIndex = 0;
                         }
+                        else if (targetX == x && targetY == y)
+                        {
+                            geologicalIndex = 0;
+                        }
                         else if (x == 0)
                         {
                             geologicalIndex = y * 48271;

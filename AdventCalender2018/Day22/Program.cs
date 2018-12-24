@@ -24,6 +24,9 @@ namespace Day22
             if (actualCave.Equals(expectedLayout))
             {
                 Console.WriteLine($"The cave layouts matched!");
+            } else
+            {
+                Console.WriteLine("The cave layouts do not match.");
             }
 
             if (riskLevel > 0)

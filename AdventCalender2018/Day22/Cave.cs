@@ -72,7 +72,8 @@ namespace Day22
                     }
                 }
 
-                sb.AppendLine();
+                if (y < Height - 1)
+                    sb.AppendLine();
             }
 
             return sb.ToString();
