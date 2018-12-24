@@ -11,6 +11,8 @@ namespace Day24
         public int AttackPower { get; set; }
         public DamageType AttackType { get; set; }
         public int Initiative { get; set; }
+        public int EffectivePower => AttackPower * Units;
+
         public ISet<DamageType> Weaknesses { get; } = new HashSet<DamageType>();
         public ISet<DamageType> Immunities { get; } = new HashSet<DamageType>();
 
