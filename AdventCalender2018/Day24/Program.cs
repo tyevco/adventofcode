@@ -15,7 +15,13 @@ namespace Day24
 
         protected override void Execute(string file)
         {
-            
+            var squads = new SquadParser().ParseData(file);
+
+            foreach (var squad in squads)
+            {
+                Console.WriteLine(squad);
+            }
+
         }
     }
 }
