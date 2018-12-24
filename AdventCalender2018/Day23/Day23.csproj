@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="z3x64win" Version="4.5.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Advent.Utilities\Advent.Utilities.csproj" />
   </ItemGroup>
 
