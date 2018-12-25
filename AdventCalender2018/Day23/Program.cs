@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Z3;
 
 namespace Day23
 {
@@ -23,9 +22,13 @@ namespace Day23
             var botStrengthQueue = new Queue<NanoBot>(bots.OrderByDescending(b => b.R));
             var strongestSignalBot = botStrengthQueue.FirstOrDefault();
             int count = 0;
-            int avgX = strongestSignalBot.X;
-            int avgY = strongestSignalBot.Y;
-            int avgZ = strongestSignalBot.Z;
+
+            int minX = strongestSignalBot.X;
+            int maxX = strongestSignalBot.X;
+            int minY = strongestSignalBot.Y;
+            int maxY = strongestSignalBot.Y;
+            int minZ = strongestSignalBot.Z;
+            int maxZ = strongestSignalBot.Z;
 
             while (botStrengthQueue.Any())
             {
@@ -33,68 +36,43 @@ namespace Day23
 
                 var distance = bot.DistanceTo(strongestSignalBot.X, strongestSignalBot.Y, strongestSignalBot.Z);
 
+                if (minX > bot.X)
+                    minX = bot.X;
+
+                if (maxX < bot.X)
+                    maxX = bot.X;
+
+                if (minY > bot.Y)
+                    minY = bot.Y;
+
+                if (maxY < bot.Y)
+                    maxY = bot.Y;
+
+                if (minZ > bot.Z)
+                    minZ = bot.Z;
+
+                if (maxZ < bot.Z)
+                    maxZ = bot.Z;
+
                 if (distance <= strongestSignalBot.R)
                 {
-                    avgX += bot.X / 2;
-                    avgY += bot.Y / 2;
-                    avgZ += bot.Z / 2;
                     count++;
                 }
             }
-            
-            Z3
+
+            OctTree overall = new OctTree(minX, minY, minZ, maxX, maxY, maxZ);
 
             Console.WriteLine($"There are {count} bots in range.");
-            
-            //IList<(int, int, int)> seekPoints = new List<(int, int, int)>();
-            //// mutate to all points within manhatten distance of a bot
-            //foreach (var point in startingPoints)
-            //{
-            //    Console.WriteLine($"Mutating points to test: {point.Item1},{point.Item2},{point.Item3}");
-            //    foreach (var bot in bots)
-            //    {
-            //        var ps = new (int, int, int)[] {
-            //            (point.Item1 + bot.R, point.Item2, point.Item3),
-            //            (point.Item1 - bot.R, point.Item2, point.Item3),
-            //            (point.Item1, point.Item2 + bot.R, point.Item3),
-            //            (point.Item1, point.Item2 - bot.R, point.Item3),
-            //            (point.Item1, point.Item2, point.Item3 + bot.R),
-            //            (point.Item1, point.Item2, point.Item3 - bot.R)
-            //        };
 
-            //        foreach (var p in ps)
-            //        {
-            //            if (!seekPoints.Any(s => s.Item1 == p.Item1 && s.Item2 == p.Item2 && s.Item3 == p.Item3))
-            //            {
-            //                seekPoints.Add(p);
-            //            }
-            //        }
-            //    }
-            //}
+            SearchOctTree(overall, bots);
+        }
 
-            //IList<(int, int, int, int)> finalCounts = new List<(int, int, int, int)>();
+        private static void SearchOctTree(OctTree tree, IList<NanoBot> bots)
+        {
+            IList<OctTree> searchRegions = new List<OctTree>();
 
-            //foreach (var point in seekPoints)
-            //{
-            //    int botsInRange = 0;
 
-            //    foreach (var bot in bots)
-            //    {
-            //        if (bot.DistanceTo(point.Item1, point.Item2, point.Item3) <= bot.R)
-            //        {
-            //            botsInRange++;
-            //        }
-            //    }
-
-            //    finalCounts.Add((point.Item1, point.Item2, point.Item3, botsInRange));
-            //}
-
-            //var ordered = finalCounts.OrderByDescending(p => p.Item4).ThenBy(p => Math.Abs(p.Item1) + Math.Abs(p.Item2) + Math.Abs(p.Item3));
-
-            //foreach (var point in ordered)
-            //{
-            //    Console.WriteLine($"Point tested: {point.Item1},{point.Item2},{point.Item3} has {point.Item4} bots in range, with distance from origin: {Math.Abs(point.Item1) + Math.Abs(point.Item2) + Math.Abs(point.Item3)}.");
-            //}
+            //tree.UNE;
         }
     }
 }

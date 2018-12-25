@@ -15,6 +15,8 @@ namespace Day23
         public int MidY => (MaximumY + MinimumY) / 2;
         public int MidZ => (MaximumZ + MinimumZ) / 2;
 
+        public int Volume => (MaximumX - MinimumX) * (MaximumY - MinimumY) * (MaximumZ - MinimumZ);
+
         public OctTree UNE => GetOrCreate(Region.UNE);
         public OctTree UNW => GetOrCreate(Region.UNW);
         public OctTree USE => GetOrCreate(Region.USE);
@@ -45,55 +47,65 @@ namespace Day23
 
         private OctTree GetOrCreate(Region region)
         {
-            OctTree tree;
-            if (RegionMap.ContainsKey(region))
-            {
-                tree = RegionMap[region];
-            }
-            else
-            {
-                int minX, minY, minZ, maxX, maxY, maxZ;
-                int midX = MidX, midY = MidY, midZ = MidZ;
+            OctTree tree = null;
 
-                switch (region)
+            if (Volume > 1)
+            {
+                if (RegionMap.ContainsKey(region))
                 {
-                    default:
-                    case Region.UNE:
-                        minX = midX; minY = midY; minZ = midZ;
-                        maxX = MaximumX; maxY = MaximumY; maxZ = MaximumZ;
-                        break;
-                    case Region.UNW:
-                        minX = MinimumX; minY = midY; minZ = midZ;
-                        maxX = midX; maxY = MaximumY; maxZ = MaximumZ;
-                        break;
-                    case Region.USE:
-                        minX = midX; minY = MinimumY; minZ = midZ;
-                        maxX = MaximumX; maxY = midY; maxZ = MaximumZ;
-                        break;
-                    case Region.USW:
-                        minX = MinimumX; minY = MinimumY; minZ = midZ;
-                        maxX = midX; maxY = midY; maxZ = MaximumZ;
-                        break;
-                    case Region.LNE:
-                        minX = midX; minY = midY; minZ = MinimumZ;
-                        maxX = MaximumX; maxY = MaximumY; maxZ = midZ;
-                        break;
-                    case Region.LNW:
-                        minX = MinimumX; minY = midY; minZ = MinimumZ;
-                        maxX = midX; maxY = MaximumY; maxZ = midZ;
-                        break;
-                    case Region.LSE:
-                        minX = midX; minY = MinimumY; minZ = MinimumZ;
-                        maxX = MaximumX; maxY = midY; maxZ = midZ;
-                        break;
-                    case Region.LSW:
-                        minX = MinimumX; minY = MinimumY; minZ = MinimumZ;
-                        maxX = midX; maxY = midY; maxZ = midZ;
-                        break;
+                    tree = RegionMap[region];
                 }
+                else
+                {
+                    int minX, minY, minZ, maxX, maxY, maxZ;
+                    int midX = MidX, midY = MidY, midZ = MidZ;
 
-                tree = new OctTree(minX, minY, minZ, maxX, maxY, maxZ);
-                RegionMap.Add(region, tree);
+                    switch (region)
+                    {
+                        default:
+                        case Region.UNE:
+                            minX = midX; minY = midY; minZ = midZ;
+                            maxX = MaximumX; maxY = MaximumY; maxZ = MaximumZ;
+                            break;
+                        case Region.UNW:
+                            minX = MinimumX; minY = midY; minZ = midZ;
+                            maxX = midX; maxY = MaximumY; maxZ = MaximumZ;
+                            break;
+                        case Region.USE:
+                            minX = midX; minY = MinimumY; minZ = midZ;
+                            maxX = MaximumX; maxY = midY; maxZ = MaximumZ;
+                            break;
+                        case Region.USW:
+                            minX = MinimumX; minY = MinimumY; minZ = midZ;
+                            maxX = midX; maxY = midY; maxZ = MaximumZ;
+                            break;
+                        case Region.LNE:
+                            minX = midX; minY = midY; minZ = MinimumZ;
+                            maxX = MaximumX; maxY = MaximumY; maxZ = midZ;
+                            break;
+                        case Region.LNW:
+                            minX = MinimumX; minY = midY; minZ = MinimumZ;
+                            maxX = midX; maxY = MaximumY; maxZ = midZ;
+                            break;
+                        case Region.LSE:
+                            minX = midX; minY = MinimumY; minZ = MinimumZ;
+                            maxX = MaximumX; maxY = midY; maxZ = midZ;
+                            break;
+                        case Region.LSW:
+                            minX = MinimumX; minY = MinimumY; minZ = MinimumZ;
+                            maxX = midX; maxY = midY; maxZ = midZ;
+                            break;
+                    }
+
+                    tree = new OctTree(minX, minY, minZ, maxX, maxY, maxZ);
+
+                    if (tree.Volume < 1)
+                    {
+                        tree = null;
+                    }
+
+                    RegionMap.Add(region, tree);
+                }
             }
 
             return tree;
