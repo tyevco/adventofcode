@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Advent.Utilities;
+using System;
+using System.Collections.Generic;
 
 namespace Day23
 {
@@ -37,9 +39,20 @@ namespace Day23
             return distSq >= radSumSq;
         }
 
-        public bool Overlap(NanoBot other)
+        public IList<ITriangle> GetFaces()
         {
-            return Overlap(other.X, other.Y, other.Z, other.R);
+            return new List<ITriangle>
+            {
+                new Triangle(new Vector(X, Y, Z + R), new Vector(X + R, Y, Z), new Vector(X, Y + R, Z)),
+                new Triangle(new Vector(X, Y, Z + R), new Vector(X + R, Y, Z), new Vector(X, Y - R, Z)),
+                new Triangle(new Vector(X, Y, Z + R), new Vector(X - R, Y, Z), new Vector(X, Y + R, Z)),
+                new Triangle(new Vector(X, Y, Z + R), new Vector(X - R, Y, Z), new Vector(X, Y - R, Z)),
+
+                new Triangle(new Vector(X, Y, Z - R), new Vector(X + R, Y, Z), new Vector(X, Y + R, Z)),
+                new Triangle(new Vector(X, Y, Z - R), new Vector(X + R, Y, Z), new Vector(X, Y - R, Z)),
+                new Triangle(new Vector(X, Y, Z - R), new Vector(X - R, Y, Z), new Vector(X, Y - R, Z)),
+                new Triangle(new Vector(X, Y, Z - R), new Vector(X - R, Y, Z), new Vector(X, Y + R, Z)),
+            };
         }
 
         public bool Within(OctTree region)

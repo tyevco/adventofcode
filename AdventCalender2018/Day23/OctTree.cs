@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Advent.Utilities;
+using System.Collections.Generic;
 
 namespace Day23
 {
@@ -111,6 +112,20 @@ namespace Day23
             }
 
             return tree;
+        }
+
+        public IAABoundingBox GetBounds()
+        {
+            return new AABoundingBox(
+                new Vector(MinimumX, MinimumY, MinimumZ),
+                new Vector(MinimumX, MinimumY, MaximumZ),
+                new Vector(MinimumX, MaximumY, MaximumZ),
+                new Vector(MinimumX, MaximumY, MinimumZ),
+                new Vector(MaximumX, MinimumY, MinimumZ),
+                new Vector(MaximumX, MinimumY, MaximumZ),
+                new Vector(MaximumX, MaximumY, MaximumZ),
+                new Vector(MaximumX, MaximumY, MinimumZ)
+                );
         }
     }
 }
