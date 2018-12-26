@@ -4,6 +4,8 @@ namespace Day23
 {
     public partial class OctTree
     {
+        public int Hits { get; set; }
+
         public int MinimumX { get; private set; }
         public int MinimumY { get; private set; }
         public int MinimumZ { get; private set; }

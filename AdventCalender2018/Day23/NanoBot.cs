@@ -41,5 +41,10 @@ namespace Day23
         {
             return Overlap(other.X, other.Y, other.Z, other.R);
         }
+
+        public bool Within(OctTree region)
+        {
+            return false;
+        }
     }
 }

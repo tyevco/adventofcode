@@ -69,10 +69,40 @@ namespace Day23
 
         private static void SearchOctTree(OctTree tree, IList<NanoBot> bots)
         {
-            IList<OctTree> searchRegions = new List<OctTree>();
+            IList<OctTree> searchRegions = new List<OctTree>
+            {
+                tree.UNE,
+                tree.UNW,
+                tree.USE,
+                tree.USW,
+                tree.LNE,
+                tree.LNW,
+                tree.LSE,
+                tree.LSW
+            };
 
+            foreach (var bot in bots)
+            {
+                foreach (var region in searchRegions)
+                {
+                    if (region != null)
+                    {
+                        if (bot.Within(region))
+                        {
+                            region.Hits++;
+                        }
+                    }
+                }
+            }
 
-            //tree.UNE;
+            var maxHits = searchRegions.Max(r => r?.Hits ?? 0);
+
+            if (maxHits > 0)
+            {
+                var maxRegions = searchRegions.Where(r => r?.Hits == maxHits);
+
+                // drill down into sub-regions
+            }
         }
     }
 }
