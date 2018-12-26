@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Advent.Utilities
 {
@@ -17,6 +18,8 @@ namespace Advent.Utilities
                 verts.Add(vertex);
 
             Vertices = verts;
+            Start = verts.FirstOrDefault();
+            End = verts.LastOrDefault();
         }
     }
 }

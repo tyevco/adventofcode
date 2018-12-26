@@ -7,18 +7,18 @@ namespace Day23
     {
         public int Hits { get; set; }
 
-        public int MinimumX { get; private set; }
-        public int MinimumY { get; private set; }
-        public int MinimumZ { get; private set; }
-        public int MaximumX { get; private set; }
-        public int MaximumY { get; private set; }
-        public int MaximumZ { get; private set; }
+        public double MinimumX { get; private set; }
+        public double MinimumY { get; private set; }
+        public double MinimumZ { get; private set; }
+        public double MaximumX { get; private set; }
+        public double MaximumY { get; private set; }
+        public double MaximumZ { get; private set; }
 
-        public int MidX => (MaximumX + MinimumX) / 2;
-        public int MidY => (MaximumY + MinimumY) / 2;
-        public int MidZ => (MaximumZ + MinimumZ) / 2;
+        public double MidX => (MaximumX + MinimumX) / 2d;
+        public double MidY => (MaximumY + MinimumY) / 2d;
+        public double MidZ => (MaximumZ + MinimumZ) / 2d;
 
-        public int Volume => (MaximumX - MinimumX) * (MaximumY - MinimumY) * (MaximumZ - MinimumZ);
+        public double Volume => (MaximumX - MinimumX) * (MaximumY - MinimumY) * (MaximumZ - MinimumZ);
 
         public OctTree UNE => GetOrCreate(Region.UNE);
         public OctTree UNW => GetOrCreate(Region.UNW);
@@ -29,11 +29,11 @@ namespace Day23
         public OctTree LSE => GetOrCreate(Region.LSE);
         public OctTree LSW => GetOrCreate(Region.LSW);
 
-        public IEnumerable<OctTree> Regions => RegionMap.Values;
+        public IEnumerable<OctTree> Regions => new List<OctTree> { UNE, UNW, USE, USW, LNE, LNW, LSE, LSW };
 
         IDictionary<Region, OctTree> RegionMap { get; } = new Dictionary<Region, OctTree>();
 
-        public OctTree(int minX, int minY, int minZ, int maxX, int maxY, int maxZ)
+        public OctTree(double minX, double minY, double minZ, double maxX, double maxY, double maxZ)
         {
             MinimumX = minX;
             MinimumY = minY;
@@ -41,11 +41,6 @@ namespace Day23
             MaximumX = maxX;
             MaximumY = maxY;
             MaximumZ = maxZ;
-        }
-
-        public bool SphereIntersects(int x, int y, int z, int r)
-        {
-            return false;
         }
 
         private OctTree GetOrCreate(Region region)
@@ -60,8 +55,8 @@ namespace Day23
                 }
                 else
                 {
-                    int minX, minY, minZ, maxX, maxY, maxZ;
-                    int midX = MidX, midY = MidY, midZ = MidZ;
+                    double minX, minY, minZ, maxX, maxY, maxZ;
+                    double midX = MidX, midY = MidY, midZ = MidZ;
 
                     switch (region)
                     {
@@ -102,7 +97,7 @@ namespace Day23
 
                     tree = new OctTree(minX, minY, minZ, maxX, maxY, maxZ);
 
-                    if (tree.Volume < 1)
+                    if (tree.Volume < 25)
                     {
                         tree = null;
                     }

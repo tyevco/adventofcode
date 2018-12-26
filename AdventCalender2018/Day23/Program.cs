@@ -64,23 +64,19 @@ namespace Day23
 
             Console.WriteLine($"There are {count} bots in range.");
 
-            SearchOctTree(overall, bots);
+            var best = SearchOctTree(overall, bots);
+
+            Console.WriteLine($"Mid: {best.MidX},{best.MidY},{best.MidZ}");
+            Console.WriteLine($"Min: {best.MinimumX},{best.MinimumY},{best.MinimumZ}");
+            Console.WriteLine($"Max: {best.MaximumX},{best.MaximumY},{best.MaximumZ}");
+            Console.WriteLine($"Hit: {best.Hits}");
+            Console.WriteLine($"Vol: {best.Volume}");
         }
 
-        private static void SearchOctTree(OctTree tree, IList<NanoBot> bots)
+        private static OctTree SearchOctTree(OctTree tree, IList<NanoBot> bots)
         {
-            IList<OctTree> searchRegions = new List<OctTree>
-            {
-                tree.UNE,
-                tree.UNW,
-                tree.USE,
-                tree.USW,
-                tree.LNE,
-                tree.LNW,
-                tree.LSE,
-                tree.LSW
-            };
-
+            OctTree bestCandidate = null;
+            var searchRegions = tree.Regions;
             foreach (var bot in bots)
             {
                 foreach (var region in searchRegions)
@@ -101,8 +97,42 @@ namespace Day23
             {
                 var maxRegions = searchRegions.Where(r => r?.Hits == maxHits);
 
+                IList<OctTree> childMatches = new List<OctTree>();
                 // drill down into sub-regions
+                foreach (var region in maxRegions)
+                {
+                    if (region.Regions.Any(x => x != null))
+                    {
+                        var childTree = SearchOctTree(region, bots);
+
+                        if (childTree != null)
+                        {
+                            childMatches.Add(childTree);
+                        }
+                    }
+                    else
+                    {
+                        childMatches.Add(region);
+                    }
+                }
+
+                if (childMatches.Any())
+                {
+                    var maxChildHits = childMatches.Max(s => s.Hits);
+
+                    bestCandidate = childMatches.Where(s => s.Hits == maxChildHits).OrderBy(s => GetDistanceFromOrigin(s)).FirstOrDefault();
+                } else
+                {
+                    bestCandidate = tree;
+                }
             }
+
+            return bestCandidate;
+        }
+
+        private static double GetDistanceFromOrigin(OctTree tree)
+        {
+            return Math.Abs(tree.MidX) + Math.Abs(tree.MidY) + Math.Abs(tree.MidZ);
         }
     }
 }

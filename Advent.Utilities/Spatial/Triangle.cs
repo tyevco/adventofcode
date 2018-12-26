@@ -20,6 +20,8 @@ namespace Advent.Utilities
             B = b;
             C = c;
 
+            Normal = b.Minus(a).Cross(c.Minus(a));
+
             Vertices = new List<IVector> { A, B, C };
         }
     }

@@ -51,13 +51,27 @@ namespace Day23
                 new Triangle(new Vector(X, Y, Z - R), new Vector(X + R, Y, Z), new Vector(X, Y + R, Z)),
                 new Triangle(new Vector(X, Y, Z - R), new Vector(X + R, Y, Z), new Vector(X, Y - R, Z)),
                 new Triangle(new Vector(X, Y, Z - R), new Vector(X - R, Y, Z), new Vector(X, Y - R, Z)),
-                new Triangle(new Vector(X, Y, Z - R), new Vector(X - R, Y, Z), new Vector(X, Y + R, Z)),
+                new Triangle(new Vector(X, Y, Z - R), new Vector(X - R, Y, Z), new Vector(X, Y + R, Z))
             };
         }
 
         public bool Within(OctTree region)
         {
-            return false;
+            bool intersected = false;
+            var aabb = region.GetBounds();
+
+            var faces = GetFaces();
+
+            foreach (var face in faces)
+            {
+                if (CollisonDetection.IsIntersecting(aabb, face))
+                {
+                    intersected = true;
+                    break;
+                }
+            }
+
+            return intersected;
         }
     }
 }
