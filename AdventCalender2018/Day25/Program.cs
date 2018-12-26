@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Advent.Utilities;
 
 namespace Day25
@@ -44,6 +45,8 @@ namespace Day25
 
                                 constellations.Add(constellation);
                                 added = true;
+
+                                Console.WriteLine($"Created a new constellation: {constellation.Id}");
                             }
                             else if (other.Constellation == null)
                             {
@@ -59,31 +62,43 @@ namespace Day25
                             }
                             else
                             {
-                                if (other.Constellation.Equals(star.Constellation))
+                                if (!other.Constellation.Equals(star.Constellation))
                                 {
-                                    Console.WriteLine("Same constellations");
-                                }
-                                else
-                                {
-                                    Console.WriteLine("TODO: merge constellations");
+                                    var otherConstellation = other.Constellation;
+
+                                    foreach (var otherStar in otherConstellation.Stars)
+                                    {
+                                        star.Constellation.Stars.Add(otherStar);
+                                        otherStar.Constellation = star.Constellation;
+                                    }
+
+                                    otherConstellation.Stars.Clear();
                                 }
                             }
                         }
 
-                        //Console.WriteLine($"{star} - {other} = {distance.ToString().PadLeft(2)} {(added ? "Y" : "N")}");
+                        int color = distance <= 3 ? (added ? 0x2a : 0x25) : 0xaa;
+                        Console.WriteLine(ConsoleCodes.Colorize($"{star} - {other} = {distance.ToString().PadLeft(2)} {(added ? "Y" : "N")}", color));
                     }
                 }
 
                 Console.WriteLine();
             }
 
-            if (constellations.Count == expected)
+            foreach (var star in stars.OrderBy(s => s.Constellation?.Id ?? 0))
+            {
+                Console.WriteLine(star);
+            }
+
+            int foundConstellations = constellations.Count(s => s.Stars.Count > 0);
+
+            if (foundConstellations == expected)
             {
                 Console.WriteLine($"The correct number of constellations were detected, {expected}.");
             }
             else
             {
-                Console.WriteLine($"Found {constellations.Count} constellations, {expected} expected.");
+                Console.WriteLine($"Found {foundConstellations} constellations, {expected} expected.");
             }
             // 293 is too low
         }
