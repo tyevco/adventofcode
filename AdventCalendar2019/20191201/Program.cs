@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Advent.Utilities;
 
-namespace _20191201
+namespace Advent.Y2019.D01
 {
     class Program : DataParser<IList<int>>
     {

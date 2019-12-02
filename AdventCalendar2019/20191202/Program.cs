@@ -4,7 +4,7 @@ using System.Linq;
 using Advent.Utilities;
 using Advent.Utilities.Intcode;
 
-namespace _20191202
+namespace Advent.Y2019.D02
 {
     class Program : DataParser<string>
     {

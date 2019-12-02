@@ -1,13 +1,13 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>_20191202</RootNamespace>
+    <RootNamespace>Advent.Y2019.D02</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Advent.Utilities\Advent.Utilities.csproj" />
+    <ProjectReference Include="..\..\Advent.Utilities\Advent.Utilities.csproj" />
   </ItemGroup>
 
   <ItemGroup>
