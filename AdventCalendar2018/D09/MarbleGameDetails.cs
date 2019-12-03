@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Day09
+namespace AdventCalendar2018.D09
 {
     public class MarbleGameDetails
     {

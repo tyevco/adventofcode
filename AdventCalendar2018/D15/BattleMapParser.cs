@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Advent.Utilities;
 
-namespace Day15
+namespace AdventCalendar2018.D15
 {
     public class BattleMapParser : DataParser<Map>
     {

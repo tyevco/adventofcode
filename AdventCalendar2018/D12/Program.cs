@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Advent.Utilities.Attributes;
 
-namespace Day12
+namespace AdventCalendar2018.D12
 {
+    [Exercise("Day 12:  ")]
     class Program
     {
         const int HEADER_DISPLAY_VALUES = 5;
 
-        static void Main(string[] args)
+        public void Execute()
         {
             var data = sample;
             int generationCount = 20;

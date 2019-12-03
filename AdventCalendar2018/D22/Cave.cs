@@ -2,7 +2,7 @@
 using System.Text;
 using Advent.Utilities.Data;
 
-namespace Day22
+namespace AdventCalendar2018.D22
 {
     public class Cave
     {

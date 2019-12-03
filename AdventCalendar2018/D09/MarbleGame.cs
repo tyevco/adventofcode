@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Day09
+namespace AdventCalendar2018.D09
 {
     public class MarbleGame
     {

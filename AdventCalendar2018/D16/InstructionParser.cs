@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using Advent.Utilities;
 using Advent.Utilities.Assembler;
 
-namespace Day16
+namespace AdventCalendar2018.D16
 {
     public class InstructionParser : DataParser<(IList<Instruction>, IList<Sample>)>
     {

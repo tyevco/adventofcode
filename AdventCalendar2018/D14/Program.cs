@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using Advent.Utilities;
+using Advent.Utilities.Attributes;
 
-namespace Day14
+namespace AdventCalendar2018.D14
 {
+    [Exercise("Day 14:  ")]
     class Program : FileSelectionConsole
     {
-        static void Main(string[] args)
+        public void Execute()
         {
-            if (args.Length > 0)
-            {
-                new Program().Start(args[0]);
-            }
+            Start("D14/Data");
         }
 
         protected void ExecuteOld(string file)

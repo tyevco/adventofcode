@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Day18
+namespace AdventCalendar2018.D18
 {
     public class Grid
     {

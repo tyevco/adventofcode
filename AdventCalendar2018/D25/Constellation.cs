@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Day25
+namespace AdventCalendar2018.D25
 {
     public class Constellation
     {

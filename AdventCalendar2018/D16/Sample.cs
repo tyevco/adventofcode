@@ -1,6 +1,6 @@
 ﻿using Advent.Utilities.Assembler;
 
-namespace Day16
+namespace AdventCalendar2018.D16
 {
     public class Sample
     {

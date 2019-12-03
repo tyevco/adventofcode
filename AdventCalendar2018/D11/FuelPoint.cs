@@ -1,4 +1,4 @@
-﻿namespace Day11
+﻿namespace AdventCalendar2018.D11
 {
     public class FuelPoint
     {

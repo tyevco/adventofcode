@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Day04
+namespace AdventCalendar2018.D04
 {
     public class Guard
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 
-namespace Day12
+namespace AdventCalendar2018.D12
 {
     public class Generation
     {

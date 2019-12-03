@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Day06
+namespace AdventCalendar2018.D06
 {
     public class ManhattanMap
     {

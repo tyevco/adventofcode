@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Advent.Utilities;
 
-namespace Day17
+namespace AdventCalendar2018.D17
 {
     public class SpringParser : DataParser<Grid>
     {

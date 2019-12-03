@@ -2,21 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using Advent.Utilities;
+using Advent.Utilities.Attributes;
 
-namespace Day17
+namespace AdventCalendar2018.D17
 {
+    [Exercise("Day 17:  ")]
     class Program : FileSelectionConsole
     {
         public bool EnableDebug { get; private set; } = true;
         public bool FlowProgress { get; private set; } = true;
         public bool Animate { get; private set; } = true;
 
-        static void Main(string[] args)
+        public void Execute()
         {
-            if (args.Length > 0)
-            {
-                new Program().Start(args[0]);
-            }
+            Start("D17/Data");
         }
 
         protected override IList<ConsoleOption> GetOptions()

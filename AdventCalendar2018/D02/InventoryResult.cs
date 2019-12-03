@@ -1,4 +1,4 @@
-﻿namespace Day02
+﻿namespace AdventCalendar2018.D02
 {
     public class InventoryResult
     {

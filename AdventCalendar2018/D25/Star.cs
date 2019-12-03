@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Day25
+namespace AdventCalendar2018.D25
 {
     public class Star
     {

@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Day04
+namespace AdventCalendar2018.D04
 {
     public static class ScheduleVisualizer
     {

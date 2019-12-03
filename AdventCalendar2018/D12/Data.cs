@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Day12
+namespace AdventCalendar2018.D12
 {
     public class Data
     {

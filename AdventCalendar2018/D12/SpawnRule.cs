@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Day12
+namespace AdventCalendar2018.D12
 {
     internal class SpawnRule
     {

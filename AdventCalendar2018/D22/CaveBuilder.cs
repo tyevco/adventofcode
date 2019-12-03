@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Advent.Utilities;
 
-namespace Day22
+namespace AdventCalendar2018.D22
 {
     public class CaveBuilder : DataParser<(Cave, int, string)>
     {

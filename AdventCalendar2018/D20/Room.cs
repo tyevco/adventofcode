@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Day20
+namespace AdventCalendar2018.D20
 {
     public class Room
     {

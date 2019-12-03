@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Day13
+namespace AdventCalendar2018.D13
 {
     public class Crash
     {

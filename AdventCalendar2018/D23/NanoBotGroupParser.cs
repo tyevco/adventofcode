@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using Advent.Utilities;
 
-namespace Day23
+namespace AdventCalendar2018.D23
 {
     public class NanoBotGroupParser : DataParser<IList<NanoBot>>
     {

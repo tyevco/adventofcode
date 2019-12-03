@@ -4,7 +4,7 @@ namespace LongRunning.Day11
 {
     public class ChronalWatchDial
     {
-        static void Main(string[] args)
+        public void Execute()
         {
             var t = new Tests.Day11.FuelCellTests();
 

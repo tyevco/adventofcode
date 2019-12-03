@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Advent.Utilities.Data;
 
-namespace Day15
+namespace AdventCalendar2018.D15
 {
     public static class Pathfinding
     {

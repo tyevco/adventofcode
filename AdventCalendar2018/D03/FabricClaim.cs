@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Day03
+namespace AdventCalendar2018.D03
 {
     public class FabricClaim
     {

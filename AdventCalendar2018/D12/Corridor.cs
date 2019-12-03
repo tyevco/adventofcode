@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Day12
+namespace AdventCalendar2018.D12
 {
     public class Corridor
     {

@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Linq;
 using Advent.Utilities;
+using Advent.Utilities.Attributes;
 
-namespace Day18
+namespace AdventCalendar2018.D18
 {
+    [Exercise("Day 18:  ")]
     class Program : FileSelectionConsole
     {
-        static void Main(string[] args)
+        public void Execute()
         {
-            if (args.Length > 0)
-            {
-                new Program().Start(args[0]);
-            }
+            Start("D18/Data");
         }
 
         protected override void Execute(string file)

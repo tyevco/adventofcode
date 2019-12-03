@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Day10
+namespace AdventCalendar2018.D10
 {
     public class MessageTracker
     {

@@ -1,4 +1,4 @@
-﻿namespace Day10
+﻿namespace AdventCalendar2018.D10
 {
     public class Point
     {

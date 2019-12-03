@@ -2,7 +2,7 @@
 using System.Linq;
 using Advent.Utilities;
 
-namespace Day20
+namespace AdventCalendar2018.D20
 {
     public class BuildingParser : DataParser<(Building, ExpectedResults)>
     {

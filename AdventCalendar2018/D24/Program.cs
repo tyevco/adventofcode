@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using Advent.Utilities;
+using Advent.Utilities.Attributes;
 
-namespace Day24
+namespace AdventCalendar2018.D24
 {
+    [Exercise("Day 24:  ")]
     class Program : FileSelectionConsole
     {
-        static void Main(string[] args)
+        public void Execute()
         {
-            if (args.Length > 0)
-            {
-                new Program().Start(args[0]);
-            }
+            Start("D24/Data");
         }
 
         protected override IList<ConsoleOption> GetOptions()

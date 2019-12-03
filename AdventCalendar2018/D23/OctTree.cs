@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Advent.Utilities;
 
-namespace Day23
+namespace AdventCalendar2018.D23
 {
     public partial class OctTree
     {

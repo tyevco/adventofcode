@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Day05
+namespace AdventCalendar2018.D05
 {
     public class PolymerReactionManager
     {

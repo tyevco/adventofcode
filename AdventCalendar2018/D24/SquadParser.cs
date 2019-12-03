@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Advent.Utilities;
 
-namespace Day24
+namespace AdventCalendar2018.D24
 {
     public class SquadParser : DataParser<IList<Squad>>
     {

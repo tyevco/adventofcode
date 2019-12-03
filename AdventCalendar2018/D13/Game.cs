@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Day13
+namespace AdventCalendar2018.D13
 {
     class Game
     {

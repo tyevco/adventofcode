@@ -1,15 +1,14 @@
 ﻿using Advent.Utilities;
+using Advent.Utilities.Attributes;
 
-namespace Day05
+namespace AdventCalendar2018.D05
 {
+    [Exercise("Day 5:  ")]
     class Program : FileSelectionConsole
     {
-        static void Main(string[] args)
+        public void Execute()
         {
-            if (args.Length > 0)
-            {
-                new Program().Start(args[0]);
-            }
+            Start("D05/Data");
         }
 
         protected override void Execute(string file)

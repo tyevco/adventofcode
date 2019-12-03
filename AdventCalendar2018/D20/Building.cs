@@ -3,7 +3,7 @@ using System.Text;
 using Advent.Utilities;
 using Advent.Utilities.Data;
 
-namespace Day20
+namespace AdventCalendar2018.D20
 {
     public class Building
     {

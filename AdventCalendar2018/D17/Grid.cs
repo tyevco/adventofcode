@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 
-namespace Day17
+namespace AdventCalendar2018.D17
 {
     public class Grid
     {

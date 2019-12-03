@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Day04
+namespace AdventCalendar2018.D04
 {
     public class DataEntry
     {

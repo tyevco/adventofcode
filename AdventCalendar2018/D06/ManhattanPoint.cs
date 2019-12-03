@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Day06
+namespace AdventCalendar2018.D06
 {
     public class ManhattanPoint
     {

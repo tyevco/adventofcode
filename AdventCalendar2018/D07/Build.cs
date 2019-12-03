@@ -1,4 +1,4 @@
-﻿namespace Day07
+﻿namespace AdventCalendar2018.D07
 {
     public class Build
     {

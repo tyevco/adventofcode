@@ -1,4 +1,4 @@
-﻿namespace Day22
+﻿namespace AdventCalendar2018.D22
 {
     public class Region
     {

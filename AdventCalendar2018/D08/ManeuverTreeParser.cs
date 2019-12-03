@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Day08
+namespace AdventCalendar2018.D08
 {
     public class ManeuverTreeParser
     {

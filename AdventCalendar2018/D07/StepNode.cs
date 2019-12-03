@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Day07
+namespace AdventCalendar2018.D07
 {
     public class StepNode
     {

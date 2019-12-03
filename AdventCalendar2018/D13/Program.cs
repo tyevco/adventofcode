@@ -2,67 +2,71 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Advent.Utilities;
+using Advent.Utilities.Attributes;
 
-namespace Day13
+namespace AdventCalendar2018.D13
 {
-    class CartMayhem
+    [Exercise("Day 13:  ")]
+    class CartMayhem : FileSelectionConsole
     {
         const bool CLEAR_OUTPUT = false;
         const bool DISPLAY_GAME = true;
 
-        static void Main(string[] args)
+        public void Execute()
         {
-            if (args.Length > 0)
-            {
-                try
-                {
-                    var data = System.IO.File.ReadAllLines(args[0]);
-
-                    (Grid grid, IList<Cart> carts) = ParseData(data);
-
-                    if (grid != null)
-                    {
-                        Game game = new Game(grid, carts);
-                        // do game stuff
-
-                        bool finished = false;
-
-                        if (DISPLAY_GAME)
-                            PrintGameState(game);
-
-                        while (!finished)
-                        {
-                            game.Tick();
-
-                            if (DISPLAY_GAME)
-                            {
-                                Thread.Sleep(500);
-                                PrintGameState(game);
-                            }
-
-                            finished = game.Carts.Count(c => !c.IsCrashed) < 2;
-                        }
-
-                        foreach (var crash in game.Crashes)
-                        {
-                            Console.WriteLine($"After {crash.Ticks} ticks a crash was detected at: {crash.X},{crash.Y}");
-                        }
-
-                        foreach (var cart in game.Carts)
-                        {
-                            Console.WriteLine($"After {game.Ticks} ticks a cart was still left located at: {cart.X},{cart.Y}");
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex);
-                }
-
-                Console.ReadLine();
-            }
+            Start("D13/Data");
         }
 
+        protected override void Execute(string file)
+        {
+            try
+            {
+                var data = System.IO.File.ReadAllLines(file);
+
+                (Grid grid, IList<Cart> carts) = ParseData(data);
+
+                if (grid != null)
+                {
+                    Game game = new Game(grid, carts);
+                    // do game stuff
+
+                    bool finished = false;
+
+                    if (DISPLAY_GAME)
+                        PrintGameState(game);
+
+                    while (!finished)
+                    {
+                        game.Tick();
+
+                        if (DISPLAY_GAME)
+                        {
+                            Thread.Sleep(500);
+                            PrintGameState(game);
+                        }
+
+                        finished = game.Carts.Count(c => !c.IsCrashed) < 2;
+                    }
+
+                    foreach (var crash in game.Crashes)
+                    {
+                        Console.WriteLine($"After {crash.Ticks} ticks a crash was detected at: {crash.X},{crash.Y}");
+                    }
+
+                    foreach (var cart in game.Carts)
+                    {
+                        Console.WriteLine($"After {game.Ticks} ticks a cart was still left located at: {cart.X},{cart.Y}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
+            Console.ReadLine();
+        }
 
         static void PrintGameState(Game game)
         {

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Advent.Utilities;
 
-namespace Day25
+namespace AdventCalendar2018.D25
 {
     public class ConstellationParser : DataParser<(IList<Star>, int)>
     {

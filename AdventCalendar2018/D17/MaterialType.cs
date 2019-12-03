@@ -1,4 +1,4 @@
-﻿namespace Day17
+﻿namespace AdventCalendar2018.D17
 {
     public enum MaterialType
     {

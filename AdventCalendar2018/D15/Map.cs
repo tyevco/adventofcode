@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 
-namespace Day15
+namespace AdventCalendar2018.D15
 {
     public class Map
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Day14
+namespace AdventCalendar2018.D14
 {
     public static class LinkedListExtensions
     {
