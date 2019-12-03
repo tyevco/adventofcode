@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Day15": {
-      "commandName": "Project",
-      "commandLineArgs": "\"$(ProjectDir)Maps/\""
-    }
-  }
-}
