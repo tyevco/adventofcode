@@ -16,7 +16,7 @@ namespace Advent.Utilities
             }
             catch (Exception e)
             {
-                throw e;
+                throw;
             }
         }
 
