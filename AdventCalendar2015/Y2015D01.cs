@@ -5,7 +5,7 @@ using Advent.Utilities.Attributes;
 
 namespace AdventCalendar2015
 {
-    [Exercise]
+    [Exercise("Day 1: Not Quite Lisp")]
     class Y2015D01 : FileSelectionConsole
     {
         public void Execute()

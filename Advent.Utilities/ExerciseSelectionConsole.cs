@@ -56,7 +56,7 @@ namespace Advent.Utilities
                             Console.Write("  ");
                         }
 
-                        Console.WriteLine(assemblyTypes[i].Name);
+                        Console.WriteLine(assemblyTypes[i].GetCustomAttribute<ExerciseAttribute>()?.Name ?? assemblyTypes[i].Name);
                     }
 
                     if (options != null && options.Any())
