@@ -1,6 +1,6 @@
-﻿using Advent.Utilities;
+﻿using System;
+using Advent.Utilities;
 using Advent.Utilities.Assembler;
-using System;
 
 namespace Day19
 {

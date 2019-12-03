@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Day03;
-using Xunit;
 
 namespace Tests.Day03
 {

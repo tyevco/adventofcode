@@ -16,4 +16,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="D04\Data\" />
+  </ItemGroup>
+
 </Project>

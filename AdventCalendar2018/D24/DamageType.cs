@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Day24
+﻿namespace Day24
 {
     public enum DamageType
     {

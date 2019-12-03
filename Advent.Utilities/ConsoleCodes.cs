@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Advent.Utilities
+﻿namespace Advent.Utilities
 {
-   public static class ConsoleCodes
+    public static class ConsoleCodes
     {
         public const string UNDERLINE = "\x1B[4m";
         public const string RESET = "\x1B[0m";

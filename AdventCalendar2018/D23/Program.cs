@@ -1,7 +1,7 @@
-﻿using Advent.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Advent.Utilities;
 
 namespace Day23
 {
@@ -121,7 +121,8 @@ namespace Day23
                     var maxChildHits = childMatches.Max(s => s.Hits);
 
                     bestCandidate = childMatches.Where(s => s.Hits == maxChildHits).OrderBy(s => GetDistanceFromOrigin(s)).FirstOrDefault();
-                } else
+                }
+                else
                 {
                     bestCandidate = tree;
                 }

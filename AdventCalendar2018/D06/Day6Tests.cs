@@ -2,7 +2,6 @@
 using System.Linq;
 
 using Day06;
-using Xunit;
 
 namespace Tests.Day06
 {

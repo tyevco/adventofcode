@@ -1,5 +1,4 @@
-﻿using System;
-using Advent.Utilities;
+﻿using Advent.Utilities;
 
 namespace Day01
 {

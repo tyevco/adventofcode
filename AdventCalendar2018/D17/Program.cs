@@ -1,7 +1,7 @@
-﻿using Advent.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Advent.Utilities;
 
 namespace Day17
 {
@@ -71,7 +71,8 @@ namespace Day17
 
                 finished = !grid.Added;
 
-                if (Animate) { 
+                if (Animate)
+                {
                     System.Threading.Thread.Sleep(500);
                     Console.Clear();
                 }

@@ -1,8 +1,8 @@
-﻿using Advent.Utilities;
-using Advent.Utilities.Assembler;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Advent.Utilities;
+using Advent.Utilities.Assembler;
 
 namespace Day19
 {

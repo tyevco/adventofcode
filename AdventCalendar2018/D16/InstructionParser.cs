@@ -1,8 +1,8 @@
-﻿using Advent.Utilities;
-using Advent.Utilities.Assembler;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Advent.Utilities;
+using Advent.Utilities.Assembler;
 
 namespace Day16
 {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Day09;
-using Xunit;
+﻿using Day09;
 
 namespace Tests.Day09
 {

@@ -1,5 +1,4 @@
 ﻿using Aay11;
-using Xunit;
 
 namespace Tests.Day11
 {

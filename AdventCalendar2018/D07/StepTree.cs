@@ -43,10 +43,10 @@ namespace Day07
             node.Constructing = false;
 
             if (node.Children != null && node.Children.Any())
-            foreach (var child in node.Children)
-            {
-                ResetNode(child);
-            }
+                foreach (var child in node.Children)
+                {
+                    ResetNode(child);
+                }
         }
 
         private static Queue<StepNode> GetNodes(StepTree tree)

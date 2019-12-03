@@ -1,7 +1,4 @@
-﻿using Aay05;
-using Xunit;
-
-namespace Tests.Day05
+﻿namespace Tests.Day05
 {
     public class Day5Part1Tests
     {

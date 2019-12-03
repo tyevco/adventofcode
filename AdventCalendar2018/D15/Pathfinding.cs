@@ -1,7 +1,7 @@
-﻿using Advent.Utilities.Data;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Advent.Utilities.Data;
 
 namespace Day15
 {

@@ -1,5 +1,4 @@
-﻿using System;
-using Advent.Utilities;
+﻿using Advent.Utilities;
 
 namespace Day09
 {
@@ -15,7 +14,7 @@ namespace Day09
 
         protected override void Execute(string file)
         {
-            
+
         }
     }
 }

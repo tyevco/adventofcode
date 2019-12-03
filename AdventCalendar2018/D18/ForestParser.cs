@@ -1,5 +1,5 @@
-﻿using Advent.Utilities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Advent.Utilities;
 
 namespace Day18
 {

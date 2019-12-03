@@ -1,6 +1,6 @@
-﻿using Advent.Utilities.Data;
-using System;
+﻿using System;
 using System.Text;
+using Advent.Utilities.Data;
 
 namespace Day22
 {

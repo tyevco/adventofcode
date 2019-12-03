@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-using Xunit;
+﻿using System.Collections.Generic;
 using Day07;
 
 namespace Tests.Day07
@@ -51,7 +47,7 @@ namespace Tests.Day07
 
             Assert.Equal("CABDFE", steps.GetOrder());
         }
-        
+
         [Fact]
         public void TestAB()
         {

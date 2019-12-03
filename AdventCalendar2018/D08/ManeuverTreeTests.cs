@@ -1,7 +1,4 @@
-﻿using Aay08;
-using Xunit;
-
-namespace Tests.Day08
+﻿namespace Tests.Day08
 {
     public class ManeuverTreeTests
     {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Day15
+﻿namespace Day15
 {
     public class Entity
     {

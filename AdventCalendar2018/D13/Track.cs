@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Day13
+﻿namespace Day13
 {
     class Track
     {

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Advent.Utilities;
-using Advent.Utilities.Data;
 
 namespace AdventCalendar2019.D03
 {

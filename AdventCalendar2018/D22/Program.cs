@@ -1,5 +1,5 @@
-﻿using Advent.Utilities;
-using System;
+﻿using System;
+using Advent.Utilities;
 
 namespace Day22
 {
@@ -24,7 +24,8 @@ namespace Day22
             if (actualCave.Equals(expectedLayout))
             {
                 Console.WriteLine($"The cave layouts matched!");
-            } else
+            }
+            else
             {
                 Console.WriteLine("The cave layouts do not match.");
             }

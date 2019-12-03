@@ -1,6 +1,6 @@
-﻿using Advent.Utilities;
-using System;
+﻿using System;
 using System.Linq;
+using Advent.Utilities;
 
 namespace Day18
 {

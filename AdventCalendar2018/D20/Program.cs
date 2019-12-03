@@ -1,7 +1,7 @@
-﻿using Advent.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Advent.Utilities;
 
 namespace Day20
 {

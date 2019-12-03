@@ -1,7 +1,6 @@
-﻿using Advent.Utilities;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Advent.Utilities;
 
 namespace Day20
 {
@@ -29,7 +28,7 @@ namespace Day20
                     results = new ExpectedResults
                     {
                         Building = string.Join("\r\n", data.Skip(2).Take(data.Count - 4).Select(l => l.Trim())),
-                        Doors = int.Parse(data.FirstOrDefault(s=>s.StartsWith("Doors:"))?.Substring(6) ?? "0")
+                        Doors = int.Parse(data.FirstOrDefault(s => s.StartsWith("Doors:"))?.Substring(6) ?? "0")
                     };
                 }
             }

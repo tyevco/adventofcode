@@ -1,6 +1,6 @@
-﻿using Advent.Utilities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Advent.Utilities;
 
 namespace Day23
 {

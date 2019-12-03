@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace Day03
 {
@@ -39,9 +38,9 @@ namespace Day03
 
         public bool Intersects(FabricClaim other)
         {
-            return 
+            return
                  ((this.X < other.X + other.Width) && (this.X + this.Width > other.X) &&
-                    (this.Y < other.Y + other.Height) &&(this.Y + this.Height > other.Y));
+                    (this.Y < other.Y + other.Height) && (this.Y + this.Height > other.Y));
         }
     }
 }

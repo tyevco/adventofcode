@@ -12,7 +12,7 @@ namespace AdventCalendar2019.D03
     {
         public void Execute()
         {
-            new Y2019D03().Start("D03/Data");
+            Start("D03/Data");
         }
 
         protected override void Execute(string file)
