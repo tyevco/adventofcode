@@ -1,11 +1,10 @@
-﻿using Aay11;
+﻿
+using Xunit;
 
-namespace Tests.Day11
+namespace AdventCalendar2018.D11
 {
     public class FuelCellTests
     {
-
-
         [Fact]
         public void FindLargestSubSectionWithMostPowerWithSerial7989()
         {

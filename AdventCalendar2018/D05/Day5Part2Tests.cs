@@ -1,4 +1,6 @@
-﻿namespace Tests.Day05
+﻿using Xunit;
+
+namespace AdventCalendar2018.D05
 {
     public class Day5Part2Tests
     {

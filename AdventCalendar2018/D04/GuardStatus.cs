@@ -1,4 +1,4 @@
-﻿namespace Aay04
+﻿namespace AdventCalendar2018.D04
 {
     public enum GuardStatus
     {

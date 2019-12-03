@@ -1,4 +1,4 @@
-﻿namespace Aay07
+﻿namespace AdventCalendar2018.D07
 {
     public class Worker
     {

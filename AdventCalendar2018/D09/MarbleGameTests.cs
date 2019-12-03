@@ -1,6 +1,6 @@
-﻿using Day09;
+﻿using Xunit;
 
-namespace Tests.Day09
+namespace AdventCalendar2018.D09
 {
     public class MarbleGameTests
     {

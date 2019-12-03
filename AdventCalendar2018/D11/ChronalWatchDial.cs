@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace LongRunning.Day11
+namespace AdventCalendar2018.D11
 {
     public class ChronalWatchDial
     {
         public void Execute()
         {
-            var t = new Tests.Day11.FuelCellTests();
+            var t = new FuelCellTests();
 
             try
             {

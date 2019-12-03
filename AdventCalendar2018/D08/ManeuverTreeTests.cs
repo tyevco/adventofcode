@@ -1,4 +1,6 @@
-﻿namespace Tests.Day08
+﻿using Xunit;
+
+namespace AdventCalendar2018.D08
 {
     public class ManeuverTreeTests
     {

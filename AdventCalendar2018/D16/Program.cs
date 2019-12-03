@@ -63,7 +63,7 @@ namespace AdventCalendar2018.D16
                 {
                     var testInstruction = new Instruction(command.Value, instruction.A, instruction.B, instruction.C);
 
-                    var after = Assembler.TestInstruction(testInstruction, sample.Before);
+                    var after = Assembler.RunInstruction(testInstruction, sample.Before);
                     if (after.Equals(sample.After))
                     {
                         sampleMatchCount++;

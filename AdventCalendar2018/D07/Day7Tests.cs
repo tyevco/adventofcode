@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Day07;
+using Xunit;
 
-namespace Tests.Day07
+namespace AdventCalendar2018.D07
 {
     public class Day7Tests
     {

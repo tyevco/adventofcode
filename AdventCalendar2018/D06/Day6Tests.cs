@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Xunit;
 
-using Day06;
-
-namespace Tests.Day06
+namespace AdventCalendar2018.D06
 {
     public class Day6Tests
     {

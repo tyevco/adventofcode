@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Day10;
+using Xunit;
 
-namespace Tests.Day10
+namespace AdventCalendar2018.D10
 {
     public class MessageTrackerTests
     {
