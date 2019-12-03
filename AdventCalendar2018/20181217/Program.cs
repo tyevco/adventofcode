@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Day17
 {
-    class Program : SelectableConsole
+    class Program : FileSelectionConsole
     {
         public bool EnableDebug { get; private set; } = true;
         public bool FlowProgress { get; private set; } = true;

@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Day15
 {
-    class Program : SelectableConsole
+    class Program : FileSelectionConsole
     {
         static void Main(string[] args)
         {

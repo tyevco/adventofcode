@@ -6,7 +6,7 @@ using Advent.Utilities.Attributes;
 namespace AdventCalendar2015
 {
     [Exercise]
-    class Y2015D01 : SelectableConsole
+    class Y2015D01 : FileSelectionConsole
     {
         public void Execute()
         {

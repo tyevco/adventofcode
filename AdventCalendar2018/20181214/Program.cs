@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Day14
 {
-    class Program : SelectableConsole
+    class Program : FileSelectionConsole
     {
         static void Main(string[] args)
         {

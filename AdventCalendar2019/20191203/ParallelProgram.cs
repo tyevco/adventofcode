@@ -7,7 +7,7 @@ using Advent.Utilities;
 
 namespace Advent.Y2019.D03
 {
-    class ParallelProgram : SelectableConsole
+    class ParallelProgram : FileSelectionConsole
     {
         static void Main(string[] args)
         {

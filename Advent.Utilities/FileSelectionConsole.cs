@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace Advent.Utilities
 {
-    public abstract class SelectableConsole
+    public abstract class FileSelectionConsole
     {
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool SetConsoleMode(IntPtr hConsoleHandle, int mode);
@@ -18,7 +18,7 @@ namespace Advent.Utilities
 
         private IList<ConsoleOption> options;
 
-        public SelectableConsole()
+        public FileSelectionConsole()
         {
             var handle = GetStdHandle(-11);
             int mode;

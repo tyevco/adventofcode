@@ -3,7 +3,7 @@ using System;
 
 namespace Day22
 {
-    class Program : SelectableConsole
+    class Program : FileSelectionConsole
     {
         static void Main(string[] args)
         {

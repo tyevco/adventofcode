@@ -5,7 +5,7 @@ using Advent.Utilities;
 
 namespace Day25
 {
-    class Program : SelectableConsole
+    class Program : FileSelectionConsole
     {
         static void Main(string[] args)
         {
