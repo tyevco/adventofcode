@@ -9,13 +9,4 @@
     <ProjectReference Include="..\Advent.Utilities\Advent.Utilities.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="D01\Data\Examples.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="D01\Data\Data.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>
