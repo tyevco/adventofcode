@@ -51,9 +51,9 @@ namespace AdventCalendar2019.D04
         {
             var digits = input.ToString().ToCharArray().Select(x => int.Parse(x.ToString())).ToArray();
 
-            IDictionary<int, int> adjCount = new Dictionary<int, int>();
+            int[] digitCount = new int[10];
 
-            AddDigit(adjCount, digits[0]);
+            digitCount[digits[0]]++;
 
             for (int i = 1; i < digits.Length; i++)
             {
@@ -62,22 +62,10 @@ namespace AdventCalendar2019.D04
                     return false;
                 }
 
-                AddDigit(adjCount, digits[i]);
+                digitCount[digits[i]]++;
             }
 
-            return adjCount.Any(x => x.Value == 2);
-        }
-
-        private void AddDigit(IDictionary<int, int> adjCount, int digit)
-        {
-            if (adjCount.ContainsKey(digit))
-            {
-                adjCount[digit]++;
-            }
-            else
-            {
-                adjCount.Add(digit, 1);
-            }
+            return digitCount.Any(x => x == 2);
         }
     }
 }
