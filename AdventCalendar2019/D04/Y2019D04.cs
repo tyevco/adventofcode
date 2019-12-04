@@ -10,11 +10,11 @@ namespace AdventCalendar2019.D04
     {
         public void Execute()
         {
-            //ExecuteEach(111112, 112233, 123456, 111122, 112222, 122222, 111222, 123444, 113455);
-            Execute(206938, 679128);
+            Execute(111112, 112233, 123456, 111122, 112222, 122222, 111222, 123444, 113455);
+            ExecuteRange(206938, 679128);
         }
 
-        protected void ExecuteEach(params int[] values)
+        protected void Execute(params int[] values)
         {
             foreach (var value in values)
             {
@@ -31,7 +31,7 @@ namespace AdventCalendar2019.D04
 
         }
 
-        protected void Execute(int lower, int? upper = null)
+        protected void ExecuteRange(int lower, int? upper = null)
         {
             Console.WriteLine($"Analyzing between {lower} and {upper ?? lower}");
 
