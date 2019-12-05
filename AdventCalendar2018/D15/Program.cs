@@ -10,7 +10,7 @@ namespace AdventCalendar2018.D15
     {
         public void Execute()
         {
-            Start("D15/Data");
+            Start("D15/Maps");
         }
 
         protected override void Execute(string file)

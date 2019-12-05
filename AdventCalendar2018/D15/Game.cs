@@ -82,7 +82,9 @@ namespace AdventCalendar2018.D15
 
                     System.Diagnostics.Debug.WriteLine($"{entity.Type} {entity.Id} complete, took {(entityEnd - entityStart).Milliseconds}ms.");
                 }
-                //System.Diagnostics.Debug.WriteLine(Map);
+
+                //Console.Clear();
+                //Console.WriteLine(Map);
             }
 
             var roundEnd = DateTime.Now;
