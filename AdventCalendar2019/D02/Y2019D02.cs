@@ -12,7 +12,10 @@ namespace AdventCalendar2019.D02
     {
         public void Execute()
         {
-            var processor = new IntcodeProcessor();
+            var processor = new IntcodeProcessor()
+            {
+                DisplayDebugOutput = false,
+            };
 
             var intcodeInput = ParseData("D02/02P1.txt");
             for (int noun = 0; noun <= 99; noun++)

@@ -26,29 +26,29 @@ namespace Advent.Utilities.Intcode
                 ParameterMode[] modes = new ParameterMode[MaxParameterCount];
                 for (int m = 0; m < MaxParameterCount; m++)
                 {
-                    Enum.TryParse(instruction[m].ToString(), out modes[m]);
+                    Enum.TryParse(instruction[m].ToString(), out modes[MaxParameterCount - m - 1]);
                 }
 
-                if (Enum.TryParse(instruction.Substring(3), out OpCode curr))
+                if (Enum.TryParse(instruction.Substring(MaxParameterCount), out OpCode curr))
                 {
                     OutputDebugStatement(intcode, curr, i, modes, instruction);
 
                     switch (curr)
                     {
                         case OpCode.Add:
-                            param1 = ReadValue(intcode, modes[2], i + 1);
+                            param1 = ReadValue(intcode, modes[0], i + 1);
                             param2 = ReadValue(intcode, modes[1], i + 2);
 
-                            intcode = StoreValue(intcode, modes[0], i + 3, param1 + param2);
+                            intcode = StoreValue(intcode, modes[2], i + 3, param1 + param2);
 
                             Pointer += 4;
 
                             break;
                         case OpCode.Multiply:
-                            param1 = ReadValue(intcode, modes[2], i + 1);
+                            param1 = ReadValue(intcode, modes[0], i + 1);
                             param2 = ReadValue(intcode, modes[1], i + 2);
 
-                            intcode = StoreValue(intcode, modes[0], i + 3, param1 * param2);
+                            intcode = StoreValue(intcode, modes[2], i + 3, param1 * param2);
 
                             Pointer += 4;
 
@@ -65,13 +65,13 @@ namespace Advent.Utilities.Intcode
                                 stdin = Console.ReadLine();
                             }
 
-                            intcode = StoreValue(intcode, modes[2], i + 1, input);
+                            intcode = StoreValue(intcode, modes[0], i + 1, input);
 
                             Pointer += 2;
 
                             break;
                         case OpCode.Output:
-                            param1 = ReadValue(intcode, modes[2], i + 1);
+                            param1 = ReadValue(intcode, modes[0], i + 1);
 
                             Console.WriteLine(param1);
 
@@ -79,7 +79,7 @@ namespace Advent.Utilities.Intcode
 
                             break;
                         case OpCode.JumpIfTrue:
-                            param1 = ReadValue(intcode, modes[2], i + 1);
+                            param1 = ReadValue(intcode, modes[0], i + 1);
                             param2 = ReadValue(intcode, modes[1], i + 2);
 
                             if (param1 != 0)
@@ -93,7 +93,7 @@ namespace Advent.Utilities.Intcode
 
                             break;
                         case OpCode.JumpIfFalse:
-                            param1 = ReadValue(intcode, modes[2], i + 1);
+                            param1 = ReadValue(intcode, modes[0], i + 1);
                             param2 = ReadValue(intcode, modes[1], i + 2);
 
                             if (param1 == 0)
@@ -108,19 +108,19 @@ namespace Advent.Utilities.Intcode
 
                             break;
                         case OpCode.LessThan:
-                            param1 = ReadValue(intcode, modes[2], i + 1);
+                            param1 = ReadValue(intcode, modes[0], i + 1);
                             param2 = ReadValue(intcode, modes[1], i + 2);
 
-                            intcode = StoreValue(intcode, modes[0], i + 3, param1 < param2 ? 1 : 0);
+                            intcode = StoreValue(intcode, modes[2], i + 3, param1 < param2 ? 1 : 0);
 
                             Pointer += 4;
 
                             break;
                         case OpCode.Equals:
-                            param1 = ReadValue(intcode, modes[2], i + 1);
+                            param1 = ReadValue(intcode, modes[0], i + 1);
                             param2 = ReadValue(intcode, modes[1], i + 2);
 
-                            intcode = StoreValue(intcode, modes[0], i + 3, param1 == param2 ? 1 : 0);
+                            intcode = StoreValue(intcode, modes[2], i + 3, param1 == param2 ? 1 : 0);
 
                             Pointer += 4;
 
@@ -166,7 +166,7 @@ namespace Advent.Utilities.Intcode
             }
             else
             {
-                intcode[addr] = value;
+                throw new NotImplementedException();
             }
 
             return intcode;
