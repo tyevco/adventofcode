@@ -11,24 +11,27 @@ namespace AdventCalendar2019.D01
     {
         public void Execute()
         {
-            var moduleFuelReqs = this.ParseData("D01/Part1.txt");
-
-            Console.WriteLine($"Total Sum: {moduleFuelReqs.Select(CalculateFuelReqs).Sum()}");
-
-            int total = 0;
-            foreach (var module in moduleFuelReqs)
+            Timer.Monitor(() =>
             {
-                var fuelReq = CalculateFuelReqs(module);
+                var moduleFuelReqs = this.ParseData("D01/Part1.txt");
 
-                while (fuelReq > 0)
+                Console.WriteLine($"Total Sum: {moduleFuelReqs.Select(CalculateFuelReqs).Sum()}");
+
+                int total = 0;
+                foreach (var module in moduleFuelReqs)
                 {
-                    total += fuelReq;
+                    var fuelReq = CalculateFuelReqs(module);
 
-                    fuelReq = CalculateFuelReqs(fuelReq);
+                    while (fuelReq > 0)
+                    {
+                        total += fuelReq;
+
+                        fuelReq = CalculateFuelReqs(fuelReq);
+                    }
                 }
-            }
 
-            Console.WriteLine($"Total for fuel: {total}");
+                Console.WriteLine($"Total for fuel: {total}");
+            });
         }
 
         protected override IList<int> DeserializeData(IList<string> data)

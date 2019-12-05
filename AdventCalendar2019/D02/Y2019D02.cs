@@ -14,19 +14,22 @@ namespace AdventCalendar2019.D02
         {
             var processor = new IntcodeProcessor();
 
-            var intcodeInput = ParseData("D02/02P1.txt");
-            for (int noun = 0; noun <= 99; noun++)
+            Timer.Monitor(() =>
             {
-                for (int verb = 0; verb <= 99; verb++)
+                var intcodeInput = ParseData("D02/02P1.txt");
+                for (int noun = 0; noun <= 99; noun++)
                 {
-                    var test = intcodeInput.Replace("{noun}", noun.ToString()).Replace("{verb}", verb.ToString());
-                    var output = processor.Process(test);
-                    if (output[0] == 19690720)
+                    for (int verb = 0; verb <= 99; verb++)
                     {
-                        Console.WriteLine($"Found the answer at {noun} and {verb}: {100 * noun + verb}");
+                        var test = intcodeInput.Replace("{noun}", noun.ToString()).Replace("{verb}", verb.ToString());
+                        var output = processor.Process(test);
+                        if (output[0] == 19690720)
+                        {
+                            Console.WriteLine($"Found the answer at {noun} and {verb}: {100 * noun + verb}");
+                        }
                     }
                 }
-            }
+            });
         }
 
         protected override string DeserializeData(IList<string> data)

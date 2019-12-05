@@ -12,7 +12,11 @@ namespace AdventCalendar2019.D04
         public void Execute()
         {
             Execute(111112, 112233, 123456, 111122, 112222, 122222, 111222, 123444, 113455);
-            ExecuteRange(206938, 679128);
+
+            Timer.Monitor(() =>
+            {
+                ExecuteRange(206938, 679128);
+            });
         }
 
         protected void Execute(params int[] values)

@@ -16,7 +16,6 @@ namespace Advent.Utilities
             }
             else
             {
-                Console.WriteLine();
             }
 
             var stopwatch = Stopwatch.StartNew();

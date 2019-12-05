@@ -17,58 +17,61 @@ namespace AdventCalendar2019.D03
 
         protected override void Execute(string file)
         {
-            var maps = new WirePlotter().ParseData(file);
-
-            int lowestDistance = int.MaxValue;
-            ManhattanPoint seekPoint = null;
-            object obj = new object();
-
-            var firstMap = maps[0];
-            var secondMap = maps[1];
-
-            ConcurrentBag<(ManhattanPoint, ManhattanPoint)> intersections = new ConcurrentBag<(ManhattanPoint, ManhattanPoint)>();
-
-            ParallelOptions options = new ParallelOptions
+            Timer.Monitor(() =>
             {
-                MaxDegreeOfParallelism = 100
-            };
-            Parallel.ForEach(firstMap.Points, options, (firstPoint) =>
-            {
-                if (!intersections.Any(p => p.Item1.X == firstPoint.X && p.Item1.Y == firstPoint.Y))
+                var maps = new WirePlotter().ParseData(file);
+
+                int lowestDistance = int.MaxValue;
+                ManhattanPoint seekPoint = null;
+                object obj = new object();
+
+                var firstMap = maps[0];
+                var secondMap = maps[1];
+
+                ConcurrentBag<(ManhattanPoint, ManhattanPoint)> intersections = new ConcurrentBag<(ManhattanPoint, ManhattanPoint)>();
+
+                ParallelOptions options = new ParallelOptions
                 {
-                    var secondPoint = secondMap.Points.FirstOrDefault(s => firstPoint.X == s.X && firstPoint.Y == s.Y);
-
-                    if (secondPoint != null)
+                    MaxDegreeOfParallelism = 100
+                };
+                Parallel.ForEach(firstMap.Points, options, (firstPoint) =>
+                {
+                    if (!intersections.Any(p => p.Item1.X == firstPoint.X && p.Item1.Y == firstPoint.Y))
                     {
-                        intersections.Add((firstPoint, secondPoint));
+                        var secondPoint = secondMap.Points.FirstOrDefault(s => firstPoint.X == s.X && firstPoint.Y == s.Y);
 
-                        var mDis = firstPoint.CalculateDistance(0, 0);
-
-                        lock (obj)
+                        if (secondPoint != null)
                         {
-                            if (mDis < lowestDistance)
+                            intersections.Add((firstPoint, secondPoint));
+
+                            var mDis = firstPoint.CalculateDistance(0, 0);
+
+                            lock (obj)
                             {
-                                lowestDistance = mDis;
-                                seekPoint = firstPoint;
+                                if (mDis < lowestDistance)
+                                {
+                                    lowestDistance = mDis;
+                                    seekPoint = firstPoint;
+                                }
                             }
+                            //Console.WriteLine($"{point.X},{point.Y}:{mDis} [{point.Value}]");
                         }
-                        //Console.WriteLine($"{point.X},{point.Y}:{mDis} [{point.Value}]");
                     }
+                });
+                if (seekPoint != null)
+                {
+                    Console.WriteLine($"{seekPoint?.X},{seekPoint?.Y}:{lowestDistance}");
+                }
+                else
+                {
+                    Console.WriteLine("NO answer...");
+                }
+
+                foreach (var intersection in intersections.OrderBy(x => (x.Item1.Id + x.Item2.Id + 2)))
+                {
+                    Console.WriteLine($"{intersection.Item1.Id + 1} {intersection.Item2.Id + 1} : {intersection.Item1.Id + intersection.Item2.Id + 2 }");
                 }
             });
-            if (seekPoint != null)
-            {
-                Console.WriteLine($"{seekPoint?.X},{seekPoint?.Y}:{lowestDistance}");
-            }
-            else
-            {
-                Console.WriteLine("NO answer...");
-            }
-
-            foreach (var intersection in intersections.OrderBy(x => (x.Item1.Id + x.Item2.Id + 2)))
-            {
-                Console.WriteLine($"{intersection.Item1.Id + 1} {intersection.Item2.Id + 1} : {intersection.Item1.Id + intersection.Item2.Id + 2 }");
-            }
         }
     }
 }
