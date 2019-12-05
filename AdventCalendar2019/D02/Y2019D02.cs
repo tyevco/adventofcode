@@ -8,14 +8,11 @@ using Advent.Utilities.Intcode;
 namespace AdventCalendar2019.D02
 {
     [Exercise("Day 2: 1202 Program Alarm")]
-    class Y2019D02 : DataParser<string>
+    class Y2019D02 : DataParser<string>, IExercise
     {
         public void Execute()
         {
-            var processor = new IntcodeProcessor()
-            {
-                DisplayDebugOutput = false,
-            };
+            var processor = new IntcodeProcessor();
 
             var intcodeInput = ParseData("D02/02P1.txt");
             for (int noun = 0; noun <= 99; noun++)

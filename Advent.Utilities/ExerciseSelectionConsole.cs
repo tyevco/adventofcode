@@ -33,7 +33,7 @@ namespace Advent.Utilities
         public Type DisplayMenu()
         {
             assemblyTypes = Assembly.GetEntryAssembly().GetTypes()
-                                .Where(t => t.GetCustomAttribute<ExerciseAttribute>() != null).ToList();
+                                .Where(t => typeof(IExercise).IsAssignableFrom(t) || t.GetCustomAttribute<ExerciseAttribute>() != null).ToList();
 
             bool seekType = true;
 
@@ -166,8 +166,16 @@ namespace Advent.Utilities
                 if (type != null)
                 {
                     var instance = Activator.CreateInstance(type);
-                    var executeMethod = type.GetMethod("Execute", BindingFlags.Public | BindingFlags.Instance);
-                    executeMethod.Invoke(instance, new object[] { });
+
+                    if (typeof(IExercise).IsAssignableFrom(type))
+                    {
+                        ((IExercise)instance).Execute();
+                    }
+                    else
+                    {
+                        var executeMethod = type.GetMethod("Execute", BindingFlags.Public | BindingFlags.Instance);
+                        executeMethod.Invoke(instance, new object[] { });
+                    }
                 }
 
                 Console.WriteLine("Finished.");

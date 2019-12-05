@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Advent.Utilities;
 using Advent.Utilities.Attributes;
 
 namespace AdventCalendar2019.D04
 {
     [Exercise("Day 4: Secure Container")]
-    class Y2019D04
+    class Y2019D04 : IExercise
     {
         public void Execute()
         {

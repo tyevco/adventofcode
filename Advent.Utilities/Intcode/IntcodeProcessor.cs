@@ -5,8 +5,6 @@ namespace Advent.Utilities.Intcode
 {
     public class IntcodeProcessor
     {
-        public bool DisplayDebugOutput { get; set; } = true;
-
         public int Pointer { get; private set; }
 
         private static int MaxParameterCount { get; } = 3;
@@ -174,7 +172,7 @@ namespace Advent.Utilities.Intcode
 
         private void OutputDebugStatement(int[] intcode, OpCode opCode, int codePos, ParameterMode[] modes, string instruction)
         {
-            if (DisplayDebugOutput)
+            if (Debug.EnableDebugOutput)
             {
                 switch (opCode)
                 {

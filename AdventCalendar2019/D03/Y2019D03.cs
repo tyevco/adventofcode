@@ -8,7 +8,7 @@ using Advent.Utilities.Attributes;
 namespace AdventCalendar2019.D03
 {
     [Exercise("Day 3: Crossed Wires")]
-    class Y2019D03 : FileSelectionConsole
+    class Y2019D03 : FileSelectionConsole, IExercise
     {
         public void Execute()
         {

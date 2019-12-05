@@ -7,7 +7,7 @@ using Advent.Utilities.Attributes;
 namespace AdventCalendar2019.D01
 {
     [Exercise("Day 1: The Tyranny of the Rocket Equation")]
-    class Y2019D01 : DataParser<IList<int>>
+    class Y2019D01 : DataParser<IList<int>>, IExercise
     {
         public void Execute()
         {
