@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using Advent.Utilities;
 using Advent.Utilities.Attributes;
 using Advent.Utilities.Intcode;
@@ -24,19 +23,6 @@ namespace AdventCalendar2019.D05
             {
                 var output = Processor.Process(intcodeData);
             });
-        }
-
-        protected override IList<ConsoleOption> GetOptions()
-        {
-            return new List<ConsoleOption>
-            {
-                new ConsoleOption
-                {
-                    Text = "Enable Debug Output",
-                    Enabled = () => Debug.EnableDebugOutput,
-                    Handler = () => Debug.EnableDebugOutput = !Debug.EnableDebugOutput,
-                }
-            };
         }
     }
 }
