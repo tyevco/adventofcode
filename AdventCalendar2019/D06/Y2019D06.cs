@@ -55,10 +55,6 @@ namespace AdventCalendar2019.D06
                 satelliteBody.Orbitting = centerBody;
             }
 
-            Console.WriteLine("D:" + diagram["D"]?.IndirectOrbits);
-            Console.WriteLine("L:" + diagram["L"]?.IndirectOrbits);
-            Console.WriteLine("COM:" + diagram["COM"]?.IndirectOrbits);
-
             Console.WriteLine($"Total bodies: {diagram.Chart.Count}, Indirect orbits: {diagram.Chart.Select(b => b.Value.IndirectOrbits).Sum()}");
 
             Console.WriteLine(diagram["YOU"]);
