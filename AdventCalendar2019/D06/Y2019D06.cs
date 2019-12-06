@@ -63,6 +63,8 @@ namespace AdventCalendar2019.D06
 
             Console.WriteLine(diagram["YOU"]);
             Console.WriteLine(diagram["SAN"]);
+
+            Console.WriteLine(diagram.OrbitalTransfersBetween("YOU", "SAN"));
         }
     }
 }
