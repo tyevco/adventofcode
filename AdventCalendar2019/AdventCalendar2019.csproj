@@ -13,6 +13,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="D08\**" />
+    <Compile Remove="D09\**" />
+    <Compile Remove="D10\**" />
+    <EmbeddedResource Remove="D08\**" />
+    <EmbeddedResource Remove="D09\**" />
+    <EmbeddedResource Remove="D10\**" />
+    <None Remove="D08\**" />
+    <None Remove="D09\**" />
+    <None Remove="D10\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Advent.Utilities\Advent.Utilities.csproj" />
   </ItemGroup>
 

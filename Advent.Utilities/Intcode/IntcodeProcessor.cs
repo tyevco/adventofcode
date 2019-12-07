@@ -30,6 +30,8 @@ namespace Advent.Utilities.Intcode
 
         private int ArgPos { get; set; } = 0;
 
+        public bool Halted { get; private set; }
+
         public void Reset()
         {
             this.Program = ProgramData?.Split(",").Select(x => int.Parse(x)).ToArray();
@@ -37,6 +39,7 @@ namespace Advent.Utilities.Intcode
             this.ArgPos = 0;
             this.Arguments = new List<int>();
             Running = false;
+            Halted = false;
         }
 
         public int[] Process()
@@ -85,7 +88,7 @@ namespace Advent.Utilities.Intcode
                             {
                                 input = Arguments[ArgPos++];
 
-                                Console.WriteLine($"Using Input: {input}");
+                                Console.WriteLine($"Using input argument {ArgPos}: {input}");
                             }
                             else
                             {
@@ -166,6 +169,7 @@ namespace Advent.Utilities.Intcode
 
                             break;
                         case OpCode.Exit:
+                            Halted = true;
                             Running = false;
 
                             Pointer++;
@@ -173,6 +177,7 @@ namespace Advent.Utilities.Intcode
                             break;
                         default:
                             Console.WriteLine($"Invalid opcode detected at pos {i}: {Program[i]}");
+                            Halted = true;
                             Running = false;
                             break;
                     }
