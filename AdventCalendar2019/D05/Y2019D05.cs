@@ -1,15 +1,13 @@
-﻿using System.IO;
-using Advent.Utilities;
+﻿using Advent.Utilities;
 using Advent.Utilities.Attributes;
 using Advent.Utilities.Intcode;
+using System.IO;
 
 namespace AdventCalendar2019.D05
 {
     [Exercise("Day 5: Sunny with a Chance of Asteroids")]
     class Y2019D05 : FileSelectionConsole, IExercise
     {
-        private IntcodeProcessor Processor { get; } = new IntcodeProcessor();
-
         public void Execute()
         {
             Start("D05/Data");
@@ -21,7 +19,8 @@ namespace AdventCalendar2019.D05
 
             Timer.Monitor(() =>
             {
-                var output = Processor.Process(intcodeData);
+                IntcodeProcessor Processor = new IntcodeProcessor(intcodeData);
+                var output = Processor.Process();
             });
         }
     }
