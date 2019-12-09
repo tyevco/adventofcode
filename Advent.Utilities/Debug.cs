@@ -2,6 +2,6 @@
 {
     public static class Debug
     {
-        public static bool EnableDebugOutput { get; set; } = true;
+        public static bool EnableDebugOutput { get; set; } = false;
     }
 }

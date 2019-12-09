@@ -213,7 +213,7 @@ namespace Advent.Utilities.Intcode
             }
             else if (mode == ParameterMode.Relative)
             {
-                return Register[RelativeBase + addr];
+                return Register[RelativeBase + Register[addr]];
             }
 
             throw new NotImplementedException($"Invalid Parameter Mode specified. {mode}");
@@ -231,7 +231,7 @@ namespace Advent.Utilities.Intcode
             }
             else if (mode == ParameterMode.Relative)
             {
-                Register[RelativeBase + addr] = value;
+                Register[RelativeBase + Register[addr]] = value;
             }
         }
 
