@@ -98,23 +98,20 @@ namespace AdventCalendar2019.D03
                     totalDistance += distance;
 
                     //System.Console.WriteLine($"{currX},{currY}:{wireDir}");
-                    while (distance-- > 0)
+                    switch (wireDir[0])
                     {
-                        switch (wireDir[0])
-                        {
-                            case 'U':
-                                --currY;
-                                break;
-                            case 'D':
-                                ++currY;
-                                break;
-                            case 'L':
-                                --currX;
-                                break;
-                            case 'R':
-                                ++currX;
-                                break;
-                        }
+                        case 'U':
+                            currY -= distance;
+                            break;
+                        case 'D':
+                            currY += distance;
+                            break;
+                        case 'L':
+                            currX -= distance;
+                            break;
+                        case 'R':
+                            currX += distance;
+                            break;
                     }
 
                     lastPoint = new Point { X = currX, Y = currY, Distance = totalDistance };
