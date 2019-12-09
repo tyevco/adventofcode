@@ -1,9 +1,9 @@
-﻿using Advent.Utilities;
-using Advent.Utilities.Attributes;
-using Advent.Utilities.Intcode;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Advent.Utilities;
+using Advent.Utilities.Attributes;
+using Advent.Utilities.Intcode;
 
 namespace AdventCalendar2019.D07
 {
@@ -50,7 +50,7 @@ namespace AdventCalendar2019.D07
                         IntcodeProcessor processor = new IntcodeProcessor(intcodeData);
                         processors.Add((phase, processor));
                     }
-                    
+
                     for (int i = 0; i < processors.Count; i++)
                     {
                         var processor = processors[i];
@@ -156,12 +156,12 @@ namespace AdventCalendar2019.D07
             }
         }
 
-        /** 
-        * Swap Characters at position 
-        * @param a string value 
-        * @param i position 1 
-        * @param j position 2 
-        * @return swapped string 
+        /**
+        * Swap Characters at position
+        * @param a string value
+        * @param i position 1
+        * @param j position 2
+        * @return swapped string
         */
         public static int[] swap(int[] a,
                                   int i, int j)
