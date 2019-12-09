@@ -25,7 +25,7 @@ namespace AdventCalendar2019.D07
 
             var intcodeData = File.ReadAllText(file);
 
-            int highestSignal = -1;
+            long highestSignal = -1;
             int[] highestPhase = null;
 
             Timer.Monitor(() =>
@@ -41,7 +41,7 @@ namespace AdventCalendar2019.D07
 
                 foreach (var phases in Results)
                 {
-                    int lastOutput = -1;
+                    long lastOutput = -1;
                     IList<(int, IntcodeProcessor)> processors = new List<(int, IntcodeProcessor)>();
 
                     Console.WriteLine($"Phase: {string.Join(",", phases)}");

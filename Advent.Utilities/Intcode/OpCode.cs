@@ -13,6 +13,7 @@ namespace Advent.Utilities.Intcode
         JumpIfFalse = 6,
         LessThan = 7,
         Equals = 8,
+        RelativeBaseAdjust = 9,
         Exit = 99
     }
 
