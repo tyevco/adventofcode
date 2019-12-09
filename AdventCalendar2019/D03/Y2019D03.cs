@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Advent.Utilities;
 using Advent.Utilities.Attributes;
 
@@ -17,61 +17,116 @@ namespace AdventCalendar2019.D03
 
         protected override void Execute(string file)
         {
+            IDictionary<string, (Segment, Segment, Point)> intersections = new Dictionary<string, (Segment, Segment, Point)>();
+
             Timer.Monitor(() =>
             {
-                var maps = new WirePlotter().ParseData(file);
-
-                int lowestDistance = int.MaxValue;
-                ManhattanPoint seekPoint = null;
-                object obj = new object();
+                var maps = ParseData(File.ReadAllLines(file));
 
                 var firstMap = maps[0];
                 var secondMap = maps[1];
+                bool skipOrigin = true;
 
-                ConcurrentBag<(ManhattanPoint, ManhattanPoint)> intersections = new ConcurrentBag<(ManhattanPoint, ManhattanPoint)>();
 
-                ParallelOptions options = new ParallelOptions
+                foreach (var segment in firstMap.Segments)
                 {
-                    MaxDegreeOfParallelism = 100
-                };
-                Parallel.ForEach(firstMap.Points, options, (firstPoint) =>
-                {
-                    if (!intersections.Any(p => p.Item1.X == firstPoint.X && p.Item1.Y == firstPoint.Y))
+                    foreach (var otherSegment in secondMap.Segments)
                     {
-                        var secondPoint = secondMap.Points.FirstOrDefault(s => firstPoint.X == s.X && firstPoint.Y == s.Y);
+                        var intersection = otherSegment.Intersection(segment, skipOrigin);
 
-                        if (secondPoint != null)
+                        if (intersection == null)
                         {
-                            intersections.Add((firstPoint, secondPoint));
-
-                            var mDis = firstPoint.CalculateDistance(0, 0);
-
-                            lock (obj)
+                            continue;
+                        }
+                        else
+                        {
+                            if (!intersections.ContainsKey(intersection.ToString()))
                             {
-                                if (mDis < lowestDistance)
-                                {
-                                    lowestDistance = mDis;
-                                    seekPoint = firstPoint;
-                                }
+                                intersections.Add(intersection.ToString(), (segment, otherSegment, intersection));
                             }
-                            //Console.WriteLine($"{point.X},{point.Y}:{mDis} [{point.Value}]");
                         }
                     }
-                });
+
+                    skipOrigin = false;
+                }
+
+                var seekPoint = intersections.OrderBy(x => x.Value.Item3.CalculateDistance(0, 0)).FirstOrDefault().Value.Item3;
+
                 if (seekPoint != null)
                 {
-                    Console.WriteLine($"{seekPoint?.X},{seekPoint?.Y}:{lowestDistance}");
+                    Console.WriteLine($"{seekPoint?.X},{seekPoint?.Y}:{seekPoint.CalculateDistance(0, 0)}");
                 }
                 else
                 {
                     Console.WriteLine("NO answer...");
                 }
 
-                foreach (var intersection in intersections.OrderBy(x => (x.Item1.Id + x.Item2.Id + 2)))
-                {
-                    Console.WriteLine($"{intersection.Item1.Id + 1} {intersection.Item2.Id + 1} : {intersection.Item1.Id + intersection.Item2.Id + 2 }");
-                }
+
+                var winningIntersection = intersections.OrderBy(x => CalculateDistanceToIntersection(x.Value)).FirstOrDefault().Value;
+                Console.WriteLine($"{winningIntersection.Item1.Start.Distance + winningIntersection.Item1.Start.CalculateDistance(winningIntersection.Item3)} + {winningIntersection.Item2.Start.Distance + winningIntersection.Item2.Start.CalculateDistance(winningIntersection.Item3)} : {CalculateDistanceToIntersection(winningIntersection)}");
             });
+        }
+
+        private int CalculateDistanceToIntersection((Segment, Segment, Point) intersection)
+        {
+            return intersection.Item1.Start.CalculateDistance(intersection.Item3)
+                    + intersection.Item2.Start.CalculateDistance(intersection.Item3)
+                    + intersection.Item1.Start.Distance
+                    + intersection.Item2.Start.Distance;
+        }
+
+        private IList<Map> ParseData(IList<string> data)
+        {
+            IList<Map> maps = new List<Map>();
+            int startX = 0, startY = 0;
+
+            foreach (var wirePathData in data)
+            {
+                Map map = new Map();
+                var wirePath = wirePathData.Split(",");
+                int currX = startX, currY = startY;
+
+                var lastPoint = new Point { X = currX, Y = currY, Distance = 0 };
+                int totalDistance = 0;
+
+                foreach (var wireDir in wirePath)
+                {
+                    Segment segment = new Segment();
+                    var distance = int.Parse(wireDir.Substring(1));
+
+                    segment.Start = lastPoint;
+                    totalDistance += distance;
+
+                    //System.Console.WriteLine($"{currX},{currY}:{wireDir}");
+                    while (distance-- > 0)
+                    {
+                        switch (wireDir[0])
+                        {
+                            case 'U':
+                                --currY;
+                                break;
+                            case 'D':
+                                ++currY;
+                                break;
+                            case 'L':
+                                --currX;
+                                break;
+                            case 'R':
+                                ++currX;
+                                break;
+                        }
+                    }
+
+                    lastPoint = new Point { X = currX, Y = currY, Distance = totalDistance };
+
+                    segment.End = lastPoint;
+                    map.Segments.Add(segment);
+                }
+
+                maps.Add(map);
+            }
+
+            return maps;
         }
     }
 }
