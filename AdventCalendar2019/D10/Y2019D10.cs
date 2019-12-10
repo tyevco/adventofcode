@@ -33,7 +33,7 @@ namespace AdventCalendar2019.D10
                 foreach (var point in points)
                 {
                     var slopeGroups = points.Where(p => p != point)
-                                         .Select(p => new KeyValuePair<Point, Slope>(p, point.CalculateSlope(p)))
+                                         .Select(p => new KeyValuePair<Point, Vector2i>(p, point.CalculateVector(p)))
                                          .OrderBy(p => point.CalculateDistance(p.Key))
                                          .GroupBy(x => (x.Value.Angle + 270) % 360)
                                          .OrderBy(x => x.Key)

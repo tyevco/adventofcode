@@ -11,9 +11,9 @@ namespace Advent.Utilities
 
             // Test the box normals (x-, y- and z-axes)
             var boxNormals = new IVector[] {
-                new Vector(1,0,0),
-                new Vector(0,1,0),
-                new Vector(0,0,1)
+                new Vector3d(1,0,0),
+                new Vector3d(0,1,0),
+                new Vector3d(0,0,1)
             };
 
             for (int i = 0; i < 3; i++)

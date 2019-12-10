@@ -1,6 +1,6 @@
 ﻿namespace Advent.Utilities
 {
-    public class Vector : IVector
+    public class Vector3d : IVector
     {
 
         public double X { get; private set; }
@@ -11,7 +11,7 @@
 
         public double[] Coords { get; }
 
-        public Vector(double x, double y, double z)
+        public Vector3d(double x, double y, double z)
         {
             X = x;
             Y = y;
@@ -22,7 +22,7 @@
 
         public IVector Cross(IVector other)
         {
-            return new Vector((Y * other.Z) - (Z * other.Y), (X * other.Z) - (Z * other.X), (X * other.Y) - (Y * other.X));
+            return new Vector3d((Y * other.Z) - (Z * other.Y), (X * other.Z) - (Z * other.X), (X * other.Y) - (Y * other.X));
         }
 
         public double Dot(IVector other)
@@ -32,7 +32,7 @@
 
         public IVector Minus(IVector other)
         {
-            return new Vector(other.X - X, other.Y - Y, other.Z - Z);
+            return new Vector3d(other.X - X, other.Y - Y, other.Z - Z);
         }
     }
 }

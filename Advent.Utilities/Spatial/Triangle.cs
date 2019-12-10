@@ -14,7 +14,7 @@ namespace Advent.Utilities
 
         public IEnumerable<IVector> Vertices { get; }
 
-        public Triangle(Vector a, Vector b, Vector c)
+        public Triangle(Vector3d a, Vector3d b, Vector3d c)
         {
             A = a;
             B = b;

@@ -43,15 +43,15 @@ namespace AdventCalendar2018.D23
         {
             return new List<ITriangle>
             {
-                new Triangle(new Vector(X, Y, Z + R), new Vector(X + R, Y, Z), new Vector(X, Y + R, Z)),
-                new Triangle(new Vector(X, Y, Z + R), new Vector(X + R, Y, Z), new Vector(X, Y - R, Z)),
-                new Triangle(new Vector(X, Y, Z + R), new Vector(X - R, Y, Z), new Vector(X, Y + R, Z)),
-                new Triangle(new Vector(X, Y, Z + R), new Vector(X - R, Y, Z), new Vector(X, Y - R, Z)),
+                new Triangle(new Vector3d(X, Y, Z + R), new Vector3d(X + R, Y, Z), new Vector3d(X, Y + R, Z)),
+                new Triangle(new Vector3d(X, Y, Z + R), new Vector3d(X + R, Y, Z), new Vector3d(X, Y - R, Z)),
+                new Triangle(new Vector3d(X, Y, Z + R), new Vector3d(X - R, Y, Z), new Vector3d(X, Y + R, Z)),
+                new Triangle(new Vector3d(X, Y, Z + R), new Vector3d(X - R, Y, Z), new Vector3d(X, Y - R, Z)),
 
-                new Triangle(new Vector(X, Y, Z - R), new Vector(X + R, Y, Z), new Vector(X, Y + R, Z)),
-                new Triangle(new Vector(X, Y, Z - R), new Vector(X + R, Y, Z), new Vector(X, Y - R, Z)),
-                new Triangle(new Vector(X, Y, Z - R), new Vector(X - R, Y, Z), new Vector(X, Y - R, Z)),
-                new Triangle(new Vector(X, Y, Z - R), new Vector(X - R, Y, Z), new Vector(X, Y + R, Z))
+                new Triangle(new Vector3d(X, Y, Z - R), new Vector3d(X + R, Y, Z), new Vector3d(X, Y + R, Z)),
+                new Triangle(new Vector3d(X, Y, Z - R), new Vector3d(X + R, Y, Z), new Vector3d(X, Y - R, Z)),
+                new Triangle(new Vector3d(X, Y, Z - R), new Vector3d(X - R, Y, Z), new Vector3d(X, Y - R, Z)),
+                new Triangle(new Vector3d(X, Y, Z - R), new Vector3d(X - R, Y, Z), new Vector3d(X, Y + R, Z))
             };
         }
 

@@ -48,9 +48,9 @@ namespace Advent.Utilities.Data.Map
             return CalculateDistance(other.X, other.Y);
         }
 
-        public Slope CalculateSlope(Point other)
+        public Vector2i CalculateVector(Point other)
         {
-            return new Slope(other.X - X, other.Y - Y);
+            return new Vector2i(other.X - X, other.Y - Y);
         }
     }
 }

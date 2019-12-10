@@ -5,11 +5,11 @@ using Advent.Utilities.Mathematics;
 namespace Advent.Utilities.Data.Map
 {
     [DebuggerDisplay("Δ({Dx},{Dy})")]
-    public class Slope
+    public class Vector2i
     {
-        public Slope() { }
+        public Vector2i() { }
 
-        public Slope(int dx, int dy)
+        public Vector2i(int dx, int dy)
         {
             int gcd = GCD.Calculate(new int[] { dx, dy });
             Dx = dx / gcd;
@@ -20,12 +20,12 @@ namespace Advent.Utilities.Data.Map
 
         public int Dy { get; set; }
 
-        public static bool operator ==(Slope first, Slope second)
+        public static bool operator ==(Vector2i first, Vector2i second)
         {
             return first.Dx == second.Dx && first.Dy == second.Dy;
         }
 
-        public static bool operator !=(Slope first, Slope second)
+        public static bool operator !=(Vector2i first, Vector2i second)
         {
             return first.Dx != second.Dx || first.Dy != second.Dy;
         }

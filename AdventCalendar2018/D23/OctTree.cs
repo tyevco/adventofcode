@@ -112,14 +112,14 @@ namespace AdventCalendar2018.D23
         public IAABoundingBox GetBounds()
         {
             return new AABoundingBox(
-                new Vector(MinimumX, MinimumY, MinimumZ),
-                new Vector(MinimumX, MinimumY, MaximumZ),
-                new Vector(MinimumX, MaximumY, MaximumZ),
-                new Vector(MinimumX, MaximumY, MinimumZ),
-                new Vector(MaximumX, MinimumY, MinimumZ),
-                new Vector(MaximumX, MinimumY, MaximumZ),
-                new Vector(MaximumX, MaximumY, MaximumZ),
-                new Vector(MaximumX, MaximumY, MinimumZ)
+                new Vector3d(MinimumX, MinimumY, MinimumZ),
+                new Vector3d(MinimumX, MinimumY, MaximumZ),
+                new Vector3d(MinimumX, MaximumY, MaximumZ),
+                new Vector3d(MinimumX, MaximumY, MinimumZ),
+                new Vector3d(MaximumX, MinimumY, MinimumZ),
+                new Vector3d(MaximumX, MinimumY, MaximumZ),
+                new Vector3d(MaximumX, MaximumY, MaximumZ),
+                new Vector3d(MaximumX, MaximumY, MinimumZ)
                 );
         }
     }
