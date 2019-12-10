@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Advent.Utilities
+namespace Advent.Utilities.Data.Manhattan
 {
     [DebuggerDisplay("{X},{Y}")]
     public class ManhattanPoint

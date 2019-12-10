@@ -1,4 +1,4 @@
-﻿namespace Advent.Utilities.Data
+﻿namespace Advent.Utilities.Data.Manhattan
 {
     public class Grid<T>
     {

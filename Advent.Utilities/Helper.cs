@@ -33,6 +33,11 @@ namespace Advent.Utilities
 
         public static void PrintArray<T>(T[] array, int width = int.MaxValue, string delimiter = "")
         {
+            if (width == int.MaxValue)
+            {
+                width = array.Length;
+            }
+
             for (int i = 0; i < array.Length; i++)
             {
                 Console.Write(array[i]);
