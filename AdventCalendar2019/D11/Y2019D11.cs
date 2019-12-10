@@ -3,7 +3,7 @@ using Advent.Utilities.Attributes;
 using Advent.Utilities.Intcode;
 using System.IO;
 
-namespace AdventCalendar2019.D09
+namespace AdventCalendar2019.D11
 {
     [Exercise("Day 11: ")]
     class Y2019D11 : FileSelectionConsole, IExercise
