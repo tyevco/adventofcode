@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Advent.Utilities.Data;
+using Advent.Utilities.Data.Manhattan;
 
 namespace AdventCalendar2018.D15
 {

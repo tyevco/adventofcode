@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text;
-using Advent.Utilities.Data;
+using Advent.Utilities.Data.Manhattan;
 
 namespace AdventCalendar2018.D22
 {
