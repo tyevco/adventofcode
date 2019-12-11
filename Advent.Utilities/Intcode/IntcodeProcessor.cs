@@ -90,7 +90,10 @@ namespace Advent.Utilities.Intcode
                             {
                                 input = Arguments[ArgPos++];
 
-                                Console.WriteLine($"Using input argument {ArgPos}: {input}");
+                                if (Debug.EnableDebugOutput)
+                                {
+                                    Console.WriteLine($"Using input argument {ArgPos}: {input}");
+                                }
                             }
                             else
                             {
@@ -112,8 +115,15 @@ namespace Advent.Utilities.Intcode
                         case OpCode.Output:
                             param1 = ReadValue(modes[0], i + 1);
 
-                            Console.WriteLine(param1);
-                            bool cont = Output?.Invoke(param1) ?? true;
+                            bool cont = true;
+                            if (Output != null)
+                            {
+                                cont = Output?.Invoke(param1) ?? true;
+                            }
+                            else
+                            {
+                                Console.WriteLine(param1);
+                            }
 
                             if (!cont)
                             {
