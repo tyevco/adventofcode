@@ -8,7 +8,6 @@ namespace Advent.Utilities.Data.Map
     {
         public Point()
         {
-
         }
 
         public Point(int x, int y)
@@ -36,7 +35,6 @@ namespace Advent.Utilities.Data.Map
             return $"{X},{Y}";
         }
 
-
         public int CalculateDistance(int x, int y)
         {
             return Math.Abs(X - x) + Math.Abs(Y - y);
@@ -51,6 +49,21 @@ namespace Advent.Utilities.Data.Map
         public Vector2i CalculateVector(Point other)
         {
             return new Vector2i(other.X - X, other.Y - Y);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Point point &&
+                   X == point.X &&
+                   Y == point.Y;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = 1307379088;
+            hashCode = hashCode * -1521134295 + X.GetHashCode();
+            hashCode = hashCode * -1521134295 + Y.GetHashCode();
+            return hashCode;
         }
     }
 }
