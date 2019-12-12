@@ -10,7 +10,7 @@ namespace Advent.Utilities
             double boxMin, boxMax;
 
             // Test the box normals (x-, y- and z-axes)
-            var boxNormals = new IVector[] {
+            var boxNormals = new IVector<double>[] {
                 new Vector3d(1,0,0),
                 new Vector3d(0,1,0),
                 new Vector3d(0,0,1)
@@ -18,7 +18,7 @@ namespace Advent.Utilities
 
             for (int i = 0; i < 3; i++)
             {
-                IVector n = boxNormals[i];
+                IVector<double> n = boxNormals[i];
                 Project(triangle.Vertices, boxNormals[i], out triangleMin, out triangleMax);
                 if (triangleMax < box.Start.Coords[i] || triangleMin > box.End.Coords[i])
                     return false; // No intersection possible.
@@ -31,7 +31,7 @@ namespace Advent.Utilities
                 return false; // No intersection possible.
 
             // Test the nine edge cross-products
-            IVector[] triangleEdges = new IVector[] {
+            IVector<double>[] triangleEdges = new IVector<double>[] {
                 triangle.A.Minus(triangle.B),
                 triangle.B.Minus(triangle.C),
                 triangle.C.Minus(triangle.A)
@@ -41,7 +41,7 @@ namespace Advent.Utilities
                 for (int j = 0; j < 3; j++)
                 {
                     // The box normals are the same as it's edge tangents
-                    IVector axis = triangleEdges[i].Cross(boxNormals[j]);
+                    IVector<double> axis = triangleEdges[i].Cross(boxNormals[j]);
                     Project(box.Vertices, axis, out boxMin, out boxMax);
                     Project(triangle.Vertices, axis, out triangleMin, out triangleMax);
                     if (boxMax < triangleMin || boxMin > triangleMax)
@@ -52,7 +52,7 @@ namespace Advent.Utilities
             return true;
         }
 
-        public static void Project(IEnumerable<IVector> points, IVector axis,
+        public static void Project(IEnumerable<IVector<double>> points, IVector<double> axis,
                 out double min, out double max)
         {
             min = double.PositiveInfinity;

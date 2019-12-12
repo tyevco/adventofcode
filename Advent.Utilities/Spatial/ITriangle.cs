@@ -2,9 +2,9 @@
 {
     public interface ITriangle : IShape
     {
-        IVector Normal { get; }
-        IVector A { get; }
-        IVector B { get; }
-        IVector C { get; }
+        IVector<double> Normal { get; }
+        IVector<double> A { get; }
+        IVector<double> B { get; }
+        IVector<double> C { get; }
     }
 }

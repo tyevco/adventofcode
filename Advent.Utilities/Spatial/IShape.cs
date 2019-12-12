@@ -4,7 +4,7 @@ namespace Advent.Utilities
 {
     public interface IShape
     {
-        IEnumerable<IVector> Vertices { get; }
+        IEnumerable<IVector<double>> Vertices { get; }
     }
 }
 

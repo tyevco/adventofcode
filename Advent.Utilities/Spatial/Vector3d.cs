@@ -1,8 +1,7 @@
 ﻿namespace Advent.Utilities
 {
-    public class Vector3d : IVector
+    public class Vector3d : IVector<double>
     {
-
         public double X { get; private set; }
 
         public double Y { get; private set; }
@@ -20,17 +19,17 @@
             Coords = new[] { X, Y, Z };
         }
 
-        public IVector Cross(IVector other)
+        public IVector<double> Cross(IVector<double> other)
         {
             return new Vector3d((Y * other.Z) - (Z * other.Y), (X * other.Z) - (Z * other.X), (X * other.Y) - (Y * other.X));
         }
 
-        public double Dot(IVector other)
+        public double Dot(IVector<double> other)
         {
             return (X * other.X) + (Y * other.Y) + (Z * other.Z);
         }
 
-        public IVector Minus(IVector other)
+        public IVector<double> Minus(IVector<double> other)
         {
             return new Vector3d(other.X - X, other.Y - Y, other.Z - Z);
         }

@@ -7,27 +7,40 @@ namespace Advent.Utilities.Data.Map
     public class Point
     {
         public Point()
+            : this(0, 0, 0)
+        {
+        }
+
+        public Point(int x)
+            : this(x, 0, 0)
         {
         }
 
         public Point(int x, int y)
+            : this(x, y, 0)
+        {
+        }
+
+        public Point(int x, int y, int z)
         {
             X = x;
             Y = y;
+            Z = z;
         }
 
         public int X { get; set; }
         public int Y { get; set; }
+        public int Z { get; set; }
         public object Data { get; set; }
 
         public static bool operator ==(Point first, Point second)
         {
-            return first.X == second.X && first.Y == second.Y;
+            return first.Equals(second);
         }
 
         public static bool operator !=(Point first, Point second)
         {
-            return first.X != second.X || first.Y != second.Y;
+            return !first.Equals(second);
         }
 
         public override string ToString()
@@ -39,7 +52,6 @@ namespace Advent.Utilities.Data.Map
         {
             return Math.Abs(X - x) + Math.Abs(Y - y);
         }
-
 
         public int CalculateDistance(Point other)
         {
@@ -55,7 +67,8 @@ namespace Advent.Utilities.Data.Map
         {
             return obj is Point point &&
                    X == point.X &&
-                   Y == point.Y;
+                   Y == point.Y &&
+                   Z == point.Z;
         }
 
         public override int GetHashCode()
@@ -63,6 +76,7 @@ namespace Advent.Utilities.Data.Map
             var hashCode = 1307379088;
             hashCode = hashCode * -1521134295 + X.GetHashCode();
             hashCode = hashCode * -1521134295 + Y.GetHashCode();
+            hashCode = hashCode * -1521134295 + Z.GetHashCode();
             return hashCode;
         }
     }

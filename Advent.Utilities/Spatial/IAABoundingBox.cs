@@ -2,7 +2,7 @@
 {
     public interface IAABoundingBox : IShape
     {
-        IVector Start { get; }
-        IVector End { get; }
+        IVector<double> Start { get; }
+        IVector<double> End { get; }
     }
 }
