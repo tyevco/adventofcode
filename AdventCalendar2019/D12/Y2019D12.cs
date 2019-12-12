@@ -34,13 +34,13 @@ namespace AdventCalendar2019.D12
         {
             int cycles = Helper.ReadIntInput("Number of cycles");
             int bodyCount = 0;
-            IList<Body> bodies = new List<Body>();
+            IList<Moon> bodies = new List<Moon>();
             foreach (string bodyData in lines)
             {
                 var bodyMatch = BodyParser.Match(bodyData);
                 if (bodyMatch.Success)
                 {
-                    var body = new Body
+                    var body = new Moon
                     {
                         Position = new Point(
                                         int.Parse(bodyMatch.Groups[1].Value),
@@ -88,13 +88,13 @@ namespace AdventCalendar2019.D12
         private void PartTwo(string[] lines)
         {
             int bodyCount = 0;
-            IList<Body> bodies = new List<Body>();
+            IList<Moon> bodies = new List<Moon>();
             foreach (string bodyData in lines)
             {
                 var bodyMatch = BodyParser.Match(bodyData);
                 if (bodyMatch.Success)
                 {
-                    var body = new Body
+                    var body = new Moon
                     {
                         Position = new Point(
                                         int.Parse(bodyMatch.Groups[1].Value),
@@ -116,31 +116,31 @@ namespace AdventCalendar2019.D12
                     bodies,
                     (b1, b2) => b1.ApplyGravityX(b2),
                     b => b.MoveX(),
-                    b => b.Position.X,
-                    b => b.Velocity.X);
+                    b => b.Position.X.GetHashCode(),
+                    b => b.Velocity.X.GetHashCode());
 
             int cycleY = GetCycleCountUntilRepeat(
                     bodies,
                     (b1, b2) => b1.ApplyGravityY(b2),
                     b => b.MoveY(),
-                    b => b.Position.Y,
-                    b => b.Velocity.Y);
+                    b => b.Position.Y.GetHashCode(),
+                    b => b.Velocity.Y.GetHashCode());
 
             int cycleZ = GetCycleCountUntilRepeat(
                     bodies,
                     (b1, b2) => b1.ApplyGravityZ(b2),
                     b => b.MoveZ(),
-                    b => b.Position.Z,
-                    b => b.Velocity.Z);
+                    b => b.Position.Z.GetHashCode(),
+                    b => b.Velocity.Z.GetHashCode());
 
             long cycleMax = Mathematics.LCM(cycleX, Mathematics.LCM(cycleY, cycleZ));
 
             Console.WriteLine($"X:{cycleX}, Y:{cycleY}, Z:{cycleZ} | Repeats after {cycleMax} cycles.");
         }
 
-        private int GetCycleCountUntilRepeat(IList<Body> bodies, Action<Body, Body> gravity, Action<Body> move, Func<Body, int> position, Func<Body, int> velocity)
+        private int GetCycleCountUntilRepeat(IList<Moon> bodies, Action<Moon, Moon> gravity, Action<Moon> move, Func<Moon, long> position, Func<Moon, long> velocity)
         {
-            IDictionary<int, int> cycles = new Dictionary<int, int>();
+            IDictionary<long, long> cycles = new Dictionary<long, long>();
             bool running = true;
             while (running)
             {
@@ -157,7 +157,7 @@ namespace AdventCalendar2019.D12
                     move(body);
                 }
 
-                int hash = GetHash(bodies, position, velocity);
+                long hash = GetHash(bodies, position, velocity);
                 if (cycles.ContainsKey(hash))
                 {
                     running = false;
@@ -171,7 +171,7 @@ namespace AdventCalendar2019.D12
             return cycles.Count;
         }
 
-        private static void WriteBodies(IList<Body> bodies)
+        private static void WriteBodies(IList<Moon> bodies)
         {
             foreach (var body in bodies)
             {
@@ -184,9 +184,9 @@ namespace AdventCalendar2019.D12
             }
         }
 
-        private int GetHash(IList<Body> bodies, Func<Body, int> GetFirstFunc, Func<Body, int> GetSecondFunc)
+        private long GetHash(IList<Moon> bodies, Func<Moon, long> GetFirstFunc, Func<Moon, long> GetSecondFunc)
         {
-            int hash = 93525;
+            long hash = 93525;
 
             foreach (var body in bodies)
             {

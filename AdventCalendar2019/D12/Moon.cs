@@ -4,7 +4,7 @@ using System;
 
 namespace AdventCalendar2019.D12
 {
-    class Body
+    class Moon
     {
         public int ID { get; set; }
         public Point Position { get; set; }
@@ -24,14 +24,14 @@ namespace AdventCalendar2019.D12
             return $"pot: {PotentialEnergy}   kin: {KineticEnergy};   total:  {TotalEnergy}";
         }
 
-        public void ApplyGravity(Body other)
+        public void ApplyGravity(Moon other)
         {
             ApplyGravityX(other);
             ApplyGravityY(other);
             ApplyGravityZ(other);
         }
 
-        public void ApplyGravityX(Body other)
+        public void ApplyGravityX(Moon other)
         {
             if (other.ID != ID)
             {
@@ -46,7 +46,7 @@ namespace AdventCalendar2019.D12
             }
         }
 
-        public void ApplyGravityY(Body other)
+        public void ApplyGravityY(Moon other)
         {
             if (other.ID != ID)
             {
@@ -61,7 +61,7 @@ namespace AdventCalendar2019.D12
             }
         }
 
-        public void ApplyGravityZ(Body other)
+        public void ApplyGravityZ(Moon other)
         {
             if (other.ID != ID)
             {
