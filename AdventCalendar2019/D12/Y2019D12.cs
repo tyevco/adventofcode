@@ -1,6 +1,7 @@
 ﻿using Advent.Utilities;
 using Advent.Utilities.Attributes;
 using Advent.Utilities.Data.Map;
+using Advent.Utilities.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,59 +23,152 @@ namespace AdventCalendar2019.D12
         protected override void Execute(string file)
         {
             var lines = File.ReadAllLines(file);
-            int cycles = Helper.ReadIntInput("Number of cycles");
-            int bodyCount = 0;
             Timer.Monitor(() =>
             {
-                IList<Body> bodies = new List<Body>();
-                foreach (string bodyData in lines)
+                //PartOne(lines);
+                PartTwo(lines);
+            });
+        }
+
+        private void PartOne(string[] lines)
+        {
+            int cycles = Helper.ReadIntInput("Number of cycles");
+            int bodyCount = 0;
+            IList<Body> bodies = new List<Body>();
+            foreach (string bodyData in lines)
+            {
+                var bodyMatch = BodyParser.Match(bodyData);
+                if (bodyMatch.Success)
                 {
-                    var bodyMatch = BodyParser.Match(bodyData);
-                    if (bodyMatch.Success)
+                    var body = new Body
                     {
-                        var body = new Body
-                        {
-                            Position = new Point(
-                                            int.Parse(bodyMatch.Groups[1].Value),
-                                            int.Parse(bodyMatch.Groups[2].Value),
-                                            int.Parse(bodyMatch.Groups[3].Value)),
-                            Velocity = new Vector3i(0, 0, 0),
-                            ID = bodyCount++,
-                        };
+                        Position = new Point(
+                                        int.Parse(bodyMatch.Groups[1].Value),
+                                        int.Parse(bodyMatch.Groups[2].Value),
+                                        int.Parse(bodyMatch.Groups[3].Value)),
+                        Velocity = new Vector3i(0, 0, 0),
+                        ID = bodyCount++,
+                    };
 
-                        bodies.Add(body);
-                    }
-                    else
-                    {
-                        throw new InvalidDataException("Input data had an issue.");
-                    }
+                    bodies.Add(body);
                 }
-
-                int i = 0;
-                for (i = 0; i < cycles; i++)
+                else
                 {
-                    Console.WriteLine($"After {i} steps:");
-                    WriteBodies(bodies);
-
-                    foreach (var body in bodies)
-                    {
-                        foreach (var other in bodies)
-                        {
-                            body.ApplyGravity(other);
-                        }
-                    }
-
-                    foreach (var body in bodies)
-                    {
-                        body.Move();
-                    }
+                    throw new InvalidDataException("Input data had an issue.");
                 }
+            }
 
+            int i = 0;
+            for (i = 0; i < cycles; i++)
+            {
                 Console.WriteLine($"After {i} steps:");
                 WriteBodies(bodies);
 
-                Console.WriteLine($"Sum of total energies: {bodies.Select(x => x.TotalEnergy).Sum()}");
-            });
+                foreach (var body in bodies)
+                {
+                    foreach (var other in bodies)
+                    {
+                        body.ApplyGravity(other);
+                    }
+                }
+
+                foreach (var body in bodies)
+                {
+                    body.Move();
+                }
+            }
+
+            Console.WriteLine($"After {i} steps:");
+            WriteBodies(bodies);
+
+            Console.WriteLine($"Sum of total energies: {bodies.Select(x => x.TotalEnergy).Sum()}");
+        }
+
+
+        private void PartTwo(string[] lines)
+        {
+            int bodyCount = 0;
+            IList<Body> bodies = new List<Body>();
+            foreach (string bodyData in lines)
+            {
+                var bodyMatch = BodyParser.Match(bodyData);
+                if (bodyMatch.Success)
+                {
+                    var body = new Body
+                    {
+                        Position = new Point(
+                                        int.Parse(bodyMatch.Groups[1].Value),
+                                        int.Parse(bodyMatch.Groups[2].Value),
+                                        int.Parse(bodyMatch.Groups[3].Value)),
+                        Velocity = new Vector3i(0, 0, 0),
+                        ID = bodyCount++,
+                    };
+
+                    bodies.Add(body);
+                }
+                else
+                {
+                    throw new InvalidDataException("Input data had an issue.");
+                }
+            }
+
+            int cycleX = GetCycleCountUntilRepeat(
+                    bodies,
+                    (b1, b2) => b1.ApplyGravityX(b2),
+                    b => b.MoveX(),
+                    b => b.Position.X,
+                    b => b.Velocity.X);
+
+            int cycleY = GetCycleCountUntilRepeat(
+                    bodies,
+                    (b1, b2) => b1.ApplyGravityY(b2),
+                    b => b.MoveY(),
+                    b => b.Position.Y,
+                    b => b.Velocity.Y);
+
+            int cycleZ = GetCycleCountUntilRepeat(
+                    bodies,
+                    (b1, b2) => b1.ApplyGravityZ(b2),
+                    b => b.MoveZ(),
+                    b => b.Position.Z,
+                    b => b.Velocity.Z);
+
+            long cycleMax = Mathematics.LCM(cycleX, Mathematics.LCM(cycleY, cycleZ));
+
+            Console.WriteLine($"X:{cycleX}, Y:{cycleY}, Z:{cycleZ} | Repeats after {cycleMax} cycles.");
+        }
+
+        private int GetCycleCountUntilRepeat(IList<Body> bodies, Action<Body, Body> gravity, Action<Body> move, Func<Body, int> position, Func<Body, int> velocity)
+        {
+            IDictionary<int, int> cycles = new Dictionary<int, int>();
+            bool running = true;
+            while (running)
+            {
+                foreach (var body in bodies)
+                {
+                    foreach (var other in bodies)
+                    {
+                        gravity(body, other);
+                    }
+                }
+
+                foreach (var body in bodies)
+                {
+                    move(body);
+                }
+
+                int hash = GetHash(bodies, position, velocity);
+                if (cycles.ContainsKey(hash))
+                {
+                    running = false;
+                }
+                else
+                {
+                    cycles[hash] = 1;
+                }
+            }
+
+            return cycles.Count;
         }
 
         private static void WriteBodies(IList<Body> bodies)
@@ -88,6 +182,19 @@ namespace AdventCalendar2019.D12
             {
                 Console.WriteLine(body.ToEnergyString());
             }
+        }
+
+        private int GetHash(IList<Body> bodies, Func<Body, int> GetFirstFunc, Func<Body, int> GetSecondFunc)
+        {
+            int hash = 93525;
+
+            foreach (var body in bodies)
+            {
+                hash = hash * 7848 + GetFirstFunc(body);
+                hash = hash * 7848 + GetSecondFunc(body);
+            }
+
+            return hash;
         }
     }
 }

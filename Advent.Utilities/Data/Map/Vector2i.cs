@@ -9,16 +9,16 @@ namespace Advent.Utilities.Data.Map
     {
         public Vector2i() { }
 
-        public Vector2i(int dx, int dy)
+        public Vector2i(long dx, long dy)
         {
-            int gcd = GCD.Calculate(new int[] { dx, dy });
+            long gcd = Mathematics.Mathematics.Calculate(new long[] { dx, dy });
             Dx = dx / gcd;
             Dy = dy / gcd;
         }
 
-        public int Dx { get; set; }
+        public long Dx { get; set; }
 
-        public int Dy { get; set; }
+        public long Dy { get; set; }
 
         public static bool operator ==(Vector2i first, Vector2i second)
         {

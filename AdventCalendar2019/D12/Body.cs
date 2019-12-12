@@ -26,6 +26,13 @@ namespace AdventCalendar2019.D12
 
         public void ApplyGravity(Body other)
         {
+            ApplyGravityX(other);
+            ApplyGravityY(other);
+            ApplyGravityZ(other);
+        }
+
+        public void ApplyGravityX(Body other)
+        {
             if (other.ID != ID)
             {
                 if (other.Position.X < Position.X)
@@ -36,7 +43,13 @@ namespace AdventCalendar2019.D12
                 {
                     Velocity.X = Velocity.X + 1;
                 }
+            }
+        }
 
+        public void ApplyGravityY(Body other)
+        {
+            if (other.ID != ID)
+            {
                 if (other.Position.Y < Position.Y)
                 {
                     Velocity.Y = Velocity.Y - 1;
@@ -45,7 +58,13 @@ namespace AdventCalendar2019.D12
                 {
                     Velocity.Y = Velocity.Y + 1;
                 }
+            }
+        }
 
+        public void ApplyGravityZ(Body other)
+        {
+            if (other.ID != ID)
+            {
                 if (other.Position.Z < Position.Z)
                 {
                     Velocity.Z = Velocity.Z - 1;
@@ -59,8 +78,23 @@ namespace AdventCalendar2019.D12
 
         public void Move()
         {
+            MoveX();
+            MoveY();
+            MoveZ();
+        }
+
+        public void MoveX()
+        {
             this.Position.X += Velocity.X;
+        }
+
+        public void MoveY()
+        {
             this.Position.Y += Velocity.Y;
+        }
+
+        public void MoveZ()
+        {
             this.Position.Z += Velocity.Z;
         }
     }
