@@ -35,12 +35,12 @@ namespace Advent.Utilities.Data.Map
 
         public static bool operator ==(Point first, Point second)
         {
-            return first.Equals(second);
+            return first?.Equals(second) ?? false;
         }
 
         public static bool operator !=(Point first, Point second)
         {
-            return !first.Equals(second);
+            return !first?.Equals(second) ?? false;
         }
 
         public override string ToString()

@@ -40,7 +40,7 @@ namespace Advent.Utilities
             {
                 while (seekFile)
                 {
-                    Console.Clear();
+                    Console.SetCursorPosition(0, 0);
 
                     for (int i = 0; i < files.Count; i++)
                     {

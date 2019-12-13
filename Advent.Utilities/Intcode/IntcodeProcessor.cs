@@ -23,7 +23,9 @@ namespace Advent.Utilities.Intcode
         public long RelativeBase { get; private set; }
 
         public delegate bool OnOutput(long output);
+        public delegate long OnInput();
 
+        public event OnInput Input;
         public event OnOutput Output;
 
         private static int MaxParameterCount { get; } = 3;
@@ -86,7 +88,11 @@ namespace Advent.Utilities.Intcode
                         case OpCode.Input:
                             long input = 0;
 
-                            if (Arguments?.Count > 0)
+                            if (Input != null)
+                            {
+                                input = Input.Invoke();
+                            }
+                            else if (Arguments?.Count > ArgPos)
                             {
                                 input = Arguments[ArgPos++];
 
@@ -211,6 +217,16 @@ namespace Advent.Utilities.Intcode
             return Register;
         }
 
+        public long GetValue(long addr)
+        {
+            return ReadValue(ParameterMode.Immediate, addr);
+        }
+
+        public void WriteValue(long addr, long value)
+        {
+            StoreValue(ParameterMode.Immediate, addr, value);
+        }
+
         private long ReadValue(ParameterMode mode, long addr)
         {
             if (mode == ParameterMode.Position)
@@ -237,7 +253,7 @@ namespace Advent.Utilities.Intcode
             }
             else if (mode == ParameterMode.Immediate)
             {
-                throw new NotImplementedException("Immediate position not supported for store value.");
+                Register[addr] = value;
             }
             else if (mode == ParameterMode.Relative)
             {

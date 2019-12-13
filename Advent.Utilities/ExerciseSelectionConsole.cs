@@ -43,7 +43,7 @@ namespace Advent.Utilities
             {
                 while (seekType)
                 {
-                    Console.Clear();
+                    Console.SetCursorPosition(0, 0);
 
                     for (int i = 0; i < assemblyTypes.Count; i++)
                     {
