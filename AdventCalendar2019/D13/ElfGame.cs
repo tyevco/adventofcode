@@ -38,14 +38,14 @@ namespace AdventCalendar2019.D13
                 Points.Add(key, point);
             }
 
-            //if (x > MaxX)
-            //{
-            //    MaxX = x;
-            //}
-            //if (y > MaxY)
-            //{
-            //    MaxY = y;
-            //}
+            if (x > MaxX)
+            {
+                MaxX = x;
+            }
+            if (y > MaxY)
+            {
+                MaxY = y;
+            }
 
             if (tile == GameTile.Paddle)
             {
@@ -56,29 +56,29 @@ namespace AdventCalendar2019.D13
                 Ball = point;
             }
 
-            //Console.SetCursorPosition(x, y);
+            Console.SetCursorPosition(x, y);
 
-            //char disp = ' ';
-            //switch (tile)
-            //{
-            //    case GameTile.Ball:
-            //        disp = 'o';
-            //        break;
-            //    case GameTile.Wall:
-            //        disp = '█';
-            //        break;
-            //    case GameTile.Block:
-            //        disp = '#';
-            //        break;
-            //    case GameTile.Paddle:
-            //        disp = '=';
-            //        break;
-            //    default:
-            //        break;
-            //}
-            //Console.Write(disp);
+            char disp = ' ';
+            switch (tile)
+            {
+                case GameTile.Ball:
+                    disp = 'o';
+                    break;
+                case GameTile.Wall:
+                    disp = '█';
+                    break;
+                case GameTile.Block:
+                    disp = '#';
+                    break;
+                case GameTile.Paddle:
+                    disp = '=';
+                    break;
+                default:
+                    break;
+            }
+            Console.Write(disp);
 
-            //Console.SetCursorPosition(0, MaxY + 2);
+            Console.SetCursorPosition(0, MaxY + 2);
         }
 
         public void DebugPrint()

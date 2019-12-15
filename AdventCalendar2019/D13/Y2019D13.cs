@@ -45,9 +45,9 @@ namespace AdventCalendar2019.D13
                         if (x == -1 && y == 0)
                         {
                             currentScore = gameOutput.Dequeue();
-                            //Console.SetCursorPosition(0, game.MaxY + 1);
-                            //Console.WriteLine($"Score: {currentScore}                                ");
-                            //Console.SetCursorPosition(0, game.MaxY + 2);
+                            Console.SetCursorPosition(0, game.MaxY + 1);
+                            Console.WriteLine($"Score: {currentScore}                                ");
+                            Console.SetCursorPosition(0, game.MaxY + 2);
                         }
                         else
                         {
@@ -55,8 +55,8 @@ namespace AdventCalendar2019.D13
                             game.SetTile(x, y, tile);
                         }
 
-                        //Console.WriteLine($"Ball: {game.Ball}                                ");
-                        //Console.WriteLine($"Paddle: {game.Paddle}                                ");
+                        Console.WriteLine($"Ball: {game.Ball}                                ");
+                        Console.WriteLine($"Paddle: {game.Paddle}                                ");
                     }
 
                     return true;
@@ -70,22 +70,22 @@ namespace AdventCalendar2019.D13
                         if (game.Ball.X < game.Paddle.X)
                         {
                             value = -1;
-                            //Console.WriteLine("Left           ");
+                            Console.WriteLine("Left           ");
                         }
                         else if (game.Ball.X > game.Paddle.X)
                         {
                             value = 1;
-                            //Console.WriteLine("Right            ");
+                            Console.WriteLine("Right            ");
                         }
                         else
                         {
-                            //Console.WriteLine("Stay           ");
+                            Console.WriteLine("Stay           ");
                         }
 
-                        //Console.WriteLine("Running: Yes");
+                        Console.WriteLine("Running: Yes");
                     }
 
-                    //System.Threading.Thread.Sleep(250);
+                    System.Threading.Thread.Sleep(10);
 
                     //lastBall = game.Ball;
                     //lastPaddle = game.Paddle;
@@ -96,12 +96,12 @@ namespace AdventCalendar2019.D13
                 processor.WriteValue(0, 2);
                 processor.Process();
 
-                //Console.Clear();
-                //ElfGame.PrintGrid(game.Points);
+                Console.Clear();
+                ElfGame.PrintGrid(game.Points);
                 Console.WriteLine($"Score: {currentScore}                                ");
-                //Console.WriteLine($"Ball: {game.Ball}                                ");
-                //Console.WriteLine($"Paddle: {game.Paddle}                                ");
-                //Console.WriteLine($"Total blocks remaining: {game.Points.Count(x => ((GameTile)x.Value.Data) == GameTile.Block)}");
+                Console.WriteLine($"Ball: {game.Ball}                                ");
+                Console.WriteLine($"Paddle: {game.Paddle}                                ");
+                Console.WriteLine($"Total blocks remaining: {game.Points.Count(x => ((GameTile)x.Value.Data) == GameTile.Block)}");
             });
         }
     }
