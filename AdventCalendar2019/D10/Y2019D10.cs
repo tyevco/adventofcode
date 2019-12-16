@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Advent.Utilities;
+using Advent.Utilities.Attributes;
+using Advent.Utilities.Data.Map;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Advent.Utilities;
-using Advent.Utilities.Attributes;
-using Advent.Utilities.Data.Map;
 
 namespace AdventCalendar2019.D10
 {
@@ -25,19 +25,19 @@ namespace AdventCalendar2019.D10
                 int answer = -1;
                 int targettedAsteroid = 200;
                 int mostAsteroids = 0;
-                Point asteroidPoint = null;
-                IList<Queue<Point>> targettingGroups = null;
+                Point<int> asteroidPoint = null;
+                IList<Queue<Point<int>>> targettingGroups = null;
 
                 var points = GetPoints(lines);
 
                 foreach (var point in points)
                 {
                     var slopeGroups = points.Where(p => p != point)
-                                         .Select(p => new KeyValuePair<Point, Vector2i>(p, point.CalculateVector(p)))
+                                         .Select(p => new KeyValuePair<Point<int>, Vector2i>(p, point.CalculateVector(p)))
                                          .OrderBy(p => point.CalculateDistance(p.Key))
                                          .GroupBy(x => (x.Value.Angle + 270) % 360)
                                          .OrderBy(x => x.Key)
-                                         .Select(x => new Queue<Point>(x.Select(v => v.Key)))
+                                         .Select(x => new Queue<Point<int>>(x.Select(v => v.Key)))
                                          .ToList();
 
                     var asteroidVisibleCount = slopeGroups.Count();
@@ -79,9 +79,9 @@ namespace AdventCalendar2019.D10
             });
         }
 
-        private IList<Point> GetPoints(string[] lines)
+        private IList<Point<int>> GetPoints(string[] lines)
         {
-            IList<Point> points = new List<Point>();
+            IList<Point<int>> points = new List<Point<int>>();
 
             for (int y = 0; y < lines.Length; y++)
             {
@@ -91,7 +91,7 @@ namespace AdventCalendar2019.D10
                 {
                     if (line[x] == '#')
                     {
-                        points.Add(new Point(x, y));
+                        points.Add(new Point<int>(x, y));
                     }
                 }
             }

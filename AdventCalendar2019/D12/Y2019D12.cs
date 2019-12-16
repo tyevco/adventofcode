@@ -42,7 +42,7 @@ namespace AdventCalendar2019.D12
                 {
                     var body = new Moon
                     {
-                        Position = new Point(
+                        Position = new Point<int>(
                                         int.Parse(bodyMatch.Groups[1].Value),
                                         int.Parse(bodyMatch.Groups[2].Value),
                                         int.Parse(bodyMatch.Groups[3].Value)),
@@ -96,7 +96,7 @@ namespace AdventCalendar2019.D12
                 {
                     var body = new Moon
                     {
-                        Position = new Point(
+                        Position = new Point<int>(
                                         int.Parse(bodyMatch.Groups[1].Value),
                                         int.Parse(bodyMatch.Groups[2].Value),
                                         int.Parse(bodyMatch.Groups[3].Value)),

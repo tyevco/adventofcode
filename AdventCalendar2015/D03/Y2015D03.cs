@@ -24,8 +24,8 @@ namespace AdventCalendar2015.D03
 
             foreach (var line in lines)
             {
-                IDictionary<string, Point> points = new Dictionary<string, Point>();
-                points.Add("0,0", new Point(0, 0) { Data = 1 });
+                IDictionary<string, Point<int>> points = new Dictionary<string, Point<int>>();
+                points.Add("0,0", new Point<int>(0, 0) { Data = 1 });
                 int expected = -1;
                 var sections = line.Split("=>");
 
@@ -56,10 +56,10 @@ namespace AdventCalendar2015.D03
 
                     var key = $"{currX},{currY}";
 
-                    Point point;
+                    Point<int> point;
                     if (!points.ContainsKey(key))
                     {
-                        point = new Point(currX, currY)
+                        point = new Point<int>(currX, currY)
                         {
                             Data = 0
                         };
@@ -83,8 +83,8 @@ namespace AdventCalendar2015.D03
 
             foreach (var line in lines)
             {
-                IDictionary<string, Point> points = new Dictionary<string, Point>();
-                points.Add("0,0", new Point(0, 0) { Data = 2 });
+                IDictionary<string, Point<int>> points = new Dictionary<string, Point<int>>();
+                points.Add("0,0", new Point<int>(0, 0) { Data = 2 });
                 int expected = -1;
                 var sections = line.Split("=>");
 
@@ -133,10 +133,10 @@ namespace AdventCalendar2015.D03
 
                     var key = $"{currX},{currY}";
 
-                    Point point;
+                    Point<int> point;
                     if (!points.ContainsKey(key))
                     {
-                        point = new Point(currX, currY)
+                        point = new Point<int>(currX, currY)
                         {
                             Data = 1
                         };
@@ -156,7 +156,7 @@ namespace AdventCalendar2015.D03
             }
         }
 
-        private void PrintData(IDictionary<string, Point> points, int expected = -1)
+        private void PrintData(IDictionary<string, Point<int>> points, int expected = -1)
         {
             var xMin = points.Select(x => x.Value.X).Min();
             var xMax = points.Select(x => x.Value.X).Max();

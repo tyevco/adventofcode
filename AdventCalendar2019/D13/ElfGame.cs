@@ -14,16 +14,16 @@ namespace AdventCalendar2019.D13
 
         public int MaxY { get; set; } = 0;
 
-        public IDictionary<string, Point> Points { get; private set; } = new Dictionary<string, Point>();
+        public IDictionary<string, Point<GameTile>> Points { get; private set; } = new Dictionary<string, Point<GameTile>>();
 
-        public Point Paddle { get; private set; }
-        public Point Ball { get; private set; }
+        public Point<GameTile> Paddle { get; private set; }
+        public Point<GameTile> Ball { get; private set; }
 
         public void SetTile(int x, int y, GameTile tile)
         {
             string key = $"{x},{y}";
 
-            Point point;
+            Point<GameTile> point;
             if (Points.ContainsKey(key))
             {
                 point = Points[key];
@@ -31,7 +31,7 @@ namespace AdventCalendar2019.D13
             }
             else
             {
-                point = new Point(x, y)
+                point = new Point<GameTile>(x, y)
                 {
                     Data = tile
                 };
@@ -89,7 +89,7 @@ namespace AdventCalendar2019.D13
             }
         }
 
-        public static void PrintGrid(IDictionary<string, Point> points)
+        public static void PrintGrid(IDictionary<string, Point<GameTile>> points)
         {
             var xs = points.Select(x => x.Value.X);
             var ys = points.Select(y => y.Value.Y);

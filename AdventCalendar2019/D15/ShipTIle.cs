@@ -2,7 +2,7 @@
 {
     enum ShipTile : long
     {
-        Unknown = (int)'?',
+        Unknown = (int)'░',
         Wall = (int)'█',
         Open = (int)' ',
         Oxygen = (int)'o',

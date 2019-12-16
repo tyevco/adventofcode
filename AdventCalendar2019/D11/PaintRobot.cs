@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Advent.Utilities;
+﻿using Advent.Utilities;
 using Advent.Utilities.Data.Map;
 using Advent.Utilities.Spatial;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace AdventCalendar2019.D11
 {
@@ -15,7 +15,7 @@ namespace AdventCalendar2019.D11
         public int Y { get; private set; } = 0;
         public Direction Direction { get; private set; } = Direction.Up;
 
-        public IDictionary<string, Point> Points { get; private set; } = new Dictionary<string, Point>();
+        public IDictionary<string, Point<long>> Points { get; private set; } = new Dictionary<string, Point<long>>();
 
         public long Operate(long paintColor, long turnDir)
         {
@@ -28,7 +28,7 @@ namespace AdventCalendar2019.D11
             }
             else
             {
-                Points.Add(key, new Point(X, Y)
+                Points.Add(key, new Point<long>(X, Y)
                 {
                     Data = paintColor
                 });
@@ -83,7 +83,7 @@ namespace AdventCalendar2019.D11
             }
         }
 
-        public static void PrintGrid(IDictionary<string, Point> points, int currX, int currY, Direction dir)
+        public static void PrintGrid(IDictionary<string, Point<long>> points, int currX, int currY, Direction dir)
         {
             var xs = points.Select(x => x.Value.X);
             var ys = points.Select(y => y.Value.Y);

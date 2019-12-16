@@ -11,17 +11,17 @@ namespace Advent.Utilities.Data.Map
 
         }
 
-        public Segment(Point start, Point end)
+        public Segment(Point<int> start, Point<int> end)
         {
             Start = start;
             End = end;
         }
 
-        public Point Start { get; set; }
+        public Point<int> Start { get; set; }
 
-        public Point End { get; set; }
+        public Point<int> End { get; set; }
 
-        public Point Intersection(Segment other)
+        public Point<int> Intersection(Segment other)
         {
             int x1 = Start.X, y1 = Start.Y,
                 x2 = End.X, y2 = End.Y,
@@ -86,13 +86,13 @@ namespace Advent.Utilities.Data.Map
 
             if (IsInside(x, y) && other.IsInside(x, y))
             {
-                return new Point { X = x, Y = y };
+                return new Point<int> { X = x, Y = y };
             }
 
             return null;
         }
 
-        public bool IsInside(Point p)
+        public bool IsInside(Point<int> p)
         {
             return IsInside(p.X, p.Y);
         }

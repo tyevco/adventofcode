@@ -1,80 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Advent.Utilities.Data.Manhattan;
 
 namespace Advent.Utilities.Data.Map
 {
     public static class Pathfinding
     {
-        public class Path
-        {
-            public Path(int x, int y, int distance)
-            {
-                X = x;
-                Y = y;
-                Distance = distance;
-            }
+        private const int DefaultSize = 0;
 
-            public int X { get; }
-            public int Y { get; }
-            public int Distance { get; set; }
+        private class PathPoint : Point<int>
+        {
+            public PathPoint(int x, int y, int distance)
+            {
+                this.X = x;
+                this.Y = y;
+                this.Data = distance;
+            }
         }
 
-        public static Point FindTargetPoint<T>(IMap<T> map, int startX, int startY, int targetX, int targetY, Predicate<T> locationValid)
+        public static Point<int> FindTargetPoint<T>(IGrid<T> map, int startX, int startY, int targetX, int targetY, Predicate<T> locationValid)
         {
-            ICollection<Point> available = new List<Point>();
+            ICollection<Point<T>> available = new List<Point<T>>();
 
-            if (targetX > 0)
+            if (IsLocationValid(targetX, targetY, map, locationValid))
             {
-                if (IsLocationValid(targetX - 1, targetY, map, locationValid))
-                {
-                    var plot = map[targetX - 1, targetY];
-                    if (plot != null && !available.Any(p => p.X == plot.X && p.Y == plot.Y))
-                        available.Add(plot);
-                }
+                var plot = map[targetX, targetY];
+                if (plot != null && !available.Any(p => p.X == plot.X && p.Y == plot.Y))
+                    available.Add(plot);
             }
-
-            if (targetX < map.Width - 1)
-            {
-                if (IsLocationValid(targetX + 1, targetY, map, locationValid))
-                {
-                    var plot = map[targetX + 1, targetY];
-                    if (plot != null && !available.Any(p => p.X == plot.X && p.Y == plot.Y))
-                        available.Add(plot);
-                }
-            }
-
-            if (targetY > 0)
-            {
-                if (IsLocationValid(targetX, targetY - 1, map, locationValid))
-                {
-                    var plot = map[targetX, targetY - 1];
-                    if (plot != null && !available.Any(p => p.X == plot.X && p.Y == plot.Y))
-                        available.Add(plot);
-                }
-            }
-
-            if (targetY < map.Height - 1)
-            {
-                if (IsLocationValid(targetX, targetY + 1, map, locationValid))
-                {
-                    var plot = map[targetX, targetY + 1];
-                    if (plot != null && !available.Any(p => p.X == plot.X && p.Y == plot.Y))
-                        available.Add(plot);
-                }
-            }
-
 
             object lockObject = new object();
-            ICollection<Path> paths = new List<Path>();
-            Parallel.ForEach(available, plot =>
-            //foreach (var plot in available)
+            ICollection<Point<int>> paths = new List<Point<int>>();
+            //Parallel.ForEach(available, plot =>
+            foreach (var plot in available)
             {
                 var queuedPoints = CalculateDistance(plot.X, plot.Y, map, locationValid);
 
-                var closePoints = GetPointsClosestTo(queuedPoints, targetX, targetY);
+                var closePoints = GetPointsClosestTo(queuedPoints, startX, startY);
                 if (closePoints.Any())
                 {
                     lock (lockObject)
@@ -83,12 +45,11 @@ namespace Advent.Utilities.Data.Map
                             paths.Add(p);
                     }
                 }
-            });
-            //});
+            }
 
             if (paths.Any())
             {
-                return paths.OrderBy(p => p.Distance).ThenBy(p => p.X + p.Y * map.Width).FirstOrDefault();
+                return paths.OrderBy(p => p.Data).ThenBy(p => p.X + p.Y * map.Width).FirstOrDefault();
             }
             else
             {
@@ -96,24 +57,29 @@ namespace Advent.Utilities.Data.Map
             }
         }
 
-        private static IEnumerable<Path> GetPointsClosestTo(Grid<Path> points, int x, int y)
+        private static IEnumerable<Point<int>> GetPointsClosestTo(Grid<int> points, int x, int y)
         {
-            return new List<Path> { points[x - 1, y], points[x + 1, y], points[x, y - 1], points[x, y + 1] }.Where(p => p != null);
+            return new List<Point<int>> {
+                        (Point<int>)points[x - 1, y],
+                        (Point<int>)points[x + 1, y],
+                        (Point<int>)points[x, y - 1],
+                        (Point<int>) points[x, y + 1]
+                     }.Where(p => p != null);
         }
 
-        private static Grid<Path> CalculateDistance<T>(int x, int y, IMap<T> map, Predicate<T> locationValid)
+        private static Grid<int> CalculateDistance<T>(int x, int y, IGrid<T> map, Predicate<T> locationValid)
         {
-            Grid<Path> FinishedPoints = new Grid<Path>(map.Width, map.Height);
-            Queue<Path> PointsToProcess = new Queue<Path>();
-            PointsToProcess.Enqueue(new Path(x, y, 0));
+            Grid<int> FinishedPoints = new Grid<int>();
+            Queue<Point<int>> PointsToProcess = new Queue<Point<int>>();
+            PointsToProcess.Enqueue(new PathPoint(x, y, 0));
 
             int distance = 0;
             while (true)
             {
                 distance++;
 
-                Queue<Point> nextQueue = new Queue<Point>();
-                Point point = PointsToProcess.Dequeue();
+                Queue<Point<int>> nextQueue = new Queue<Point<int>>();
+                Point<int> point = PointsToProcess.Dequeue();
                 while (point != null)
                 {
                     TryAddPoint(FinishedPoints, nextQueue, point.X - 1, point.Y, distance, map, locationValid);
@@ -121,7 +87,7 @@ namespace Advent.Utilities.Data.Map
                     TryAddPoint(FinishedPoints, nextQueue, point.X, point.Y - 1, distance, map, locationValid);
                     TryAddPoint(FinishedPoints, nextQueue, point.X, point.Y + 1, distance, map, locationValid);
 
-                    if (FinishedPoints[point.X, point.Y] == null)
+                    if (!FinishedPoints.Has(point.X, point.Y))
                         FinishedPoints[point.X, point.Y] = point;
 
                     if (PointsToProcess.Any())
@@ -144,15 +110,17 @@ namespace Advent.Utilities.Data.Map
                 }
             }
 
+            PrintGrid(FinishedPoints.Points);
+
             return FinishedPoints;
         }
 
-        private static Point TryAddPoint<T>(Grid<Path> finished, Queue<Path> process, int x, int y, int d, IMap<T> map, Predicate<T> locationValid)
+        private static Point<int> TryAddPoint<T>(Grid<int> finished, Queue<Point<int>> process, int x, int y, int d, IGrid<T> map, Predicate<T> locationValid)
         {
-            Path p = null;
-            if (finished[x, y] == null && !process.Any(t => t.X == x && t.Y == y))
+            Point<int> p = null;
+            if (!finished.Has(x, y) && !process.Any(t => t.X == x && t.Y == y))
             {
-                p = new Path(x, y, d);
+                p = new PathPoint(x, y, d);
                 if (IsPointValid(p, map, locationValid))
                 {
                     process.Enqueue(p);
@@ -162,13 +130,13 @@ namespace Advent.Utilities.Data.Map
             return p;
         }
 
-        private static bool IsPointValid<T>(Path p, IMap<T> map, Predicate<T> locationValid)
+        private static bool IsPointValid<T>(Point<int> p, IGrid<T> map, Predicate<T> locationValid)
         {
             return IsLocationValid(p.X, p.Y, map, locationValid);
         }
 
 
-        private static bool IsLocationValid<T>(int x, int y, IMap<T> map, Predicate<T> locationValid)
+        private static bool IsLocationValid<T>(int x, int y, IGrid<T> map, Predicate<T> locationValid)
         {
             bool valid = true;
 
@@ -183,6 +151,38 @@ namespace Advent.Utilities.Data.Map
             }
 
             return valid;
+        }
+
+        public static void PrintGrid(IDictionary<string, Point<int>> points)
+        {
+            var xs = points.Select(x => x.Value.X);
+            var ys = points.Select(y => y.Value.Y);
+
+            var minX = xs.Any() ? Math.Min(-DefaultSize, xs.Min()) : -DefaultSize;
+            var maxX = xs.Any() ? Math.Max(DefaultSize, xs.Max()) : DefaultSize;
+            var minY = ys.Any() ? Math.Min(-DefaultSize, ys.Min()) : -DefaultSize;
+            var maxY = ys.Any() ? Math.Max(DefaultSize, ys.Max()) : DefaultSize;
+            var maxV = points.Select(x => x.Value.Data).Max();
+            var len = maxV.ToString().Length + 1;
+
+            for (int y = minY - 1; y <= maxY + 1; y++)
+            {
+                for (int x = minX - 1; x <= maxX + 1; x++)
+                {
+                    string key = $"{x},{y}";
+                    if (points.ContainsKey(key))
+                    {
+                        var data = points[key].Data;
+                        Console.Write($"{data}".PadLeft(len, ' '));
+                    }
+                    else
+                    {
+                        Console.Write(string.Empty.PadLeft(len, ' '));
+                    }
+                }
+
+                Console.WriteLine();
+            }
         }
     }
 }

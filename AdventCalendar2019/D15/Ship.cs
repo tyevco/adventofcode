@@ -1,54 +1,14 @@
-﻿using System;
+﻿using Advent.Utilities.Data.Map;
+using Advent.Utilities.Spatial;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Advent.Utilities.Data.Map;
-using Advent.Utilities.Spatial;
 
 namespace AdventCalendar2019.D15
 {
-    class Ship : IMap<ShipTile>
+    class Ship : Grid<ShipTile>
     {
         private const int DefaultSize = 0;
-
-        public int X { get; set; } = 0;
-
-        public int Y { get; set; } = 0;
-
-        public int Width
-        {
-            get
-            {
-                var xs = Points.Select(p => p.Value.X);
-                return xs.Max() - xs.Min();
-            }
-        }
-
-        public int Height
-        {
-            get
-            {
-                var ys = Points.Select(p => p.Value.Y);
-                return ys.Max() - ys.Min();
-            }
-        }
-
-        public IDictionary<string, Point> Points { get; private set; } = new Dictionary<string, Point>();
-
-        public Point this[int x, int y]
-        {
-            get
-            {
-                string key = $"{x},{y}";
-                if (Points.ContainsKey(key))
-                {
-                    return Points[key];
-                }
-                else
-                {
-                    return null;
-                }
-            }
-        }
 
         public Ship()
         {
@@ -59,17 +19,17 @@ namespace AdventCalendar2019.D15
         {
             string key = $"{x},{y}";
 
-            Point point;
+            Point<ShipTile> point;
             if (Points.ContainsKey(key))
             {
                 point = Points[key];
-                point.Data = (long)tile;
+                point.Data = tile;
             }
             else
             {
-                point = new Point(x, y)
+                point = new Point<ShipTile>(x, y)
                 {
-                    Data = (long)tile
+                    Data = tile
                 };
                 Points.Add(key, point);
             }
@@ -140,7 +100,7 @@ namespace AdventCalendar2019.D15
                     break;
             }
 
-            SetTile(x, y, ShipTile.Open);
+            //SetTile(x, y, ShipTile.Open);
             X = x;
             Y = y;
         }
@@ -173,7 +133,7 @@ namespace AdventCalendar2019.D15
             PrintGrid(Points, X, Y);
         }
 
-        public static void PrintGrid(IDictionary<string, Point> points, int droidX, int droidY)
+        public static void PrintGrid(IDictionary<string, Point<ShipTile>> points, int droidX, int droidY)
         {
             var xs = points.Select(x => x.Value.X);
             var ys = points.Select(y => y.Value.Y);

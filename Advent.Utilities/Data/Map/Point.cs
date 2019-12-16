@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace Advent.Utilities.Data.Map
 {
     [DebuggerDisplay("{X},{Y}")]
-    public class Point
+    public class Point<T>
     {
         public Point()
             : this(0, 0, 0)
@@ -31,17 +31,7 @@ namespace Advent.Utilities.Data.Map
         public int X { get; set; }
         public int Y { get; set; }
         public int Z { get; set; }
-        public object Data { get; set; }
-
-        public static bool operator ==(Point first, Point second)
-        {
-            return first?.Equals(second) ?? false;
-        }
-
-        public static bool operator !=(Point first, Point second)
-        {
-            return !first?.Equals(second) ?? false;
-        }
+        public T Data { get; set; }
 
         public override string ToString()
         {
@@ -53,19 +43,19 @@ namespace Advent.Utilities.Data.Map
             return Math.Abs(X - x) + Math.Abs(Y - y);
         }
 
-        public int CalculateDistance(Point other)
+        public int CalculateDistance(Point<T> other)
         {
             return CalculateDistance(other.X, other.Y);
         }
 
-        public Vector2i CalculateVector(Point other)
+        public Vector2i CalculateVector(Point<T> other)
         {
             return new Vector2i(other.X - X, other.Y - Y);
         }
 
         public override bool Equals(object obj)
         {
-            return obj is Point point &&
+            return obj is Point<T> point &&
                    X == point.X &&
                    Y == point.Y &&
                    Z == point.Z;

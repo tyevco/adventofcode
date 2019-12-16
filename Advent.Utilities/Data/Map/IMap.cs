@@ -2,14 +2,14 @@
 
 namespace Advent.Utilities.Data.Map
 {
-    public interface IMap<T>
+    public interface IGrid<T>
     {
-        IDictionary<string, Point> Points { get; }
+        IDictionary<string, Point<T>> Points { get; }
 
         int Width { get; }
 
         int Height { get; }
 
-        Point this[int x, int y] { get; }
+        Point<T> this[int x, int y] { get; }
     }
 }
