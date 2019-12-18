@@ -4,22 +4,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AdventCalendar2019.D15
+namespace AdventCalendar2019.D17
 {
-    class Scaffolding : Grid<ShipTile>
+    class Scaffolding : Grid<char>
     {
         private const int DefaultSize = 0;
 
         public Scaffolding()
         {
-            SetTile(0, 0, ShipTile.Open);
+            SetTile(0, 0, '.');
         }
 
-        private void SetTile(int x, int y, ShipTile tile)
+        public void SetTile(int x, int y, char tile)
         {
             string key = $"{x},{y}";
 
-            Point<ShipTile> point;
+            Point<char> point;
             if (Points.ContainsKey(key))
             {
                 point = Points[key];
@@ -27,7 +27,7 @@ namespace AdventCalendar2019.D15
             }
             else
             {
-                point = new Point<ShipTile>(x, y)
+                point = new Point<char>(x, y)
                 {
                     Data = tile
                 };
@@ -38,7 +38,7 @@ namespace AdventCalendar2019.D15
 
             //if (x == DroidX && y == DroidY)
             //{
-            //    Console.Write((char)ShipTile.Open);
+            //    Console.Write((char)Tile.Open);
             //}
             //else if (Points.ContainsKey(key))
             //{
@@ -47,11 +47,25 @@ namespace AdventCalendar2019.D15
             //}
             //else
             //{
-            //    Console.Write((char)ShipTile.Empty);
+            //    Console.Write((char)Tile.Empty);
             //}
         }
 
-        public ShipTile GetTile(Compass direction)
+        public char GetTile(int x, int y)
+        {
+            string key = $"{x},{y}";
+
+            if (!Points.ContainsKey(key))
+            {
+                return '?';
+            }
+            else
+            {
+                return (char)(Points[key].Data);
+            }
+        }
+
+        public char GetTile(Compass direction)
         {
             string key = string.Empty;
             switch (direction)
@@ -73,11 +87,11 @@ namespace AdventCalendar2019.D15
 
             if (!Points.ContainsKey(key))
             {
-                return ShipTile.Unknown;
+                return '?';
             }
             else
             {
-                return (ShipTile)(Points[key].Data);
+                return (char)(Points[key].Data);
             }
         }
 
@@ -100,32 +114,32 @@ namespace AdventCalendar2019.D15
                     break;
             }
 
-            //SetTile(x, y, ShipTile.Open);
+            //SetTile(x, y, Tile.Open);
             X = x;
             Y = y;
         }
 
-        public void SetTile(Compass direction, ShipTile tile = ShipTile.Wall)
-        {
-            int x = X, y = Y;
-            switch (direction)
-            {
-                case Compass.North:
-                    y--;
-                    break;
-                case Compass.South:
-                    y++;
-                    break;
-                case Compass.West:
-                    x--;
-                    break;
-                case Compass.East:
-                    x++;
-                    break;
-            }
+        //public void SetTile(Compass direction, Tile tile = Tile.Open)
+        //{
+        //    int x = X, y = Y;
+        //    switch (direction)
+        //    {
+        //        case Compass.North:
+        //            y--;
+        //            break;
+        //        case Compass.South:
+        //            y++;
+        //            break;
+        //        case Compass.West:
+        //            x--;
+        //            break;
+        //        case Compass.East:
+        //            x++;
+        //            break;
+        //    }
 
-            SetTile(x, y, tile);
-        }
+        //    SetTile(x, y, tile);
+        //}
 
 
         public void DebugPrint()
@@ -133,7 +147,7 @@ namespace AdventCalendar2019.D15
             PrintGrid(Points, X, Y);
         }
 
-        public static void PrintGrid(IDictionary<string, Point<ShipTile>> points, int droidX, int droidY)
+        public static void PrintGrid(IDictionary<string, Point<char>> points, int droidX, int droidY)
         {
             var xs = points.Select(x => x.Value.X);
             var ys = points.Select(y => y.Value.Y);
@@ -148,22 +162,14 @@ namespace AdventCalendar2019.D15
                 for (int x = minX - 1; x <= maxX + 1; x++)
                 {
                     string key = $"{x},{y}";
-                    if (x == 0 && y == 0)
-                    {
-                        Console.Write('*');
-                    }
-                    else if (x == droidX && y == droidY)
-                    {
-                        Console.Write((char)ShipTile.Droid);
-                    }
-                    else if (points.ContainsKey(key))
+                    if (points.ContainsKey(key))
                     {
                         var data = (long)points[key].Data;
                         Console.Write((char)data);
                     }
                     else
                     {
-                        Console.Write((char)ShipTile.Unknown);
+                        Console.Write((char)Tile.Unknown);
                     }
                 }
 

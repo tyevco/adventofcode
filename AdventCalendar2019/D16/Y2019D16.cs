@@ -38,19 +38,24 @@ namespace AdventCalendar2019.D16
 
                 signal = builder.ToString();
 
+                ParallelOptions opt = new ParallelOptions
+                {
+                    MaxDegreeOfParallelism = 1000
+                };
+
                 for (int p = 0; p < 100; p++)
                 {
                     Console.WriteLine(p + 1);
                     char[] nextPhase = new char[signal.Length];
 
-                    Parallel.ForEach(Pattern.GetNextIndex(signal.Length), i =>
+                    Parallel.ForEach(Pattern.GetNextIndex(signal.Length), opt, i =>
                     {
                         var pattern = Pattern.GetNextFrequency(i, signal.Length);
 
                         Debug.WriteLine(string.Join(", ", pattern));
 
                         ConcurrentBag<int> results = new ConcurrentBag<int>();
-                        Parallel.ForEach(Pattern.GetNextIndex(signal.Length), f =>
+                        Parallel.ForEach(Pattern.GetNextIndex(signal.Length), opt, f =>
                         {
                             int freq = int.Parse(signal[f].ToString());
 

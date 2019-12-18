@@ -21,7 +21,7 @@ namespace AdventCalendar2019.D15
         protected override void Execute(string file)
         {
             var gameCode = File.ReadAllText(file);
-            var ship = new Ship();
+            var ship = new Scaffolding();
             var processor = new IntcodeProcessor(gameCode);
             Compass lastDir = Compass.North;
             Compass nextDir = Compass.North;
