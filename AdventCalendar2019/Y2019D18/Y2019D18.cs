@@ -52,7 +52,7 @@ namespace Advent.Calendar.Y2019D18
 
                 bool best = true;
                 int i = 1;
-                foreach (var bestFinishedMaze in finishedMazes.OrderBy(x => x.TotalDistance))
+                foreach (var bestFinishedMaze in finishedMazes.OrderBy(x => x.Distance))
                 {
                     if (best)
                     {
@@ -60,8 +60,8 @@ namespace Advent.Calendar.Y2019D18
                         best = false;
                     }
 
-                    Console.WriteLine($"{i++} ::: {bestFinishedMaze.TotalDistance} total moves.");
-                    Console.WriteLine($"Move order: {string.Join(", ", bestFinishedMaze.GetKeys().Reverse().Select(m => m))}");
+                    Console.WriteLine($"{i++} ::: {bestFinishedMaze.Distance} total moves.");
+                    Console.WriteLine($"Move order: {string.Join(", ", bestFinishedMaze.CollectedOrder)}");
                     Console.WriteLine();
                 }
 
@@ -71,7 +71,11 @@ namespace Advent.Calendar.Y2019D18
         private IList<MazeInstance> ProcessMaze(Maze initialMaze)
         {
             List<MazeInstance> instances = new List<MazeInstance>();
-            instances.Add(new MazeInstance(initialMaze));
+            instances.Add(new MazeInstance(initialMaze)
+            {
+                X = initialMaze.X,
+                Y = initialMaze.Y,
+            });
             ConcurrentBag<MazeInstance> nextMazes = new ConcurrentBag<MazeInstance>();
             IList<MazeInstance> finishedMazes = new List<MazeInstance>();
 
@@ -82,24 +86,7 @@ namespace Advent.Calendar.Y2019D18
 
                 Parallel.ForEach(instances, maze =>
                 {
-                    IList<Point<int>> keyPaths = new List<Point<int>>();
-
-                    foreach (var keyLocation in maze.RemainingKeys)
-                    {
-                        var locationRegex = maze.ValidLocationRegex(keyLocation.Data);
-                        bool isValid(char c)
-                        {
-                            return locationRegex.IsMatch(c.ToString());
-                        }
-
-                        Debug.WriteLine($"{keyLocation.Data} :: ({keyLocation.X},{keyLocation.Y}) : SEEK");
-                        var point = Pathfinding.FindTargetPoint(maze.Maze, keyLocation.X, keyLocation.Y, maze.X, maze.Y, isValid);
-                        if (point != null)
-                        {
-                            Debug.WriteLine($"{keyLocation.Data} :: ({keyLocation.X},{keyLocation.Y}) : d = {point.Data}");
-                            keyPaths.Add(point);
-                        }
-                    }
+                    IEnumerable<Point<int>> keyPaths = Pathfinding.FindTargetPoints(maze.Maze, maze.X, maze.Y, maze.IsMatch, PointMode.Point, maze.RemainingKeys);
 
                     if (keyPaths.Any())
                     {

@@ -18,35 +18,71 @@ namespace Advent.Utilities.Data.Map
             }
         }
 
-        public static Point<int> FindTargetPoint<T>(IGrid<T> map, int startX, int startY, int targetX, int targetY, Predicate<T> locationValid, bool getClosestPoints = false)
+        public static IEnumerable<Point<int>> FindTargetPoints<T>(
+                                            IGrid<T> map,
+                                            int startX,
+                                            int startY,
+                                            Predicate<T> locationValid,
+                                            PointMode pointMode = PointMode.Point,
+                                            params Point<T>[] targetPoints)
         {
-            ICollection<Point<T>> available = new List<Point<T>>();
+            Grid<T> available = new Grid<T>();
+
+            if (IsLocationValid(startX, startY, map, locationValid))
+            {
+                var plot = map[startX, startY];
+                if (plot != null && available[plot.X, plot.Y] == null)
+                    available[plot.Y, plot.Y] = plot;
+            }
+
+            IList<Point<int>> paths = new List<Point<int>>();
+            foreach (var plot in available.Points.Values)
+            {
+                var queuedPoints = CalculateDistance(plot.X, plot.Y, map, locationValid);
+
+                var closePoints = pointMode == PointMode.Closest ? GetPointsClosestTo(queuedPoints, targetPoints)
+                                    : GetPointsAt(queuedPoints, targetPoints);
+
+                if (closePoints.Any())
+                {
+                    foreach (var p in closePoints)
+                        paths.Add(p);
+                }
+            }
+
+            return paths;
+        }
+
+        public static Point<int> FindTargetPoint<T>(
+                                            IGrid<T> map,
+                                            int startX,
+                                            int startY,
+                                            int targetX,
+                                            int targetY,
+                                            Predicate<T> locationValid,
+                                            PointMode pointMode = PointMode.Point)
+        {
+            Grid<T> available = new Grid<T>();
 
             if (IsLocationValid(targetX, targetY, map, locationValid))
             {
                 var plot = map[targetX, targetY];
-                if (plot != null && !available.Any(p => p.X == plot.X && p.Y == plot.Y))
-                    available.Add(plot);
+                if (plot != null && available[plot.X, plot.Y] == null)
+                    available[plot.Y, plot.Y] = plot;
             }
 
-            object lockObject = new object();
             ICollection<Point<int>> paths = new List<Point<int>>();
-            //Parallel.ForEach(available, plot =>
-            foreach (var plot in available)
+            foreach (var plot in available.Points.Values)
             {
                 var queuedPoints = CalculateDistance(plot.X, plot.Y, map, locationValid);
 
-                var closePoints =
-                    getClosestPoints ? GetPointsClosestTo(queuedPoints, startX, startY)
+                var closePoints = pointMode == PointMode.Closest ? GetPointsClosestTo(queuedPoints, startX, startY)
                                     : new Point<int>[] { queuedPoints[startX, startY] }.Where(x => x != null);
 
                 if (closePoints.Any())
                 {
-                    lock (lockObject)
-                    {
-                        foreach (var p in closePoints)
-                            paths.Add(p);
-                    }
+                    foreach (var p in closePoints)
+                        paths.Add(p);
                 }
             }
 
@@ -63,11 +99,27 @@ namespace Advent.Utilities.Data.Map
         private static IEnumerable<Point<int>> GetPointsClosestTo(Grid<int> points, int x, int y)
         {
             return new List<Point<int>> {
-                        (Point<int>)points[x - 1, y],
-                        (Point<int>)points[x + 1, y],
-                        (Point<int>)points[x, y - 1],
-                        (Point<int>) points[x, y + 1]
+                        points[x - 1, y],
+                        points[x + 1, y],
+                        points[x, y - 1],
+                        points[x, y + 1]
                      }.Where(p => p != null);
+        }
+
+
+        private static IEnumerable<Point<int>> GetPointsClosestTo<T>(Grid<int> points, Point<T>[] targets)
+        {
+            return targets.SelectMany(t => new Point<int>[] {
+                        points[t.X - 1, t.Y],
+                        points[t.X + 1, t.Y],
+                        points[t.X, t.Y - 1],
+                        points[t.X, t.Y + 1]
+                    }).Where(p => p != null);
+        }
+
+        private static IEnumerable<Point<int>> GetPointsAt<T>(Grid<int> points, Point<T>[] targets)
+        {
+            return targets.Select(t => points[t.X, t.Y]).Where(p => p != null);
         }
 
         private static Grid<int> CalculateDistance<T>(int x, int y, IGrid<T> map, Predicate<T> locationValid)
@@ -147,7 +199,7 @@ namespace Advent.Utilities.Data.Map
             string key = $"{x},{y}";
             if (map.Points.ContainsKey(key))
             {
-                valid = locationValid((T)map.Points[key].Data);
+                valid = locationValid(map.Points[key].Data);
             }
             else
             {

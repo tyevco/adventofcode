@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Advent.Utilities;
 using Advent.Utilities.Data.Map;
 using AdventCalendar2019.D18;
@@ -12,24 +11,9 @@ namespace Advent.Calendar.Y2019D18
     {
         private const int DefaultSize = 0;
 
-        public MazeInstance Previous { get; }
-
-        public MazeInstance(Maze maze, MazeInstance previousInstance = null)
+        public MazeInstance(Maze maze)
         {
             Maze = maze;
-
-            if (previousInstance != null)
-            {
-                X = previousInstance.X;
-                Y = previousInstance.Y;
-                Previous = previousInstance;
-            }
-            else
-            {
-                X = maze.X;
-                Y = maze.Y;
-                Previous = null;
-            }
         }
 
         public Maze Maze { get; private set; }
@@ -38,99 +22,58 @@ namespace Advent.Calendar.Y2019D18
 
         public int Y { get; set; } = 0;
 
-        public int? Distance { get; private set; } = 0;
+        public int Distance { get; private set; } = 0;
 
-        public char? Key { get; private set; }
+        public int Key { get; private set; } = 0;
 
-        public IEnumerable<Point<char>> RemainingKeys => Maze.KeyLocations.Where(x => !IsKeyCollected(x.Data));
+        public Point<char>[] RemainingKeys => Maze.KeyLocations.Where(x => !IsKeyCollected(x.Data)).ToArray();
 
-        public int TotalDistance
-        {
-            get
-            {
-                if (Previous == null)
-                {
-                    return Distance ?? 0;
-                }
-                else
-                {
-                    return (Distance ?? 0) + Previous.TotalDistance;
-                }
-            }
-        }
+        public string CollectedOrder = string.Empty;
+
+        public char LastKey { get; set; }
 
         public void CollectKey(char key)
         {
-            Key = key;
-        }
-
-        public string GetKeys()
-        {
-            if (Previous == null)
-            {
-                if (Key.HasValue)
-                {
-                    return $"{Key.Value}{char.ToUpper(Key.Value)}";
-                }
-                else
-                {
-                    return string.Empty;
-                }
-            }
-            else
-            {
-                if (Key.HasValue)
-                {
-                    return $"{Key.Value}{char.ToUpper(Key.Value)}{Previous.GetKeys()}";
-                }
-                else
-                {
-                    return Previous.GetKeys();
-                }
-            }
+            CollectedOrder += key;
+            Key |= GetBitmask(key);
         }
 
         public bool IsKeyCollected(char key)
         {
-            if (Previous == null)
-            {
-                if (Key.HasValue)
-                {
-                    return key == Key.Value;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return key == Key || Previous.IsKeyCollected(key);
-            }
+            var mask = GetBitmask(key);
+
+            return (Key & mask) == mask;
         }
 
         public void Move(Point<int> move)
         {
             X = move.X;
             Y = move.Y;
-            Distance = move.Data;
+            Distance += move.Data;
         }
 
-        public Regex ValidLocationRegex(char seekKey)
+        public bool IsMatch(char seekKey)
         {
-            var keys = GetKeys();
-            return new Regex(@$"[{seekKey}{keys}{keys.ToUpper()}\.@]");
+            if (seekKey == '.' || seekKey == '@' || char.IsLower(seekKey))
+                return true;
+            else if (seekKey == '#')
+                return false;
+            else
+            {
+                var bitmask = GetBitmask(seekKey);
+                return (Key & bitmask) == bitmask;
+            }
         }
 
         public void DebugPrint(bool overrideDebug = false)
         {
             if (Debug.EnableDebugOutput || overrideDebug)
             {
-                PrintGrid(Maze.Points, X, Y, GetKeys());
+                PrintGrid(Maze.Points, X, Y, Key);
             }
         }
 
-        public static void PrintGrid(IDictionary<string, Point<char>> points, int currX, int currY, string keys)
+        public static void PrintGrid(IDictionary<string, Point<char>> points, int currX, int currY, int keys)
         {
             var xs = points.Select(x => x.Value.X);
             var ys = points.Select(y => y.Value.Y);
@@ -148,9 +91,12 @@ namespace Advent.Calendar.Y2019D18
                     if (points.ContainsKey(key))
                     {
                         var p = points[key].Data;
+                        var bitmask = GetBitmask(p);
                         if (currX == x && currY == y)
                             Console.Write('@');
-                        else if (p == '@' || keys.Any(k => char.ToLower(p) == k))
+                        else if (p == '.' || p == '#')
+                            Console.Write(points[key].Data);
+                        else if (p == '@' || (keys & bitmask) == bitmask)
                             Console.Write(".");
                         else
                             Console.Write(points[key].Data);
@@ -167,7 +113,19 @@ namespace Advent.Calendar.Y2019D18
 
         public MazeInstance Clone()
         {
-            return new MazeInstance(Maze, this);
+            return new MazeInstance(Maze)
+            {
+                X = X,
+                Y = Y,
+                Key = Key,
+                Distance = Distance,
+                CollectedOrder = CollectedOrder,
+            };
+        }
+
+        public static int GetBitmask(char key)
+        {
+            return (int)Math.Pow(2, char.ToLower(key) - 'a');
         }
     }
 }
