@@ -52,7 +52,7 @@ namespace Advent.Calendar.Y2019D18
 
                 bool best = true;
                 int i = 1;
-                foreach (var bestFinishedMaze in finishedMazes.OrderBy(x => x.Moves.Select(y => y.Data).Sum()))
+                foreach (var bestFinishedMaze in finishedMazes.OrderBy(x => x.TotalDistance))
                 {
                     if (best)
                     {
@@ -60,8 +60,8 @@ namespace Advent.Calendar.Y2019D18
                         best = false;
                     }
 
-                    Console.WriteLine($"{i++} ::: {bestFinishedMaze.Moves.Select(x => x.Data).Sum()} total moves.");
-                    Console.WriteLine($"Move order: {string.Join(", ", bestFinishedMaze.Moves.Select(m => bestFinishedMaze.Maze[m.X, m.Y].Data))}");
+                    Console.WriteLine($"{i++} ::: {bestFinishedMaze.TotalDistance} total moves.");
+                    Console.WriteLine($"Move order: {string.Join(", ", bestFinishedMaze.GetKeys().Reverse().Select(m => m))}");
                     Console.WriteLine();
                 }
 

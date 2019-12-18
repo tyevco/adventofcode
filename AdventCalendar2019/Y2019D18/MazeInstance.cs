@@ -10,8 +10,9 @@ namespace Advent.Calendar.Y2019D18
 {
     public class MazeInstance
     {
-
         private const int DefaultSize = 0;
+
+        public MazeInstance Previous { get; }
 
         public MazeInstance(Maze maze, MazeInstance previousInstance = null)
         {
@@ -19,15 +20,15 @@ namespace Advent.Calendar.Y2019D18
 
             if (previousInstance != null)
             {
-                Keys = previousInstance.Keys.ToList();
-                Moves = previousInstance.Moves.ToList();
                 X = previousInstance.X;
                 Y = previousInstance.Y;
+                Previous = previousInstance;
             }
             else
             {
                 X = maze.X;
                 Y = maze.Y;
+                Previous = null;
             }
         }
 
@@ -37,34 +38,99 @@ namespace Advent.Calendar.Y2019D18
 
         public int Y { get; set; } = 0;
 
-        public IList<char> Keys { get; private set; } = new List<char>();
+        public int? Distance { get; private set; } = 0;
 
-        public IList<Point<int>> Moves { get; private set; } = new List<Point<int>>();
+        public char? Key { get; private set; }
 
-        public Regex ValidLocationRegex(char seekKey) => new Regex(@$"[{seekKey}{string.Join(string.Empty, Keys.Select(c => $"{c}" + c.ToString().ToUpper()))}\.@]");
+        public IEnumerable<Point<char>> RemainingKeys => Maze.KeyLocations.Where(x => !IsKeyCollected(x.Data));
 
-        public IEnumerable<Point<char>> RemainingKeys => Maze.KeyLocations.Where(x => !Keys.Any(k => k == x.Data));
+        public int TotalDistance
+        {
+            get
+            {
+                if (Previous == null)
+                {
+                    return Distance ?? 0;
+                }
+                else
+                {
+                    return (Distance ?? 0) + Previous.TotalDistance;
+                }
+            }
+        }
 
         public void CollectKey(char key)
         {
-            Keys.Add(key);
+            Key = key;
+        }
+
+        public string GetKeys()
+        {
+            if (Previous == null)
+            {
+                if (Key.HasValue)
+                {
+                    return $"{Key.Value}{char.ToUpper(Key.Value)}";
+                }
+                else
+                {
+                    return string.Empty;
+                }
+            }
+            else
+            {
+                if (Key.HasValue)
+                {
+                    return $"{Key.Value}{char.ToUpper(Key.Value)}{Previous.GetKeys()}";
+                }
+                else
+                {
+                    return Previous.GetKeys();
+                }
+            }
+        }
+
+        public bool IsKeyCollected(char key)
+        {
+            if (Previous == null)
+            {
+                if (Key.HasValue)
+                {
+                    return key == Key.Value;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return key == Key || Previous.IsKeyCollected(key);
+            }
         }
 
         public void Move(Point<int> move)
         {
             X = move.X;
             Y = move.Y;
-            Moves.Add(move);
+            Distance = move.Data;
         }
 
+        public Regex ValidLocationRegex(char seekKey)
+        {
+            var keys = GetKeys();
+            return new Regex(@$"[{seekKey}{keys}{keys.ToUpper()}\.@]");
+        }
 
         public void DebugPrint(bool overrideDebug = false)
         {
             if (Debug.EnableDebugOutput || overrideDebug)
-                PrintGrid(Maze.Points, X, Y, Keys);
+            {
+                PrintGrid(Maze.Points, X, Y, GetKeys());
+            }
         }
 
-        public static void PrintGrid(IDictionary<string, Point<char>> points, int currX, int currY, IList<char> keys)
+        public static void PrintGrid(IDictionary<string, Point<char>> points, int currX, int currY, string keys)
         {
             var xs = points.Select(x => x.Value.X);
             var ys = points.Select(y => y.Value.Y);
@@ -84,7 +150,7 @@ namespace Advent.Calendar.Y2019D18
                         var p = points[key].Data;
                         if (currX == x && currY == y)
                             Console.Write('@');
-                        else if (p == '@' || keys.Any(k => p.ToString().ToLower()[0] == k))
+                        else if (p == '@' || keys.Any(k => char.ToLower(p) == k))
                             Console.Write(".");
                         else
                             Console.Write(points[key].Data);
