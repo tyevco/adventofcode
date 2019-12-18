@@ -20,6 +20,9 @@
     <None Update="D*\**\*.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+      <None Update="Y*D*\**\*.txt">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
   </ItemGroup>
 
 </Project>

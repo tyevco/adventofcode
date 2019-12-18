@@ -6,11 +6,11 @@ using System.Linq;
 
 namespace AdventCalendar2019.D15
 {
-    class Scaffolding : Grid<ShipTile>
+    class Ship : Grid<ShipTile>
     {
         private const int DefaultSize = 0;
 
-        public Scaffolding()
+        public Ship()
         {
             SetTile(0, 0, ShipTile.Open);
         }

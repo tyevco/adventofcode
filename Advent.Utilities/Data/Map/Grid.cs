@@ -5,7 +5,7 @@ namespace Advent.Utilities.Data.Map
 {
     public class Grid<T> : IGrid<T>
     {
-        public IDictionary<string, Point<T>> Points { get; private set; } = new Dictionary<string, Point<T>>();
+        public IDictionary<string, Point<T>> Points { get; protected set; } = new Dictionary<string, Point<T>>();
 
         public int X { get; set; } = 0;
 

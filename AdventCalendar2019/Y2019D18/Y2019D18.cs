@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Advent.Utilities;
 using Advent.Utilities.Attributes;
 using Advent.Utilities.Data.Map;
-using Advent.Utilities.Intcode;
-using static Advent.Utilities.Intcode.IntcodeProcessor;
+using AdventCalendar2019.D18;
 
 namespace Advent.Calendar.Y2019D18
 {
@@ -20,113 +21,114 @@ namespace Advent.Calendar.Y2019D18
 
         protected override void Execute(string file)
         {
-            bool part2 = false;
-            var programData = File.ReadAllText(file);
-            var processor = new IntcodeProcessor(programData);
-            Scaffolding scaf = new Scaffolding();
+            Maze maze = new Maze();
+            var mazeDataText = File.ReadAllText(file);
+
             Timer.Monitor(() =>
             {
-                int x = 0;
-                int y = 0;
-                OnOutput outputMethod = output =>
+                string[] mazeData = mazeDataText.Split("\r\n");
+                int yLen = mazeData.Length;
+                int xLen = mazeData.Select(x => x.Length).Max();
+                int entranceIndex = mazeDataText.Replace("\r\n", string.Empty).IndexOf('@');
+                int entranceX = entranceIndex % xLen;
+                int entranceY = entranceIndex / xLen;
+
+                for (int y = 0; y < yLen; y++)
                 {
-                    if (output > 128)
+                    for (int x = 0; x < xLen; x++)
                     {
-                        Console.WriteLine(output);
+                        maze.SetTile(x, y, mazeData[y][x]);
                     }
-                    else
-                    {
-                        if (output == 10)
-                        {
-                            x = 0;
-                            y++;
-                        }
-                        else
-                        {
-                            scaf.SetTile(x, y, (char)output);
-                            x++;
-                        }
-                        if (part2)
-                        {
-                            // Console.Clear();
-                            //  scaf.DebugPrint();
-                        }
-                    }
-                    return true;
-                };
-                processor.Output += outputMethod;
+                }
 
-                processor.Process();
+                maze.X = entranceX;
+                maze.Y = entranceY;
 
-                scaf.DebugPrint();
+                Debug.WriteLine($"Entrance ({entranceX},{entranceY})");
 
-                IList<Point<char>> points = new List<Point<char>>();
+                var finishedMazes = ProcessMaze(maze);
 
-                for (x = 0; x < scaf.Width; x++)
+                Debug.WriteLine($"Finished :::");
+
+                bool best = true;
+                int i = 1;
+                foreach (var bestFinishedMaze in finishedMazes.OrderBy(x => x.Moves.Select(y => y.Data).Sum()))
                 {
-                    for (y = 0; y < scaf.Height; y++)
+                    if (best)
                     {
-                        var tile = scaf.GetTile(x, y);
-                        if (tile == (char)Tile.Scaffold)
+                        bestFinishedMaze.DebugPrint(true);
+                        best = false;
+                    }
+
+                    Console.WriteLine($"{i++} ::: {bestFinishedMaze.Moves.Select(x => x.Data).Sum()} total moves.");
+                    Console.WriteLine($"Move order: {string.Join(", ", bestFinishedMaze.Moves.Select(m => bestFinishedMaze[m.X, m.Y].Data))}");
+                    Console.WriteLine();
+                }
+
+            });
+        }
+
+        private IList<Maze> ProcessMaze(Maze initialMaze)
+        {
+            List<Maze> instances = new List<Maze>();
+            instances.Add(initialMaze);
+            ConcurrentBag<Maze> nextMazes = new ConcurrentBag<Maze>();
+            IList<Maze> finishedMazes = new List<Maze>();
+
+            int generation = 0;
+            while (instances.Count > 0)
+            {
+                Console.WriteLine($"Generation {generation++} ::: {instances.Count} mazes to process.");
+
+                Parallel.ForEach(instances, maze =>
+                {
+                    IList<Point<int>> keyPaths = new List<Point<int>>();
+
+                    foreach (var keyLocation in maze.KeyLocations)
+                    {
+                        Predicate<char> isValid = c =>
                         {
-                            if (scaf.GetTile(x - 1, y) == (char)Tile.Scaffold
-                                && scaf.GetTile(x + 1, y) == (char)Tile.Scaffold
-                                && scaf.GetTile(x, y - 1) == (char)Tile.Scaffold
-                                && scaf.GetTile(x, y + 1) == (char)Tile.Scaffold)
+                            return maze.ValidLocationRegex(keyLocation.Data).IsMatch(c.ToString());
+                        };
+
+                        Debug.WriteLine($"{keyLocation.Data} :: ({keyLocation.X},{keyLocation.Y}) : SEEK");
+                        var point = Pathfinding.FindTargetPoint(maze, keyLocation.X, keyLocation.Y, maze.X, maze.Y, isValid);
+                        if (point != null)
+                        {
+                            Debug.WriteLine($"{keyLocation.Data} :: ({keyLocation.X},{keyLocation.Y}) : d = {point.Data}");
+                            keyPaths.Add(point);
+                        }
+                    }
+
+                    if (keyPaths.Any())
+                    {
+                        foreach (var keyPath in keyPaths)
+                        {
+                            var key = maze[keyPath.X, keyPath.Y];
+                            Debug.WriteLine($"{key.Data} :: ({keyPath.X},{keyPath.Y}) : d = {keyPath.Data}");
+
+                            var nextMaze = (Maze)maze.Clone();
+                            nextMaze.Move(keyPath);
+                            nextMaze.CollectKey(key.Data);
+
+                            if (nextMaze.KeyLocations.Any())
                             {
-                                points.Add(scaf[x, y]);
+                                nextMazes.Add(nextMaze);
+                            }
+                            else
+                            {
+                                finishedMazes.Add(nextMaze);
                             }
                         }
                     }
-                }
+                    maze.DebugPrint();
+                });
 
-                Console.WriteLine(points.Count);
-                Console.WriteLine("Calibration " + points.Select(p => p.X * p.Y).Sum());
+                instances = nextMazes.ToList();
+                nextMazes.Clear();
+            }
 
-                processor.WriteValue(0, 2);
-
-                var movePattern = "A,B,A,C,C,A,B,C,B,B";
-                var functionA = "L,8,R,10,L,8,R,8";
-                var functionB = "L,12,R,8,R,8";
-                var functionC = "L,8,R,6,R,6,R,10,L,8";
-
-                foreach (var mp in movePattern)
-                {
-                    processor.Arguments.Add((long)mp);
-                }
-                processor.Arguments.Add(10);
-
-                foreach (var mp in functionA)
-                {
-                    processor.Arguments.Add((long)mp);
-                }
-                processor.Arguments.Add(10);
-
-
-                foreach (var mp in functionB)
-                {
-                    processor.Arguments.Add((long)mp);
-                }
-                processor.Arguments.Add(10);
-
-
-                foreach (var mp in functionC)
-                {
-                    processor.Arguments.Add((long)mp);
-                }
-                processor.Arguments.Add(10);
-
-                processor.Arguments.Add(121);
-                processor.Arguments.Add(10);
-                y++;
-                x = 0;
-                Console.WriteLine();
-                part2 = true;
-                // Debug.EnableDebugOutput = true;
-                //    scaf.DebugPrint();
-                //  processor.Output -= outputMethod;
-                processor.Process();
-            });
+            return finishedMazes;
         }
     }
 }

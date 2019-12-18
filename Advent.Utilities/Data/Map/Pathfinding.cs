@@ -18,7 +18,7 @@ namespace Advent.Utilities.Data.Map
             }
         }
 
-        public static Point<int> FindTargetPoint<T>(IGrid<T> map, int startX, int startY, int targetX, int targetY, Predicate<T> locationValid)
+        public static Point<int> FindTargetPoint<T>(IGrid<T> map, int startX, int startY, int targetX, int targetY, Predicate<T> locationValid, bool getClosestPoints = false)
         {
             ICollection<Point<T>> available = new List<Point<T>>();
 
@@ -36,7 +36,10 @@ namespace Advent.Utilities.Data.Map
             {
                 var queuedPoints = CalculateDistance(plot.X, plot.Y, map, locationValid);
 
-                var closePoints = GetPointsClosestTo(queuedPoints, startX, startY);
+                var closePoints =
+                    getClosestPoints ? GetPointsClosestTo(queuedPoints, startX, startY)
+                                    : new Point<int>[] { queuedPoints[startX, startY] }.Where(x => x != null);
+
                 if (closePoints.Any())
                 {
                     lock (lockObject)
@@ -110,7 +113,7 @@ namespace Advent.Utilities.Data.Map
                 }
             }
 
-            PrintGrid(FinishedPoints.Points);
+            PrintGrid(map, FinishedPoints.Points);
 
             return FinishedPoints;
         }
@@ -153,10 +156,10 @@ namespace Advent.Utilities.Data.Map
             return valid;
         }
 
-        public static void PrintGrid(IDictionary<string, Point<int>> points)
+        public static void PrintGrid<T>(IGrid<T> map, IDictionary<string, Point<int>> points)
         {
-            var xs = points.Select(x => x.Value.X);
-            var ys = points.Select(y => y.Value.Y);
+            var xs = map.Points.Select(x => x.Value.X);
+            var ys = map.Points.Select(y => y.Value.Y);
 
             var minX = xs.Any() ? Math.Min(-DefaultSize, xs.Min()) : -DefaultSize;
             var maxX = xs.Any() ? Math.Max(DefaultSize, xs.Max()) : DefaultSize;
@@ -165,24 +168,26 @@ namespace Advent.Utilities.Data.Map
             var maxV = points.Select(x => x.Value.Data).Max();
             var len = maxV.ToString().Length + 1;
 
-            for (int y = minY - 1; y <= maxY + 1; y++)
+            for (int y = minY; y <= maxY; y++)
             {
-                for (int x = minX - 1; x <= maxX + 1; x++)
+                for (int x = minX; x <= maxX; x++)
                 {
                     string key = $"{x},{y}";
                     if (points.ContainsKey(key))
                     {
                         var data = points[key].Data;
-                        Console.Write($"{data}".PadLeft(len, ' '));
+                        Debug.Write($"{data}".PadLeft(len, ' '));
                     }
                     else
                     {
-                        Console.Write(string.Empty.PadLeft(len, ' '));
+                        Debug.Write(".".PadLeft(len, ' '));
                     }
                 }
 
-                Console.WriteLine();
+                Debug.WriteLine();
             }
+
+            Debug.WriteLine();
         }
     }
 }

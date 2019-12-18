@@ -17,5 +17,11 @@ namespace Advent.Utilities
             if (EnableDebugOutput)
                 Console.WriteLine(obj);
         }
+
+        public static void WriteLine()
+        {
+            if (EnableDebugOutput)
+                Console.WriteLine();
+        }
     }
 }

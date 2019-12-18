@@ -3,8 +3,8 @@ using System.Diagnostics;
 
 namespace Advent.Utilities.Data.Map
 {
-    [DebuggerDisplay("{X},{Y}")]
-    public class Point<T>
+    [DebuggerDisplay("{X},{Y},{Z}:{Data}")]
+    public class Point<T> : ICloneable
     {
         public Point()
             : this(0, 0, 0)
@@ -68,6 +68,17 @@ namespace Advent.Utilities.Data.Map
             hashCode = hashCode * -1521134295 + Y.GetHashCode();
             hashCode = hashCode * -1521134295 + Z.GetHashCode();
             return hashCode;
+        }
+
+        public object Clone()
+        {
+            return new Point<T>
+            {
+                X = X,
+                Y = Y,
+                Z = Z,
+                Data = Data
+            };
         }
     }
 }
