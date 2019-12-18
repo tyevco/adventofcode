@@ -61,19 +61,19 @@ namespace Advent.Calendar.Y2019D18
                     }
 
                     Console.WriteLine($"{i++} ::: {bestFinishedMaze.Moves.Select(x => x.Data).Sum()} total moves.");
-                    Console.WriteLine($"Move order: {string.Join(", ", bestFinishedMaze.Moves.Select(m => bestFinishedMaze[m.X, m.Y].Data))}");
+                    Console.WriteLine($"Move order: {string.Join(", ", bestFinishedMaze.Moves.Select(m => bestFinishedMaze.Maze[m.X, m.Y].Data))}");
                     Console.WriteLine();
                 }
 
             });
         }
 
-        private IList<Maze> ProcessMaze(Maze initialMaze)
+        private IList<MazeInstance> ProcessMaze(Maze initialMaze)
         {
-            List<Maze> instances = new List<Maze>();
-            instances.Add(initialMaze);
-            ConcurrentBag<Maze> nextMazes = new ConcurrentBag<Maze>();
-            IList<Maze> finishedMazes = new List<Maze>();
+            List<MazeInstance> instances = new List<MazeInstance>();
+            instances.Add(new MazeInstance(initialMaze));
+            ConcurrentBag<MazeInstance> nextMazes = new ConcurrentBag<MazeInstance>();
+            IList<MazeInstance> finishedMazes = new List<MazeInstance>();
 
             int generation = 0;
             while (instances.Count > 0)
@@ -84,15 +84,16 @@ namespace Advent.Calendar.Y2019D18
                 {
                     IList<Point<int>> keyPaths = new List<Point<int>>();
 
-                    foreach (var keyLocation in maze.KeyLocations)
+                    foreach (var keyLocation in maze.RemainingKeys)
                     {
-                        Predicate<char> isValid = c =>
+                        var locationRegex = maze.ValidLocationRegex(keyLocation.Data);
+                        bool isValid(char c)
                         {
-                            return maze.ValidLocationRegex(keyLocation.Data).IsMatch(c.ToString());
-                        };
+                            return locationRegex.IsMatch(c.ToString());
+                        }
 
                         Debug.WriteLine($"{keyLocation.Data} :: ({keyLocation.X},{keyLocation.Y}) : SEEK");
-                        var point = Pathfinding.FindTargetPoint(maze, keyLocation.X, keyLocation.Y, maze.X, maze.Y, isValid);
+                        var point = Pathfinding.FindTargetPoint(maze.Maze, keyLocation.X, keyLocation.Y, maze.X, maze.Y, isValid);
                         if (point != null)
                         {
                             Debug.WriteLine($"{keyLocation.Data} :: ({keyLocation.X},{keyLocation.Y}) : d = {point.Data}");
@@ -104,14 +105,14 @@ namespace Advent.Calendar.Y2019D18
                     {
                         foreach (var keyPath in keyPaths)
                         {
-                            var key = maze[keyPath.X, keyPath.Y];
+                            var key = maze.Maze[keyPath.X, keyPath.Y];
                             Debug.WriteLine($"{key.Data} :: ({keyPath.X},{keyPath.Y}) : d = {keyPath.Data}");
 
-                            var nextMaze = (Maze)maze.Clone();
+                            var nextMaze = maze.Clone();
                             nextMaze.Move(keyPath);
                             nextMaze.CollectKey(key.Data);
 
-                            if (nextMaze.KeyLocations.Any())
+                            if (nextMaze.RemainingKeys.Any())
                             {
                                 nextMazes.Add(nextMaze);
                             }

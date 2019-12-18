@@ -113,7 +113,8 @@ namespace Advent.Utilities.Data.Map
                 }
             }
 
-            PrintGrid(map, FinishedPoints.Points);
+            if (Debug.EnableDebugOutput)
+                PrintGrid(map, FinishedPoints.Points);
 
             return FinishedPoints;
         }
