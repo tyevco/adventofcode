@@ -1,21 +1,21 @@
-﻿using Advent.Utilities;
-using Advent.Utilities.Attributes;
-using Advent.Utilities.Data.Map;
-using Advent.Utilities.Intcode;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Advent.Utilities;
+using Advent.Utilities.Attributes;
+using Advent.Utilities.Data.Map;
+using Advent.Utilities.Intcode;
 using static Advent.Utilities.Intcode.IntcodeProcessor;
 
-namespace AdventCalendar2019.D18
+namespace Advent.Calendar.Y2019D18
 {
     [Exercise("Day 18: Many-Worlds Interpretation")]
     class Y2019D18 : FileSelectionConsole, IExercise
     {
         public void Execute()
         {
-            Start("D18/Data");
+            Start($"{nameof(Y2019D18)}/Data");
         }
 
         protected override void Execute(string file)
