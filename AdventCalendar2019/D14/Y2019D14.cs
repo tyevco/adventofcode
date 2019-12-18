@@ -1,8 +1,10 @@
-﻿using Advent.Utilities;
-using Advent.Utilities.Attributes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
+using Advent.Utilities;
+using Advent.Utilities.Attributes;
 
 namespace AdventCalendar2019.D14
 {
@@ -22,7 +24,8 @@ namespace AdventCalendar2019.D14
             var lines = File.ReadAllLines(file);
 
 
-            IDictionary<string, Reaction> reactions = new Dictionary<string, Reaction>();
+            Dictionary<string, Reaction> reactions = new Dictionary<string, Reaction>();
+            Dictionary<string, long> resources = new Dictionary<string, long>();
 
             Timer.Monitor(() =>
             {
@@ -33,7 +36,7 @@ namespace AdventCalendar2019.D14
 
                     var reaction = new Reaction()
                     {
-                        Yields = int.Parse(yields[0])
+                        Yields = long.Parse(yields[0])
                     };
 
                     reactions.Add(yields[1], reaction);
@@ -43,41 +46,107 @@ namespace AdventCalendar2019.D14
                     foreach (var ingredient in ingredients)
                     {
                         var intakes = ingredient.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-                        reaction.Ingredients.Add(intakes[1], int.Parse(intakes[0]));
+                        reaction.Ingredients.Add(intakes[1], long.Parse(intakes[0]));
                     }
                 }
 
-                Console.WriteLine(reactions.Count);
+                long oreCount = ProduceFuel(reactions, resources);
+                Console.WriteLine($"{oreCount} ORE");
 
-                var fuel = reactions[FUEL];
+                Console.WriteLine($"Resources remaining: {string.Join(", ", resources.Select(x => $"{x.Value} {x.Key}"))}");
 
-                int oreCount = 0;
-                foreach (var ingredient in fuel.Ingredients)
+                // binary search. need to revise method for getting ore
+                long target = 1000000000000;
+                long lower = (target / oreCount) - 1000;
+                long higher = (target / oreCount) + 1000000000;
+                while (lower < higher)
                 {
-                    oreCount += GetOreForIngredient(reactions, ingredient.Key);
+                    long mid = (lower + higher) / 2;
+                    long guess = ProduceFuel(reactions, new Dictionary<string, long>(), mid);
+                    if (guess > target)
+                    {
+                        higher = mid;
+                    }
+                    else if (guess < target)
+                    {
+                        if (mid == lower) break;
+                        lower = mid;
+                    }
+                    else
+                    {
+                        lower = mid;
+                        break;
+                    }
                 }
+
+                Console.WriteLine($"Most would be {lower}");
+
             });
         }
 
-        private static int GetOreForIngredient(IDictionary<string, Reaction> reactions, string ingredient)
+        private static long ProduceFuel(Dictionary<string, Reaction> reactions, Dictionary<string, long> resources, long target = 1)
         {
-            if (ingredient == ORE)
+            long oreCount = 0;
+
+            for (long i = 0; i < target; i++)
             {
-                return 1;
+                oreCount += ProduceIngredient(FUEL, reactions, resources);
+            }
+
+            return oreCount;
+        }
+
+        private static long ProduceIngredient(string ingredient, Dictionary<string, Reaction> reactions, Dictionary<string, long> resources)
+        {
+            var reaction = reactions[ingredient];
+            long oreCount = 0;
+            StringBuilder builder = new StringBuilder();
+            builder.Append("Consuming ");
+            bool first = true;
+            foreach (KeyValuePair<string, long> reactIngredient in reaction.Ingredients)
+            {
+                if (!resources.ContainsKey(reactIngredient.Key))
+                {
+                    resources.Add(reactIngredient.Key, 0);
+                }
+
+                if (reactIngredient.Key == ORE)
+                {
+                    oreCount += reactIngredient.Value;
+                    resources[ORE] += reactIngredient.Value;
+                }
+                else
+                {
+                    if (resources[reactIngredient.Key] < reactIngredient.Value)
+                    {
+                        while (resources[reactIngredient.Key] < reactIngredient.Value)
+                        {
+                            oreCount += ProduceIngredient(reactIngredient.Key, reactions, resources);
+                        }
+                    }
+                }
+
+                var resourceCount = resources[reactIngredient.Key];
+                resources[reactIngredient.Key] = resourceCount - reactIngredient.Value;
+                builder.Append($"{(!first ? ", " : string.Empty)}{reactIngredient.Value} {reactIngredient.Key} [{resourceCount}]");
+
+                first = false;
+            }
+
+            builder.Append($" to produce {reaction.Yields} {ingredient}");
+
+            if (resources.ContainsKey(ingredient))
+            {
+                resources[ingredient] += reaction.Yields;
             }
             else
             {
-                int count = 0;
-
-                var reaction = reactions[ingredient];
-                foreach (var reactIngredient in reaction.Ingredients)
-                {
-                    count += GetOreForIngredient(reactions, reactIngredient.Key) * reactIngredient.Value;
-                }
-
-                return count;
+                resources.Add(ingredient, reaction.Yields);
             }
-            return 0;
+
+            Debug.WriteLine(builder.ToString());
+
+            return oreCount;
         }
     }
 }
