@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Advent.Utilities;
+using Advent.Utilities.Attributes;
+using Advent.Utilities.Data.Map;
+using AdventCalendar2019.D18;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
-using Advent.Utilities;
-using Advent.Utilities.Attributes;
-using Advent.Utilities.Data.Map;
-using AdventCalendar2019.D18;
 
 namespace Advent.Calendar.Y2019D18
 {
@@ -50,6 +51,8 @@ namespace Advent.Calendar.Y2019D18
 
                 Debug.WriteLine($"Finished :::");
 
+                StringBuilder builder = new StringBuilder();
+
                 bool best = true;
                 int i = 1;
                 foreach (var bestFinishedMaze in finishedMazes.OrderBy(x => x.TotalDistance))
@@ -60,10 +63,13 @@ namespace Advent.Calendar.Y2019D18
                         best = false;
                     }
 
-                    Console.WriteLine($"{i++} ::: {bestFinishedMaze.TotalDistance} total moves.");
-                    Console.WriteLine($"Move order: {string.Join(", ", bestFinishedMaze.GetKeys().Reverse().Select(m => m))}");
-                    Console.WriteLine();
+                    builder.AppendLine($"{i++} ::: {bestFinishedMaze.TotalDistance} total moves.");
+                    builder.AppendLine($"Move order: {string.Join(", ", bestFinishedMaze.GetKeys().Reverse().Select(m => m))}");
+                    builder.AppendLine();
                 }
+
+                Console.WriteLine(builder.ToString());
+                File.WriteAllText($"../../../{DateTime.Now.Ticks}_lastrun.log", builder.ToString());
 
             });
         }
@@ -74,13 +80,17 @@ namespace Advent.Calendar.Y2019D18
             instances.Add(new MazeInstance(initialMaze));
             ConcurrentBag<MazeInstance> nextMazes = new ConcurrentBag<MazeInstance>();
             IList<MazeInstance> finishedMazes = new List<MazeInstance>();
+            ParallelOptions pOpt = new ParallelOptions
+            {
+                MaxDegreeOfParallelism = 256,
+            };
 
             int generation = 0;
             while (instances.Count > 0)
             {
                 Console.WriteLine($"Generation {generation++} ::: {instances.Count} mazes to process.");
 
-                Parallel.ForEach(instances, maze =>
+                Parallel.ForEach(instances, pOpt, maze =>
                 {
                     IList<Point<int>> keyPaths = new List<Point<int>>();
 

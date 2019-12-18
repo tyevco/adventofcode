@@ -119,7 +119,7 @@ namespace Advent.Calendar.Y2019D18
         public Regex ValidLocationRegex(char seekKey)
         {
             var keys = GetKeys();
-            return new Regex(@$"[{seekKey}{keys}{keys.ToUpper()}\.@]");
+            return new Regex($"[{seekKey}{keys}{keys.ToUpper()}\\.@]");
         }
 
         public void DebugPrint(bool overrideDebug = false)

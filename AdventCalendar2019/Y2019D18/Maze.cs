@@ -19,7 +19,6 @@ namespace AdventCalendar2019.D18
         {
         }
 
-
         public void SetTile(int x, int y, char tile)
         {
             string key = $"{x},{y}";
