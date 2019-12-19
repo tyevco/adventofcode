@@ -26,31 +26,24 @@ namespace Advent.Utilities.Data.Map
                                             PointMode pointMode = PointMode.Point,
                                             params Point<T>[] targetPoints)
         {
-            Grid<T> available = new Grid<T>();
+            IGrid<T> available = new Grid<T>();
 
-            if (IsLocationValid(startX, startY, map, locationValid))
+            if (targetPoints != null && targetPoints.Length > 0 && IsLocationValid(startX, startY, map, locationValid))
             {
                 var plot = map[startX, startY];
                 if (plot != null && available[plot.X, plot.Y] == null)
                     available[plot.Y, plot.Y] = plot;
-            }
 
-            IList<Point<int>> paths = new List<Point<int>>();
-            foreach (var plot in available.Points.Values)
-            {
                 var queuedPoints = CalculateDistance(plot.X, plot.Y, map, locationValid);
 
                 var closePoints = pointMode == PointMode.Closest ? GetPointsClosestTo(queuedPoints, targetPoints)
                                     : GetPointsAt(queuedPoints, targetPoints);
 
                 if (closePoints.Any())
-                {
-                    foreach (var p in closePoints)
-                        paths.Add(p);
-                }
+                    return closePoints; //.OrderBy(x => x.Data);
             }
 
-            return paths;
+            return null;
         }
 
         public static Point<int> FindTargetPoint<T>(
@@ -62,18 +55,14 @@ namespace Advent.Utilities.Data.Map
                                             Predicate<T> locationValid,
                                             PointMode pointMode = PointMode.Point)
         {
-            Grid<T> available = new Grid<T>();
+            IGrid<T> available = new Grid<T>();
 
             if (IsLocationValid(targetX, targetY, map, locationValid))
             {
                 var plot = map[targetX, targetY];
                 if (plot != null && available[plot.X, plot.Y] == null)
                     available[plot.Y, plot.Y] = plot;
-            }
 
-            ICollection<Point<int>> paths = new List<Point<int>>();
-            foreach (var plot in available.Points.Values)
-            {
                 var queuedPoints = CalculateDistance(plot.X, plot.Y, map, locationValid);
 
                 var closePoints = pointMode == PointMode.Closest ? GetPointsClosestTo(queuedPoints, startX, startY)
@@ -81,24 +70,16 @@ namespace Advent.Utilities.Data.Map
 
                 if (closePoints.Any())
                 {
-                    foreach (var p in closePoints)
-                        paths.Add(p);
+                    return closePoints.OrderBy(p => p.Data).ThenBy(p => p.X + p.Y * map.Width).FirstOrDefault();
                 }
             }
 
-            if (paths.Any())
-            {
-                return paths.OrderBy(p => p.Data).ThenBy(p => p.X + p.Y * map.Width).FirstOrDefault();
-            }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
-        private static IEnumerable<Point<int>> GetPointsClosestTo(Grid<int> points, int x, int y)
+        private static IEnumerable<Point<TGrid>> GetPointsClosestTo<TGrid>(IGrid<TGrid> points, int x, int y)
         {
-            return new List<Point<int>> {
+            return new List<Point<TGrid>> {
                         points[x - 1, y],
                         points[x + 1, y],
                         points[x, y - 1],
@@ -107,9 +88,9 @@ namespace Advent.Utilities.Data.Map
         }
 
 
-        private static IEnumerable<Point<int>> GetPointsClosestTo<T>(Grid<int> points, Point<T>[] targets)
+        private static IEnumerable<Point<TGrid>> GetPointsClosestTo<TGrid, TPoint>(IGrid<TGrid> points, params Point<TPoint>[] targets)
         {
-            return targets.SelectMany(t => new Point<int>[] {
+            return targets.SelectMany(t => new Point<TGrid>[] {
                         points[t.X - 1, t.Y],
                         points[t.X + 1, t.Y],
                         points[t.X, t.Y - 1],
@@ -117,52 +98,40 @@ namespace Advent.Utilities.Data.Map
                     }).Where(p => p != null);
         }
 
-        private static IEnumerable<Point<int>> GetPointsAt<T>(Grid<int> points, Point<T>[] targets)
+        private static IEnumerable<Point<TGrid>> GetPointsAt<TGrid, TPoint>(IGrid<TGrid> points, params Point<TPoint>[] targets)
         {
             return targets.Select(t => points[t.X, t.Y]).Where(p => p != null);
         }
 
-        private static Grid<int> CalculateDistance<T>(int x, int y, IGrid<T> map, Predicate<T> locationValid)
+        private static IGrid<int> CalculateDistance<T>(int x, int y, IGrid<T> map, Predicate<T> locationValid)
         {
-            Grid<int> FinishedPoints = new Grid<int>();
+            IGrid<int> FinishedPoints = new Grid<int>();
             Queue<Point<int>> PointsToProcess = new Queue<Point<int>>();
             PointsToProcess.Enqueue(new PathPoint(x, y, 0));
 
-            int distance = 0;
-            while (true)
+            while (PointsToProcess.Any())
             {
-                distance++;
-
-                Queue<Point<int>> nextQueue = new Queue<Point<int>>();
                 Point<int> point = PointsToProcess.Dequeue();
-                while (point != null)
+
+                if (FinishedPoints.Has(point.X, point.Y))
                 {
-                    TryAddPoint(FinishedPoints, nextQueue, point.X - 1, point.Y, distance, map, locationValid);
-                    TryAddPoint(FinishedPoints, nextQueue, point.X + 1, point.Y, distance, map, locationValid);
-                    TryAddPoint(FinishedPoints, nextQueue, point.X, point.Y - 1, distance, map, locationValid);
-                    TryAddPoint(FinishedPoints, nextQueue, point.X, point.Y + 1, distance, map, locationValid);
+                    continue;
+                }
 
-                    if (!FinishedPoints.Has(point.X, point.Y))
-                        FinishedPoints[point.X, point.Y] = point;
+                var nearbyPoints = GetPointsClosestTo<T, int>(map, point);
 
-                    if (PointsToProcess.Any())
+                foreach (var nearbyPoint in nearbyPoints)
+                {
+                    if (!FinishedPoints.Has(nearbyPoint.X, nearbyPoint.Y))
                     {
-                        point = PointsToProcess.Dequeue();
-                    }
-                    else
-                    {
-                        point = null;
+                        if (locationValid.Invoke(map[nearbyPoint.X, nearbyPoint.Y].Data! ?? default(T)))
+                        {
+                            PointsToProcess.Enqueue(new PathPoint(nearbyPoint.X, nearbyPoint.Y, point.Data + 1));
+                        }
                     }
                 }
 
-                if (!nextQueue.Any())
-                {
-                    break;
-                }
-                else
-                {
-                    PointsToProcess = nextQueue;
-                }
+                FinishedPoints[point.X, point.Y] = point;
             }
 
             if (Debug.EnableDebugOutput)
@@ -170,27 +139,6 @@ namespace Advent.Utilities.Data.Map
 
             return FinishedPoints;
         }
-
-        private static Point<int> TryAddPoint<T>(Grid<int> finished, Queue<Point<int>> process, int x, int y, int d, IGrid<T> map, Predicate<T> locationValid)
-        {
-            Point<int> p = null;
-            if (!finished.Has(x, y) && !process.Any(t => t.X == x && t.Y == y))
-            {
-                p = new PathPoint(x, y, d);
-                if (IsPointValid(p, map, locationValid))
-                {
-                    process.Enqueue(p);
-                }
-            }
-
-            return p;
-        }
-
-        private static bool IsPointValid<T>(Point<int> p, IGrid<T> map, Predicate<T> locationValid)
-        {
-            return IsLocationValid(p.X, p.Y, map, locationValid);
-        }
-
 
         private static bool IsLocationValid<T>(int x, int y, IGrid<T> map, Predicate<T> locationValid)
         {

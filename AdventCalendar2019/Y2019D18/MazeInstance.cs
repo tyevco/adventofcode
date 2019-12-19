@@ -24,7 +24,7 @@ namespace Advent.Calendar.Y2019D18
 
         public int Distance { get; private set; } = 0;
 
-        public int Key { get; private set; } = 0;
+        public int Keys { get; private set; } = 0;
 
         public Point<char>[] RemainingKeys => Maze.KeyLocations.Where(x => !IsKeyCollected(x.Data)).ToArray();
 
@@ -35,14 +35,14 @@ namespace Advent.Calendar.Y2019D18
         public void CollectKey(char key)
         {
             CollectedOrder += key;
-            Key |= GetBitmask(key);
+            Keys |= GetBitmask(key);
         }
 
         public bool IsKeyCollected(char key)
         {
             var mask = GetBitmask(key);
 
-            return (Key & mask) == mask;
+            return (Keys & mask) == mask;
         }
 
         public void Move(Point<int> move)
@@ -61,7 +61,7 @@ namespace Advent.Calendar.Y2019D18
             else
             {
                 var bitmask = GetBitmask(seekKey);
-                return (Key & bitmask) == bitmask;
+                return (Keys & bitmask) == bitmask;
             }
         }
 
@@ -69,7 +69,7 @@ namespace Advent.Calendar.Y2019D18
         {
             if (Debug.EnableDebugOutput || overrideDebug)
             {
-                PrintGrid(Maze.Points, X, Y, Key);
+                PrintGrid(Maze.Points, X, Y, Keys);
             }
         }
 
@@ -117,7 +117,7 @@ namespace Advent.Calendar.Y2019D18
             {
                 X = X,
                 Y = Y,
-                Key = Key,
+                Keys = Keys,
                 Distance = Distance,
                 CollectedOrder = CollectedOrder,
             };

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Advent.Utilities;
 using Advent.Utilities.Attributes;
 using Advent.Utilities.Data.Map;
@@ -52,7 +50,7 @@ namespace Advent.Calendar.Y2019D18
 
                 bool best = true;
                 int i = 1;
-                foreach (var bestFinishedMaze in finishedMazes.OrderBy(x => x.Distance))
+                foreach (var bestFinishedMaze in finishedMazes.OrderBy(x => x.Distance).Take(5))
                 {
                     if (best)
                     {
@@ -70,50 +68,59 @@ namespace Advent.Calendar.Y2019D18
 
         private IList<MazeInstance> ProcessMaze(Maze initialMaze)
         {
-            List<MazeInstance> instances = new List<MazeInstance>();
-            instances.Add(new MazeInstance(initialMaze)
+            Queue<MazeInstance> instances = new Queue<MazeInstance>();
+            instances.Enqueue(new MazeInstance(initialMaze)
             {
                 X = initialMaze.X,
                 Y = initialMaze.Y,
             });
-            ConcurrentBag<MazeInstance> nextMazes = new ConcurrentBag<MazeInstance>();
+
             IList<MazeInstance> finishedMazes = new List<MazeInstance>();
 
-            int generation = 0;
-            while (instances.Count > 0)
+            IDictionary<int, int> discoveredPaths = new Dictionary<int, int>();
+
+            while (instances.Any())
             {
-                Console.WriteLine($"Generation {generation++} ::: {instances.Count} mazes to process.");
+                var maze = instances.Dequeue();
 
-                Parallel.ForEach(instances, maze =>
+                if (discoveredPaths.ContainsKey(maze.Keys))
                 {
-                    IEnumerable<Point<int>> keyPaths = Pathfinding.FindTargetPoints(maze.Maze, maze.X, maze.Y, maze.IsMatch, PointMode.Point, maze.RemainingKeys);
-
-                    if (keyPaths.Any())
+                    if (discoveredPaths[maze.Keys] < maze.Distance)
                     {
-                        foreach (var keyPath in keyPaths)
+                        continue;
+                    }
+
+                    discoveredPaths[maze.Keys] = maze.Distance;
+                }
+                else
+                {
+                    discoveredPaths[maze.Keys] = maze.Distance;
+                }
+
+                IEnumerable<Point<int>> keyPaths = Pathfinding.FindTargetPoints(maze.Maze, maze.X, maze.Y, maze.IsMatch, PointMode.Point, maze.RemainingKeys);
+
+                if (keyPaths.Any())
+                {
+                    foreach (var keyPath in keyPaths)
+                    {
+                        var key = maze.Maze[keyPath.X, keyPath.Y];
+                        Debug.WriteLine($"{key.Data} :: ({keyPath.X},{keyPath.Y}) : d = {keyPath.Data}");
+
+                        var nextMaze = maze.Clone();
+                        nextMaze.Move(keyPath);
+                        nextMaze.CollectKey(key.Data);
+
+                        if (nextMaze.RemainingKeys.Any())
                         {
-                            var key = maze.Maze[keyPath.X, keyPath.Y];
-                            Debug.WriteLine($"{key.Data} :: ({keyPath.X},{keyPath.Y}) : d = {keyPath.Data}");
-
-                            var nextMaze = maze.Clone();
-                            nextMaze.Move(keyPath);
-                            nextMaze.CollectKey(key.Data);
-
-                            if (nextMaze.RemainingKeys.Any())
-                            {
-                                nextMazes.Add(nextMaze);
-                            }
-                            else
-                            {
-                                finishedMazes.Add(nextMaze);
-                            }
+                            instances.Enqueue(nextMaze);
+                        }
+                        else
+                        {
+                            finishedMazes.Add(nextMaze);
                         }
                     }
-                    maze.DebugPrint();
-                });
-
-                instances = nextMazes.ToList();
-                nextMazes.Clear();
+                }
+                maze.DebugPrint();
             }
 
             return finishedMazes;
