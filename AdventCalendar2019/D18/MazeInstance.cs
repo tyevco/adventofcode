@@ -27,11 +27,13 @@ namespace AdventCalendar2019.D18
 
         public int Obstacles { get; private set; } = 0;
 
-        public Point<char>[] RemainingKeys => Maze.KeyLocations.Where(x => !IsKeyCollected(x.Data)).ToArray();
+        public DataPoint<char>[] RemainingKeys => Maze.KeyLocations.Where(x => !IsKeyCollected(x.Data)).ToArray();
 
         public string CollectedOrder = string.Empty;
 
         public char LastKey { get; set; }
+
+        public DataPoint<char> Current => Maze[X, Y];
 
         public void CollectKey(char key)
         {
@@ -46,7 +48,7 @@ namespace AdventCalendar2019.D18
             return (Keys & mask) == mask;
         }
 
-        public void Move(PointData<int> move)
+        public void Move(DataPoint<int> move)
         {
             X = move.X;
             Y = move.Y;
@@ -75,7 +77,7 @@ namespace AdventCalendar2019.D18
             }
         }
 
-        public static void PrintGrid(IDictionary<string, PointData<char>> points, int currX, int currY, int keys)
+        public static void PrintGrid(IDictionary<string, DataPoint<char>> points, int currX, int currY, int keys)
         {
             var xs = points.Select(x => x.Value.X);
             var ys = points.Select(y => y.Value.Y);

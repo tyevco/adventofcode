@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Advent.Utilities;
 using Advent.Utilities.Attributes;
 using Advent.Utilities.Data.Map;
@@ -66,18 +65,13 @@ namespace AdventCalendar2019.D18
             });
         }
 
-        private IDictionary<PointData<char>, IList<PointData<int>>> BuildGraph(Maze maze)
+        private IDictionary<DataPoint<char>, IList<DataPoint<int>>> BuildGraph(Maze maze)
         {
-            IDictionary<PointData<char>, IList<PointData<int>>> graph = new Dictionary<PointData<char>, IList<PointData<int>>>();
+            IDictionary<DataPoint<char>, IList<DataPoint<int>>> graph = new Dictionary<DataPoint<char>, IList<DataPoint<int>>>();
 
-            Queue<PointData<char>> points = new Queue<PointData<char>>(maze.KeyLocations);
-            IList<PointData<char>> keyLocs = points.ToList();
-            points.Enqueue(maze[maze.X, maze.Y]);
-
-            bool isMatch(PointData<char> p)
-            {
-                return true;
-            }
+            Queue<DataPoint<char>> points = new Queue<DataPoint<char>>(maze.KeyLocations);
+            IList<DataPoint<char>> keyLocs = points.ToList();
+            points.Enqueue(maze.Current);
 
             while (points.Any())
             {
@@ -85,7 +79,7 @@ namespace AdventCalendar2019.D18
 
                 Console.WriteLine($"Building graph for {point.Data}.");
 
-                var keyPaths = Pathfinding<int>.FindTargetPoints(maze, point.X, point.Y, isMatch, PointMode.Point, keyLocs.Where(x => x.Data != point.Data).ToArray()).ToList();
+                var keyPaths = Pathfinding<int>.FindTargetPoints(maze, point.X, point.Y, IsMatch, PointMode.Point, CreatePointData, keyLocs.Where(x => x.Data != point.Data).ToArray()).ToList();
 
                 graph.Add(point, keyPaths);
             }
@@ -94,7 +88,28 @@ namespace AdventCalendar2019.D18
             return graph;
         }
 
-        private IList<MazeInstance> ProcessMaze(Maze initialMaze, IDictionary<PointData<char>, IList<PointData<int>>> graph)
+        private bool IsMatch(DataPoint<char> point)
+        {
+            return point.Data != '#';
+        }
+
+        private DataPoint<int> CreatePointData(DataPoint<char> point, DataPoint<int> lastDataPoint)
+        {
+            // check if this is a door, if it is set the bit on the Data object on the returned point.
+            int obstacle = lastDataPoint.Data;
+
+            if (char.IsUpper(point.Data))
+            {
+                obstacle |= (int)Math.Pow(2, char.ToLower(point.Data) - 'a');
+            }
+
+            return new DataPoint<int>(point.X, point.Y, obstacle)
+            {
+                Distance = lastDataPoint.Distance + 1,
+            };
+        }
+
+        private IList<MazeInstance> ProcessMaze(Maze initialMaze, IDictionary<DataPoint<char>, IList<DataPoint<int>>> graph)
         {
             Queue<MazeInstance> instances = new Queue<MazeInstance>();
             instances.Enqueue(new MazeInstance(initialMaze)
@@ -110,40 +125,55 @@ namespace AdventCalendar2019.D18
             {
                 var maze = instances.Dequeue();
 
-                if (discoveredPaths.ContainsKey(maze.Keys))
-                {
-                    if (discoveredPaths[maze.Keys] < maze.Distance)
-                    {
-                        continue;
-                    }
+                //if (discoveredPaths.ContainsKey(maze.Keys))
+                //{
+                //    if (discoveredPaths[maze.Keys] < maze.Distance)
+                //    {
+                //        continue;
+                //    }
 
-                    discoveredPaths[maze.Keys] = maze.Distance;
-                }
-                else
-                {
-                    discoveredPaths[maze.Keys] = maze.Distance;
-                }
+                //    discoveredPaths[maze.Keys] = maze.Distance;
+                //}
+                //else
+                //{
+                //    discoveredPaths[maze.Keys] = maze.Distance;
+                //}
 
 
-                var keyPaths = graph[maze.Maze[maze.X, maze.Y]];
+                var keyPaths = graph[maze.Current];
                 if (keyPaths.Any())
                 {
                     foreach (var keyPath in keyPaths)
                     {
                         var key = maze.Maze[keyPath.X, keyPath.Y];
-                        Debug.WriteLine($"{key.Data} :: ({keyPath.X},{keyPath.Y}) : d = {keyPath.Data}");
 
-                        var nextMaze = maze.Clone();
-                        nextMaze.Move(keyPath);
-                        nextMaze.CollectKey(key.Data);
+                        // check to see if we have not collected this key.
+                        if (!maze.IsKeyCollected(key.Data))
+                        {
+                            Debug.WriteLine($"Checking {maze.X},{maze.Y} [{maze.Current.Data}] -> {keyPath.X},{keyPath.Y} [{key.Data}] | Keys: [{maze.Keys}] Doors: [{keyPath.Data}]");
 
-                        if (nextMaze.RemainingKeys.Any())
-                        {
-                            instances.Enqueue(nextMaze);
-                        }
-                        else
-                        {
-                            finishedMazes.Add(nextMaze);
+                            // check to see if there are any locked doors on this path.
+                            if (keyPath.Data == 0 || (maze.Keys > 0 && (keyPath.Data & maze.Keys) == keyPath.Data))
+                            {
+                                Debug.WriteLine($"{key.Data} :: ({keyPath.X},{keyPath.Y}) : d = {keyPath.Distance}, o = {keyPath.Data} ~ open");
+
+                                var nextMaze = maze.Clone();
+                                nextMaze.Move(keyPath);
+                                nextMaze.CollectKey(key.Data);
+
+                                if (nextMaze.RemainingKeys.Any())
+                                {
+                                    instances.Enqueue(nextMaze);
+                                }
+                                else
+                                {
+                                    finishedMazes.Add(nextMaze);
+                                }
+                            }
+                            else
+                            {
+                                Debug.WriteLine($"{key.Data} :: ({keyPath.X},{keyPath.Y}) : d = {keyPath.Distance}, o = {keyPath.Data} ~ closed");
+                            }
                         }
                     }
                 }
