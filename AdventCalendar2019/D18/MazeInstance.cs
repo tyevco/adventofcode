@@ -5,7 +5,7 @@ using Advent.Utilities;
 using Advent.Utilities.Data.Map;
 using AdventCalendar2019.D18;
 
-namespace Advent.Calendar.Y2019D18
+namespace AdventCalendar2019.D18
 {
     public class MazeInstance
     {

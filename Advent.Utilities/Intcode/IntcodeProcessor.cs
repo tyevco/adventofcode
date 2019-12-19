@@ -9,6 +9,7 @@ namespace Advent.Utilities.Intcode
         public IntcodeProcessor(string programData)
         {
             this.ProgramData = programData;
+            this.Register = new MemoryRegister(ProgramData?.Split(",").Select(x => long.Parse(x)).ToArray());
             this.Reset();
         }
 
@@ -38,10 +39,10 @@ namespace Advent.Utilities.Intcode
 
         public void Reset()
         {
-            this.Register = new MemoryRegister(ProgramData?.Split(",").Select(x => long.Parse(x)).ToArray());
+            this.Register.Reset();
             this.Pointer = 0;
             this.ArgPos = 0;
-            this.Arguments = new List<long>();
+            this.Arguments.Clear();
             Running = false;
             Halted = false;
         }

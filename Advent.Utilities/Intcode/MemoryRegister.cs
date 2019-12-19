@@ -4,13 +4,16 @@ namespace Advent.Utilities.Intcode
 {
     public class MemoryRegister
     {
+        private long[] Original;
         private long[] Register;
 
         public int Length => Register.Length;
 
         public MemoryRegister(long[] initialValues)
         {
-            this.Register = initialValues;
+            this.Register = new long[initialValues.Length];
+            this.Original = new long[initialValues.Length];
+            Array.Copy(initialValues, this.Original, initialValues.Length);
         }
 
         public long this[long index]
@@ -56,6 +59,11 @@ namespace Advent.Utilities.Intcode
             {
                 Array.Resize(ref Register, index + 1);
             }
+        }
+
+        public void Reset()
+        {
+            Array.Copy(this.Original, this.Register, this.Original.Length);
         }
 
         public void Print()

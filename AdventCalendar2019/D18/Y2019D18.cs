@@ -1,4 +1,5 @@
-﻿using Advent.Utilities;
+﻿using Advent.Calendar.Y2019D18;
+using Advent.Utilities;
 using Advent.Utilities.Attributes;
 using Advent.Utilities.Data.Map;
 using AdventCalendar2019.D18;
@@ -6,19 +7,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Advent.Utilities;
-using Advent.Utilities.Attributes;
-using Advent.Utilities.Data.Map;
-using AdventCalendar2019.D18;
+using System.Text;
 
-namespace Advent.Calendar.Y2019D18
+namespace AdventCalendar2019.D18
 {
     [Exercise("Day 18: Many-Worlds Interpretation")]
     class Y2019D18 : FileSelectionConsole, IExercise
     {
         public void Execute()
         {
-            Start($"{nameof(Y2019D18)}/Data");
+            Start("D18/Data");
         }
 
         protected override void Execute(string file)
@@ -85,11 +83,6 @@ namespace Advent.Calendar.Y2019D18
             });
 
             IList<MazeInstance> finishedMazes = new List<MazeInstance>();
-            ParallelOptions pOpt = new ParallelOptions
-            {
-                MaxDegreeOfParallelism = 256,
-            };
-
             IDictionary<int, int> discoveredPaths = new Dictionary<int, int>();
 
             while (instances.Any())

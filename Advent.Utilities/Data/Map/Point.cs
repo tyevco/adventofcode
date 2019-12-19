@@ -35,7 +35,7 @@ namespace Advent.Utilities.Data.Map
 
         public override string ToString()
         {
-            return $"{X},{Y}";
+            return $"{X},{Y} : {Data}";
         }
 
         public int CalculateDistance(int x, int y)
