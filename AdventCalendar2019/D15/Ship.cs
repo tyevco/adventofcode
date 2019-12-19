@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace AdventCalendar2019.D15
 {
-    class Ship : Grid<PointData<ShipTile>, ShipTile>
+    class Ship : Grid<DataPoint<ShipTile>, ShipTile>
     {
         private const int DefaultSize = 0;
 
@@ -19,7 +19,7 @@ namespace AdventCalendar2019.D15
         {
             string key = $"{x},{y}";
 
-            PointData<ShipTile> point;
+            DataPoint<ShipTile> point;
             if (Points.ContainsKey(key))
             {
                 point = Points[key];
@@ -27,7 +27,7 @@ namespace AdventCalendar2019.D15
             }
             else
             {
-                point = new PointData<ShipTile>(x, y)
+                point = new DataPoint<ShipTile>(x, y)
                 {
                     Data = tile
                 };
@@ -133,7 +133,7 @@ namespace AdventCalendar2019.D15
             PrintGrid(Points, X, Y);
         }
 
-        public static void PrintGrid(IDictionary<string, PointData<ShipTile>> points, int droidX, int droidY)
+        public static void PrintGrid(IDictionary<string, DataPoint<ShipTile>> points, int droidX, int droidY)
         {
             var xs = points.Select(x => x.Value.X);
             var ys = points.Select(y => y.Value.Y);

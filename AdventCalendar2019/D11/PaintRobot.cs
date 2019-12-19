@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace AdventCalendar2019.D11
 {
-    class PaintRobot : Grid<PointData<long>, long>
+    class PaintRobot : Grid<DataPoint<long>, long>
     {
         private const int DefaultSize = 2;
 
@@ -24,7 +24,7 @@ namespace AdventCalendar2019.D11
             }
             else
             {
-                Points.Add(key, new PointData<long>(X, Y, paintColor));
+                Points.Add(key, new DataPoint<long>(X, Y, paintColor));
             }
 
             if (turnDir == 0)
@@ -76,7 +76,7 @@ namespace AdventCalendar2019.D11
             }
         }
 
-        public static void PrintGrid(IDictionary<string, PointData<long>> points, int currX, int currY, Direction dir)
+        public static void PrintGrid(IDictionary<string, DataPoint<long>> points, int currX, int currY, Direction dir)
         {
             var xs = points.Select(x => x.Value.X);
             var ys = points.Select(y => y.Value.Y);

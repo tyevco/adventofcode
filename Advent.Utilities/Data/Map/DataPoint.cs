@@ -1,20 +1,20 @@
 ﻿namespace Advent.Utilities.Data.Map
 {
-    public class PointData<T> : Point<T>
+    public class DataPoint<T> : Point<T>
     {
-        public PointData(int x, int y)
+        public DataPoint(int x, int y)
         : base(x, y)
         {
             this.Data = Data;
         }
 
-        public PointData(int x, int y, T data)
+        public DataPoint(int x, int y, T data)
         : base(x, y)
         {
             this.Data = data;
         }
 
-        public PointData(int x, int y, int distance, T data)
+        public DataPoint(int x, int y, int distance, T data)
          : base(x, y)
         {
             this.X = x;
@@ -23,7 +23,7 @@
             this.Distance = distance;
         }
 
-        public PointData()
+        public DataPoint()
         {
         }
 

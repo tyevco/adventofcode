@@ -30,6 +30,8 @@ namespace Advent.Utilities.Data.Map
             }
         }
 
+        public TPoint Current => this[X, Y];
+
         public bool Has(int x, int y)
         {
             string key = $"{x},{y}";

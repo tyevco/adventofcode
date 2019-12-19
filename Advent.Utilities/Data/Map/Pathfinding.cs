@@ -8,12 +8,16 @@ namespace Advent.Utilities.Data.Map
     {
         private const int DefaultSize = 0;
 
-        public static IEnumerable<PointData<TData>> FindTargetPoints<TGridPoint, TGridData>(
+        public delegate DataPoint<TData> CreatePointData<TPoint, TPointData>(TPoint Point, DataPoint<TData> lastDataPoint)
+            where TPoint : Point<TPointData>;
+
+        public static IEnumerable<DataPoint<TData>> FindTargetPoints<TGridPoint, TGridData>(
                                             IGrid<TGridPoint, TGridData> map,
                                             int startX,
                                             int startY,
                                             Predicate<TGridPoint> locationValid,
                                             PointMode pointMode = PointMode.Point,
+                                            CreatePointData<TGridPoint, TGridData> createDataPoint = null,
                                             params Point<TGridData>[] targetPoints)
             where TGridPoint : Point<TGridData>
         {
@@ -25,7 +29,7 @@ namespace Advent.Utilities.Data.Map
                 if (plot != null && available[plot.X, plot.Y] == null)
                     available[plot.Y, plot.Y] = plot;
 
-                var queuedPoints = CalculateDistance(plot.X, plot.Y, map, locationValid);
+                var queuedPoints = CalculateDistance(plot.X, plot.Y, map, locationValid, createDataPoint);
 
                 var closePoints = pointMode == PointMode.Closest ? GetPointsClosestTo(queuedPoints, targetPoints)
                                     : GetPointsAt(queuedPoints, targetPoints);
@@ -37,13 +41,14 @@ namespace Advent.Utilities.Data.Map
             return null;
         }
 
-        public static PointData<TData> FindTargetPoint<TGridPoint, TGridData>(
+        public static DataPoint<TData> FindTargetPoint<TGridPoint, TGridData>(
                                             IGrid<TGridPoint, TGridData> map,
                                             int startX,
                                             int startY,
                                             int targetX,
                                             int targetY,
                                             Predicate<TGridPoint> locationValid,
+                                            CreatePointData<TGridPoint, TGridData> createDataPoint = null,
                                             PointMode pointMode = PointMode.Point)
             where TGridPoint : Point<TGridData>
         {
@@ -55,10 +60,10 @@ namespace Advent.Utilities.Data.Map
                 if (plot != null && available[plot.X, plot.Y] == null)
                     available[plot.Y, plot.Y] = plot;
 
-                var queuedPoints = CalculateDistance(plot.X, plot.Y, map, locationValid);
+                var queuedPoints = CalculateDistance(plot.X, plot.Y, map, locationValid, createDataPoint);
 
                 var closePoints = pointMode == PointMode.Closest ? GetPointsClosestTo(queuedPoints, startX, startY)
-                                    : new PointData<TData>[] { queuedPoints[startX, startY] }.Where(x => x != null);
+                                    : new DataPoint<TData>[] { queuedPoints[startX, startY] }.Where(x => x != null);
 
                 if (closePoints.Any())
                 {
@@ -69,7 +74,10 @@ namespace Advent.Utilities.Data.Map
             return null;
         }
 
-        private static IEnumerable<TGridPoint> GetPointsClosestTo<TGridPoint, TPoint>(IGrid<TGridPoint, TPoint> points, int x, int y)
+        private static IEnumerable<TGridPoint> GetPointsClosestTo<TGridPoint, TPoint>(
+                    IGrid<TGridPoint, TPoint> points,
+                    int x,
+                    int y)
             where TGridPoint : Point<TPoint>
         {
             return new List<TGridPoint> {
@@ -81,7 +89,9 @@ namespace Advent.Utilities.Data.Map
         }
 
 
-        private static IEnumerable<TGridPoint> GetPointsClosestTo<TGridPoint, TGridData, TPoint>(IGrid<TGridPoint, TGridData> points, params Point<TPoint>[] targets)
+        private static IEnumerable<TGridPoint> GetPointsClosestTo<TGridPoint, TGridData, TPoint>(
+                    IGrid<TGridPoint, TGridData> points,
+                    params Point<TPoint>[] targets)
             where TGridPoint : Point<TGridData>
         {
             return targets.SelectMany(t => new TGridPoint[] {
@@ -92,22 +102,29 @@ namespace Advent.Utilities.Data.Map
                     }).Where(p => p != null);
         }
 
-        private static IEnumerable<TGridPoint> GetPointsAt<TGridPoint, TGridData, TPoint>(IGrid<TGridPoint, TGridData> points, params Point<TPoint>[] targets)
+        private static IEnumerable<TGridPoint> GetPointsAt<TGridPoint, TGridData, TPoint>(
+                    IGrid<TGridPoint, TGridData> points,
+                    params Point<TPoint>[] targets)
             where TGridPoint : Point<TGridData>
         {
             return targets.Select(t => points[t.X, t.Y]).Where(p => p != null);
         }
 
-        private static IGrid<PointData<TData>, TData> CalculateDistance<TGridPoint, TGridData>(int x, int y, IGrid<TGridPoint, TGridData> map, Predicate<TGridPoint> locationValid)
+        private static IGrid<DataPoint<TData>, TData> CalculateDistance<TGridPoint, TGridData>(
+                    int x,
+                    int y,
+                    IGrid<TGridPoint, TGridData> map,
+                    Predicate<TGridPoint> locationValid,
+                    CreatePointData<TGridPoint, TGridData> createDataPoint = null)
             where TGridPoint : Point<TGridData>
         {
-            IGrid<PointData<TData>, TData> FinishedPoints = new Grid<PointData<TData>, TData>();
-            Queue<PointData<TData>> PointsToProcess = new Queue<PointData<TData>>();
-            PointsToProcess.Enqueue(new PointData<TData>(x, y, 0, default(TData)));
+            IGrid<DataPoint<TData>, TData> FinishedPoints = new Grid<DataPoint<TData>, TData>();
+            Queue<DataPoint<TData>> PointsToProcess = new Queue<DataPoint<TData>>();
+            PointsToProcess.Enqueue(new DataPoint<TData>(x, y, 0, default(TData)));
 
             while (PointsToProcess.Any())
             {
-                PointData<TData> point = PointsToProcess.Dequeue();
+                DataPoint<TData> point = PointsToProcess.Dequeue();
 
                 if (FinishedPoints.Has(point.X, point.Y))
                 {
@@ -120,9 +137,19 @@ namespace Advent.Utilities.Data.Map
                 {
                     if (!FinishedPoints.Has(nearbyPoint.X, nearbyPoint.Y))
                     {
-                        if (locationValid.Invoke(map[nearbyPoint.X, nearbyPoint.Y] ?? default(TGridPoint)))
+                        if (locationValid.Invoke(nearbyPoint))
                         {
-                            PointsToProcess.Enqueue(new PointData<TData>(nearbyPoint.X, nearbyPoint.Y, point.Distance + 1, default(TData)));
+                            DataPoint<TData> pointData;
+                            if (createDataPoint != null)
+                            {
+                                pointData = createDataPoint.Invoke(nearbyPoint, point);
+                            }
+                            else
+                            {
+                                pointData = new DataPoint<TData>(nearbyPoint.X, nearbyPoint.Y, point.Distance + 1, default(TData));
+                            }
+
+                            PointsToProcess.Enqueue(pointData);
                         }
                     }
                 }
@@ -154,7 +181,7 @@ namespace Advent.Utilities.Data.Map
             return valid;
         }
 
-        public static void PrintGrid<TGridPoint, TGridData>(IGrid<TGridPoint, TGridData> map, IDictionary<string, PointData<TData>> points)
+        public static void PrintGrid<TGridPoint, TGridData>(IGrid<TGridPoint, TGridData> map, IDictionary<string, DataPoint<TData>> points)
             where TGridPoint : Point<TGridData>
         {
             var xs = map.Points.Select(x => x.Value.X);

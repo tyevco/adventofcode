@@ -3,8 +3,26 @@ using System.Diagnostics;
 
 namespace Advent.Utilities.Data.Map
 {
+    public class Point<T> : Point
+    {
+        public Point()
+        : base(0, 0, 0)
+        {
+        }
+
+        public Point(int x)
+            : base(x, 0, 0)
+        {
+        }
+
+        public Point(int x, int y)
+            : base(x, y, 0)
+        {
+        }
+    }
+
     [DebuggerDisplay("{X},{Y},{Z}")]
-    public class Point<T>
+    public class Point
     {
         public Point()
             : this(0, 0, 0)
@@ -42,19 +60,19 @@ namespace Advent.Utilities.Data.Map
             return Math.Abs(X - x) + Math.Abs(Y - y);
         }
 
-        public int CalculateDistance(Point<T> other)
+        public int CalculateDistance(Point other)
         {
             return CalculateDistance(other.X, other.Y);
         }
 
-        public Vector2i CalculateVector(Point<T> other)
+        public Vector2i CalculateVector(Point other)
         {
             return new Vector2i(other.X - X, other.Y - Y);
         }
 
         public override bool Equals(object obj)
         {
-            return obj is Point<T> point &&
+            return obj is Point point &&
                    X == point.X &&
                    Y == point.Y &&
                    Z == point.Z;

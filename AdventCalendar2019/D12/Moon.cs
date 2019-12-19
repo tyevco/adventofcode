@@ -7,7 +7,7 @@ namespace AdventCalendar2019.D12
     class Moon
     {
         public int ID { get; set; }
-        public Point<int> Position { get; set; }
+        public Point Position { get; set; }
         public Vector3i Velocity { get; set; }
 
         public int PotentialEnergy => Math.Abs(Position.X) + Math.Abs(Position.Y) + Math.Abs(Position.Z);

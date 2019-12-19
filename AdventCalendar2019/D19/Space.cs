@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace AdventCalendar2019.D19
 {
-    class Space : Grid<PointData<long>, long>
+    class Space : Grid<DataPoint<long>, long>
     {
         private const int DefaultSize = 0;
 
@@ -19,7 +19,7 @@ namespace AdventCalendar2019.D19
         {
             string key = $"{x},{y}";
 
-            PointData<long> point;
+            DataPoint<long> point;
             if (Points.ContainsKey(key))
             {
                 point = Points[key];
@@ -27,7 +27,7 @@ namespace AdventCalendar2019.D19
             }
             else
             {
-                point = new PointData<long>(x, y)
+                point = new DataPoint<long>(x, y)
                 {
                     Data = tile
                 };
@@ -70,7 +70,7 @@ namespace AdventCalendar2019.D19
             PrintGrid(Points, X, Y);
         }
 
-        public static void PrintGrid(IDictionary<string, PointData<long>> points, int droidX, int droidY)
+        public static void PrintGrid(IDictionary<string, DataPoint<long>> points, int droidX, int droidY)
         {
             var xs = points.Select(x => x.Value.X);
             var ys = points.Select(y => y.Value.Y);
