@@ -161,6 +161,8 @@ namespace Advent.Utilities
         {
             while (true)
             {
+                Console.CursorVisible = false;
+
                 var type = DisplayMenu();
 
                 if (type != null)
@@ -178,6 +180,7 @@ namespace Advent.Utilities
                     }
                 }
 
+                Console.CursorVisible = true;
                 Console.WriteLine("Finished.");
                 var info = Console.ReadKey();
 

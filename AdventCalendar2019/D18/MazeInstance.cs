@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Advent.Utilities;
 using Advent.Utilities.Data.Map;
@@ -13,13 +12,12 @@ namespace AdventCalendar2019.D18
         public MazeInstance(Maze maze)
         {
             Maze = maze;
+            Robots = maze.Robots;
         }
 
         public Maze Maze { get; private set; }
 
-        public int X { get; set; } = 0;
-
-        public int Y { get; set; } = 0;
+        public Robot[] Robots { get; private set; }
 
         public int Distance { get; private set; } = 0;
 
@@ -32,8 +30,6 @@ namespace AdventCalendar2019.D18
         public string CollectedOrder = string.Empty;
 
         public char LastKey { get; set; }
-
-        public DataPoint<char> Current => Maze[X, Y];
 
         public State State => new State
         {
@@ -48,10 +44,10 @@ namespace AdventCalendar2019.D18
             return (Keys & mask) == mask;
         }
 
-        public void Move(DataPoint<State> move)
+        public void Move(int index, DataPoint<State> move)
         {
-            X = move.X;
-            Y = move.Y;
+            Robots[index].X = move.X;
+            Robots[index].Y = move.Y;
             Keys |= move.Data.Keys;
 
             Distance += move.Distance;
@@ -60,7 +56,7 @@ namespace AdventCalendar2019.D18
 
         public bool IsMatch(char seekKey)
         {
-            if (seekKey == '.' || seekKey == '@' || char.IsLower(seekKey))
+            if (seekKey == '.' || char.IsNumber(seekKey) || char.IsLower(seekKey))
                 return true;
             else if (seekKey == '#')
                 return false;
@@ -75,37 +71,40 @@ namespace AdventCalendar2019.D18
         {
             if (Debug.EnableDebugOutput || overrideDebug)
             {
-                PrintGrid(Maze.Points, X, Y, Keys);
+                PrintGrid(Maze, Robots, Keys);
             }
         }
 
-        public static void PrintGrid(IDictionary<string, DataPoint<char>> points, int currX, int currY, int keys)
+        public static void PrintGrid(Maze maze, Robot[] robots, int keys)
         {
-            var xs = points.Select(x => x.Value.X);
-            var ys = points.Select(y => y.Value.Y);
-
-            var minX = xs.Any() ? Math.Min(-DefaultSize, xs.Min()) : -DefaultSize;
-            var maxX = xs.Any() ? Math.Max(DefaultSize, xs.Max()) : DefaultSize;
-            var minY = ys.Any() ? Math.Min(-DefaultSize, ys.Min()) : -DefaultSize;
-            var maxY = ys.Any() ? Math.Max(DefaultSize, ys.Max()) : DefaultSize;
+            var minX = maze.MinX;
+            var maxX = maze.MaxX;
+            var minY = maze.MinY;
+            var maxY = maze.MaxY;
 
             for (int y = minY; y <= maxY; y++)
             {
                 for (int x = minX; x <= maxX; x++)
                 {
-                    string key = $"{x},{y}";
-                    if (points.ContainsKey(key))
+                    if (maze.Has(x, y))
                     {
-                        var p = points[key].Data;
-                        var bitmask = GetBitmask(p);
-                        if (currX == x && currY == y)
+                        if (robots.Any(r => r.X == x && r.Y == y))
+                        {
                             Console.Write('@');
-                        else if (p == '.' || p == '#')
-                            Console.Write(points[key].Data);
-                        else if (p == '@' || (keys & bitmask) == bitmask)
-                            Console.Write(".");
+                            continue;
+                        }
                         else
-                            Console.Write(points[key].Data);
+                        {
+                            char p = maze[x, y].Data;
+
+                            var bitmask = GetBitmask(p);
+                            if (p == '.' || p == '#')
+                                Console.Write(p);
+                            else if (p == '@' || (keys & bitmask) == bitmask)
+                                Console.Write(".");
+                            else
+                                Console.Write(p);
+                        }
                     }
                     else
                     {
@@ -121,11 +120,10 @@ namespace AdventCalendar2019.D18
         {
             return new MazeInstance(Maze)
             {
-                X = X,
-                Y = Y,
                 Keys = Keys,
                 Distance = Distance,
                 CollectedOrder = CollectedOrder,
+                Robots = (Robot[])Robots.Clone(),
             };
         }
 

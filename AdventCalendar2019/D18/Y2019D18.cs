@@ -18,31 +18,23 @@ namespace AdventCalendar2019.D18
 
         protected override void Execute(string file)
         {
-            Maze maze = new Maze();
             var mazeDataText = File.ReadAllText(file);
 
             Timer.Monitor(() =>
             {
-                string[] mazeData = mazeDataText.Split("\r\n");
+                string[] mazeData = mazeDataText.Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
                 int yLen = mazeData.Length;
                 int xLen = mazeData.Select(x => x.Length).Max();
-                int entranceIndex = mazeDataText.Replace("\r\n", string.Empty).IndexOf('@');
-                int entranceX = entranceIndex % xLen;
-                int entranceY = entranceIndex / xLen;
 
-                for (int y = 0; y < yLen; y++)
+                Maze maze = new Maze(string.Join(string.Empty, mazeData), xLen, yLen);
+
+                if (Debug.EnableDebugOutput)
                 {
-                    for (int x = 0; x < xLen; x++)
+                    foreach (var robot in maze.Robots)
                     {
-                        maze.SetTile(x, y, mazeData[y][x]);
+                        Debug.WriteLine($"Robot at ({robot.X},{robot.Y})");
                     }
                 }
-
-                maze.X = entranceX;
-                maze.Y = entranceY;
-
-                Debug.WriteLine($"Entrance ({entranceX},{entranceY})");
-
                 var graph = BuildGraph(maze);
                 var finishedMazes = ProcessMaze(maze, graph);
 
@@ -71,7 +63,10 @@ namespace AdventCalendar2019.D18
 
             Queue<DataPoint<char>> points = new Queue<DataPoint<char>>(maze.KeyLocations);
             IList<DataPoint<char>> keyLocs = points.ToList();
-            points.Enqueue(maze.Current);
+            foreach (var robot in maze.Robots)
+            {
+                points.Enqueue(maze[robot.X, robot.Y]);
+            }
 
             while (points.Any())
             {
@@ -124,67 +119,81 @@ namespace AdventCalendar2019.D18
         private IList<MazeInstance> ProcessMaze(Maze initialMaze, IDictionary<DataPoint<char>, IList<DataPoint<State>>> graph)
         {
             Queue<MazeInstance> instances = new Queue<MazeInstance>();
-            instances.Enqueue(new MazeInstance(initialMaze)
-            {
-                X = initialMaze.X,
-                Y = initialMaze.Y,
-            });
+            instances.Enqueue(new MazeInstance(initialMaze));
 
             IList<MazeInstance> finishedMazes = new List<MazeInstance>();
             IDictionary<State, int> discoveredPaths = new Dictionary<State, int>();
+
+            Console.SetCursorPosition(26, 0);
+            Console.Write("/");
 
             while (instances.Any())
             {
                 var maze = instances.Dequeue();
 
-                var keyPaths = graph[maze.Current];
-                if (keyPaths.Any())
+                if (instances.Count % 50000 == 0)
                 {
-                    foreach (var keyPath in keyPaths)
+                    string pathCount = discoveredPaths.Count.ToString();
+                    Console.SetCursorPosition(25 - pathCount.Length, 0);
+                    Console.Write(pathCount);
+
+                    string instancesCount = instances.Count.ToString();
+                    Console.SetCursorPosition(50 - instancesCount.Length, 0);
+                    Console.Write(instancesCount);
+                }
+
+                var state = maze.State;
+                if (discoveredPaths.ContainsKey(state))
+                {
+                    if (discoveredPaths[state] < maze.Distance)
                     {
-                        var key = maze.Maze[keyPath.X, keyPath.Y];
+                        continue;
+                    }
 
-                        // check to see if we have not collected this key.
-                        if (!maze.IsKeyCollected(key.Data))
+                    discoveredPaths[state] = maze.Distance;
+                }
+                else
+                {
+                    discoveredPaths.Add(state, maze.Distance);
+                }
+
+                for (int i = 0; i < maze.Robots.Length; i++)
+                {
+                    var robot = maze.Robots[i];
+                    var robotPoint = maze.Maze[robot.X, robot.Y];
+                    var keyPaths = graph[robotPoint];
+                    if (keyPaths.Any())
+                    {
+                        foreach (var keyPath in keyPaths)
                         {
-                            Debug.WriteLine($"Checking {maze.X},{maze.Y} [{maze.Current.Data}] -> {keyPath.X},{keyPath.Y} [{key.Data}] | Keys: [{keyPath.Data.Keys}] Doors: [{keyPath.Data.Obstacles}]");
+                            var key = maze.Maze[keyPath.X, keyPath.Y];
 
-                            // check to see if there are any locked doors on this path.
-                            if (keyPath.Data.Obstacles == 0 || (maze.Keys > 0 && (keyPath.Data.Obstacles & maze.Keys) == keyPath.Data.Obstacles))
+                            // check to see if we have not collected this key.
+                            if (!maze.IsKeyCollected(key.Data))
                             {
-                                Debug.WriteLine($"{key.Data} :: ({keyPath.X},{keyPath.Y}) : d = {keyPath.Distance}, o = {keyPath.Data} ~ open");
+                                Debug.Write($"{robot} [{robotPoint.Data}] -> {keyPath.X},{keyPath.Y} [{key.Data}] | Keys: [{keyPath.Data.Keys}] Doors: [{keyPath.Data.Obstacles}]");
 
-                                var nextMaze = maze.Clone();
-                                nextMaze.Move(keyPath);
-
-                                if (nextMaze.RemainingKeys.Any())
+                                // check to see if there are any locked doors on this path.
+                                if (keyPath.Data.Obstacles == 0 || (maze.Keys > 0 && (keyPath.Data.Obstacles & maze.Keys) == keyPath.Data.Obstacles))
                                 {
-                                    var state = nextMaze.State;
+                                    Debug.WriteLine(" ~ open");
 
-                                    if (discoveredPaths.ContainsKey(state))
+                                    var nextMaze = maze.Clone();
+                                    nextMaze.Move(i, keyPath);
+
+                                    if (nextMaze.RemainingKeys.Any())
                                     {
-                                        if (discoveredPaths[state] < nextMaze.Distance)
-                                        {
-                                            continue;
-                                        }
-
-                                        discoveredPaths[state] = nextMaze.Distance;
+                                        instances.Enqueue(nextMaze);
                                     }
                                     else
                                     {
-                                        discoveredPaths.Add(state, nextMaze.Distance);
+                                        finishedMazes.Add(nextMaze);
                                     }
-
-                                    instances.Enqueue(nextMaze);
                                 }
                                 else
                                 {
-                                    finishedMazes.Add(nextMaze);
+                                    Debug.WriteLine(" ~ closed");
                                 }
-                            }
-                            else
-                            {
-                                Debug.WriteLine($"{key.Data} :: ({keyPath.X},{keyPath.Y}) : d = {keyPath.Distance}, o = {keyPath.Data} ~ closed");
                             }
                         }
                     }

@@ -1,5 +1,8 @@
-﻿namespace AdventCalendar2019.D18
+﻿using System.Diagnostics;
+
+namespace AdventCalendar2019.D18
 {
+    [DebuggerDisplay("Doors: {Obstacles} Keys: {Keys}")]
     public struct State
     {
         public int Obstacles { get; set; }
@@ -9,6 +12,11 @@
         {
             obstacles = Obstacles;
             keys = Keys;
+        }
+
+        public override string ToString()
+        {
+            return $"Doors: {Obstacles} Keys: {Keys}";
         }
     }
 }

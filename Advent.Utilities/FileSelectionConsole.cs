@@ -158,11 +158,15 @@ namespace Advent.Utilities
         {
             while (true)
             {
+                Console.CursorVisible = false;
                 var file = SelectFileFromFolder(folder);
+                Console.CursorVisible = true;
 
                 if (file != null)
                 {
+                    Console.CursorVisible = false;
                     Execute(file);
+                    Console.CursorVisible = true;
                 }
 
                 Console.WriteLine("Finished.");

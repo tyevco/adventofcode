@@ -3,81 +3,118 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Advent.Utilities;
+using Advent.Utilities.Data.Extensions;
 using Advent.Utilities.Data.Map;
 
 namespace AdventCalendar2019.D18
 {
-    public class Maze : Grid<DataPoint<char>, char>
+    public class Maze : IGrid<DataPoint<char>, char>
     {
-        private const int DefaultSize = 0;
+        public Maze(string mazeLayout, int width, int height)
+        {
+            Width = width;
+            Height = height;
 
-        public static Regex KeysRegex { get; } = new Regex("[a-z]");
+            int i = 0;
+
+            int robotCount = mazeLayout.Count(x => x == '@');
+            Points = new DataPoint<char>[mazeLayout.Length];
+            Robots = new Robot[robotCount];
+
+            foreach (char c in mazeLayout)
+            {
+                (int x, int y) = Position(i);
+                DataPoint<char> point = new DataPoint<char>(x, y)
+                {
+                    Data = c
+                };
+
+                if (c == '@')
+                {
+                    point.Data = char.Parse(robotCount.ToString());
+                    Robots[--robotCount] = new Robot
+                    {
+                        X = x,
+                        Y = y,
+                    };
+                }
+
+                Points[i] = point;
+
+                if (c != '#' && c != '@' && char.IsLower(c))
+                {
+                    KeyLocations.Add(point);
+                }
+
+                i++;
+            }
+        }
+
+        public Robot[] Robots { get; set; }
+
+        public DataPoint<char> this[int x, int y]
+        {
+            get
+            {
+                int i = Index(x, y);
+
+                if (i >= 0)
+                {
+                    return Points[i];
+                }
+
+                return null;
+            }
+
+            set
+            {
+                int i = Index(x, y);
+
+                if (i >= 0)
+                {
+                    Points[i] = value;
+                }
+            }
+        }
 
         public IList<DataPoint<char>> KeyLocations { get; } = new List<DataPoint<char>>();
 
-        public Maze()
-        {
-        }
+        public int Width { get; }
 
-        public void SetTile(int x, int y, char tile)
-        {
-            string key = $"{x},{y}";
+        public int Height { get; }
 
-            DataPoint<char> point;
-            if (Points.ContainsKey(key))
-            {
-                point = Points[key];
-                point.Data = tile;
-            }
-            else
-            {
-                point = new DataPoint<char>(x, y)
-                {
-                    Data = tile
-                };
-                Points.Add(key, point);
-            }
+        public int MinX { get; } = 0;
 
-            if (KeysRegex.IsMatch(point.Data.ToString()))
-            {
-                KeyLocations.Add(point);
-            }
-        }
+        public int MaxX => Width - 1;
+
+        public int MinY { get; } = 0;
+
+        public int MaxY => Height - 1;
+
+        public DataPoint<char>[] Points { get; }
 
         public void DebugPrint(bool overrideDebug = false)
         {
             if (Debug.EnableDebugOutput || overrideDebug)
-                PrintGrid(Points, X, Y);
+                this.Print();
         }
 
-
-        public static void PrintGrid(IDictionary<string, DataPoint<char>> points, int currX, int currY)
+        public bool Has(int x, int y)
         {
-            var xs = points.Select(x => x.Value.X);
-            var ys = points.Select(y => y.Value.Y);
+            return Index(x, y) >= 0;
+        }
 
-            var minX = xs.Any() ? Math.Min(-DefaultSize, xs.Min()) : -DefaultSize;
-            var maxX = xs.Any() ? Math.Max(DefaultSize, xs.Max()) : DefaultSize;
-            var minY = ys.Any() ? Math.Min(-DefaultSize, ys.Min()) : -DefaultSize;
-            var maxY = ys.Any() ? Math.Max(DefaultSize, ys.Max()) : DefaultSize;
+        private int Index(int x, int y)
+        {
+            if (y >= Height || y < 0 || x < 0 || x >= Width)
+                return -1;
 
-            for (int y = minY; y <= maxY; y++)
-            {
-                for (int x = minX; x <= maxX; x++)
-                {
-                    string key = $"{x},{y}";
-                    if (points.ContainsKey(key))
-                    {
-                        Console.Write(points[key].Data);
-                    }
-                    else
-                    {
-                        Console.Write('?');
-                    }
-                }
+            return (y * Width) + x;
+        }
 
-                Console.WriteLine();
-            }
+        private (int, int) Position(int index)
+        {
+            return (index % Width, index / Width);
         }
     }
 }

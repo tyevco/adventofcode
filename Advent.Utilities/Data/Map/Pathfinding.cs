@@ -36,7 +36,7 @@ namespace Advent.Utilities.Data.Map
                     return closePoints; //.OrderBy(x => x.Data);
             }
 
-            return null;
+            return new List<DataPoint<TData>>();
         }
 
         public static DataPoint<TData> FindTargetPoint<TGridPoint, TGridData>(
