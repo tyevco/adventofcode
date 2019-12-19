@@ -55,7 +55,7 @@ namespace Advent.Utilities.Data.Map
                 double m2 = (y4 - y3) / (x4 - x3);
                 double c2 = -m2 * x3 + y3;
 
-                x = (int)x1;
+                x = x1;
                 y = (int)(c2 + m2 * x1);
             }
             else if (Math.Abs(x3 - x4) == 0)
@@ -63,7 +63,7 @@ namespace Advent.Utilities.Data.Map
                 double m1 = (y2 - y1) / (x2 - x1);
                 double c1 = -m1 * x1 + y1;
 
-                x = (int)x3;
+                x = x3;
                 y = (int)(c1 + m1 * x3);
             }
             else

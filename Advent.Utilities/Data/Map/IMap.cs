@@ -10,6 +10,8 @@ namespace Advent.Utilities.Data.Map
 
         int Height { get; }
 
-        Point<T> this[int x, int y] { get; }
+        bool Has(int x, int y);
+
+        Point<T> this[int x, int y] { get; set; }
     }
 }

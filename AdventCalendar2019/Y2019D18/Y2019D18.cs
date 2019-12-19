@@ -3,12 +3,13 @@ using Advent.Utilities.Attributes;
 using Advent.Utilities.Data.Map;
 using AdventCalendar2019.D18;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Advent.Utilities;
+using Advent.Utilities.Attributes;
+using Advent.Utilities.Data.Map;
+using AdventCalendar2019.D18;
 
 namespace Advent.Calendar.Y2019D18
 {
@@ -55,7 +56,7 @@ namespace Advent.Calendar.Y2019D18
 
                 bool best = true;
                 int i = 1;
-                foreach (var bestFinishedMaze in finishedMazes.OrderBy(x => x.TotalDistance))
+                foreach (var bestFinishedMaze in finishedMazes.OrderBy(x => x.Distance).Take(5))
                 {
                     if (best)
                     {
@@ -63,9 +64,9 @@ namespace Advent.Calendar.Y2019D18
                         best = false;
                     }
 
-                    builder.AppendLine($"{i++} ::: {bestFinishedMaze.TotalDistance} total moves.");
-                    builder.AppendLine($"Move order: {string.Join(", ", bestFinishedMaze.GetKeys().Reverse().Select(m => m))}");
-                    builder.AppendLine();
+                    Console.WriteLine($"{i++} ::: {bestFinishedMaze.Distance} total moves.");
+                    Console.WriteLine($"Move order: {string.Join(", ", bestFinishedMaze.CollectedOrder)}");
+                    Console.WriteLine();
                 }
 
                 Console.WriteLine(builder.ToString());
@@ -76,67 +77,63 @@ namespace Advent.Calendar.Y2019D18
 
         private IList<MazeInstance> ProcessMaze(Maze initialMaze)
         {
-            List<MazeInstance> instances = new List<MazeInstance>();
-            instances.Add(new MazeInstance(initialMaze));
-            ConcurrentBag<MazeInstance> nextMazes = new ConcurrentBag<MazeInstance>();
+            Queue<MazeInstance> instances = new Queue<MazeInstance>();
+            instances.Enqueue(new MazeInstance(initialMaze)
+            {
+                X = initialMaze.X,
+                Y = initialMaze.Y,
+            });
+
             IList<MazeInstance> finishedMazes = new List<MazeInstance>();
             ParallelOptions pOpt = new ParallelOptions
             {
                 MaxDegreeOfParallelism = 256,
             };
 
-            int generation = 0;
-            while (instances.Count > 0)
+            IDictionary<int, int> discoveredPaths = new Dictionary<int, int>();
+
+            while (instances.Any())
             {
-                Console.WriteLine($"Generation {generation++} ::: {instances.Count} mazes to process.");
+                var maze = instances.Dequeue();
 
-                Parallel.ForEach(instances, pOpt, maze =>
+                if (discoveredPaths.ContainsKey(maze.Keys))
                 {
-                    IList<Point<int>> keyPaths = new List<Point<int>>();
-
-                    foreach (var keyLocation in maze.RemainingKeys)
+                    if (discoveredPaths[maze.Keys] < maze.Distance)
                     {
-                        var locationRegex = maze.ValidLocationRegex(keyLocation.Data);
-                        bool isValid(char c)
-                        {
-                            return locationRegex.IsMatch(c.ToString());
-                        }
-
-                        Debug.WriteLine($"{keyLocation.Data} :: ({keyLocation.X},{keyLocation.Y}) : SEEK");
-                        var point = Pathfinding.FindTargetPoint(maze.Maze, keyLocation.X, keyLocation.Y, maze.X, maze.Y, isValid);
-                        if (point != null)
-                        {
-                            Debug.WriteLine($"{keyLocation.Data} :: ({keyLocation.X},{keyLocation.Y}) : d = {point.Data}");
-                            keyPaths.Add(point);
-                        }
+                        continue;
                     }
 
-                    if (keyPaths.Any())
+                    discoveredPaths[maze.Keys] = maze.Distance;
+                }
+                else
+                {
+                    discoveredPaths[maze.Keys] = maze.Distance;
+                }
+
+                IEnumerable<Point<int>> keyPaths = Pathfinding.FindTargetPoints(maze.Maze, maze.X, maze.Y, maze.IsMatch, PointMode.Point, maze.RemainingKeys);
+
+                if (keyPaths.Any())
+                {
+                    foreach (var keyPath in keyPaths)
                     {
-                        foreach (var keyPath in keyPaths)
+                        var key = maze.Maze[keyPath.X, keyPath.Y];
+                        Debug.WriteLine($"{key.Data} :: ({keyPath.X},{keyPath.Y}) : d = {keyPath.Data}");
+
+                        var nextMaze = maze.Clone();
+                        nextMaze.Move(keyPath);
+                        nextMaze.CollectKey(key.Data);
+
+                        if (nextMaze.RemainingKeys.Any())
                         {
-                            var key = maze.Maze[keyPath.X, keyPath.Y];
-                            Debug.WriteLine($"{key.Data} :: ({keyPath.X},{keyPath.Y}) : d = {keyPath.Data}");
-
-                            var nextMaze = maze.Clone();
-                            nextMaze.Move(keyPath);
-                            nextMaze.CollectKey(key.Data);
-
-                            if (nextMaze.RemainingKeys.Any())
-                            {
-                                nextMazes.Add(nextMaze);
-                            }
-                            else
-                            {
-                                finishedMazes.Add(nextMaze);
-                            }
+                            instances.Enqueue(nextMaze);
+                        }
+                        else
+                        {
+                            finishedMazes.Add(nextMaze);
                         }
                     }
-                    maze.DebugPrint();
-                });
-
-                instances = nextMazes.ToList();
-                nextMazes.Clear();
+                }
+                maze.DebugPrint();
             }
 
             return finishedMazes;

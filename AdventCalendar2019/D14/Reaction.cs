@@ -4,8 +4,8 @@ namespace AdventCalendar2019.D14
 {
     class Reaction
     {
-        public IDictionary<string, int> Ingredients { get; } = new Dictionary<string, int>();
+        public IDictionary<string, long> Ingredients { get; } = new Dictionary<string, long>();
 
-        public int Yields { get; set; }
+        public long Yields { get; set; }
     }
 }
