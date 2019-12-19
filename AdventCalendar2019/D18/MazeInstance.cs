@@ -35,11 +35,11 @@ namespace AdventCalendar2019.D18
 
         public DataPoint<char> Current => Maze[X, Y];
 
-        public void CollectKey(char key)
+        public State State => new State
         {
-            CollectedOrder += key;
-            Keys |= GetBitmask(key);
-        }
+            Keys = Keys,
+            Obstacles = Obstacles,
+        };
 
         public bool IsKeyCollected(char key)
         {
@@ -48,12 +48,14 @@ namespace AdventCalendar2019.D18
             return (Keys & mask) == mask;
         }
 
-        public void Move(DataPoint<int> move)
+        public void Move(DataPoint<State> move)
         {
             X = move.X;
             Y = move.Y;
+            Keys |= move.Data.Keys;
+
             Distance += move.Distance;
-            Obstacles = move.Data;
+            Obstacles = move.Data.Obstacles;
         }
 
         public bool IsMatch(char seekKey)

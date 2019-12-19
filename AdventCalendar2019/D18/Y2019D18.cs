@@ -59,15 +59,15 @@ namespace AdventCalendar2019.D18
                     }
 
                     Console.WriteLine($"{i++} ::: {bestFinishedMaze.Distance} total moves.");
-                    Console.WriteLine($"Move order: {string.Join(", ", bestFinishedMaze.CollectedOrder)}");
+                    // Console.WriteLine($"Move order: {string.Join(", ", bestFinishedMaze.CollectedOrder)}");
                     Console.WriteLine();
                 }
             });
         }
 
-        private IDictionary<DataPoint<char>, IList<DataPoint<int>>> BuildGraph(Maze maze)
+        private IDictionary<DataPoint<char>, IList<DataPoint<State>>> BuildGraph(Maze maze)
         {
-            IDictionary<DataPoint<char>, IList<DataPoint<int>>> graph = new Dictionary<DataPoint<char>, IList<DataPoint<int>>>();
+            IDictionary<DataPoint<char>, IList<DataPoint<State>>> graph = new Dictionary<DataPoint<char>, IList<DataPoint<State>>>();
 
             Queue<DataPoint<char>> points = new Queue<DataPoint<char>>(maze.KeyLocations);
             IList<DataPoint<char>> keyLocs = points.ToList();
@@ -79,7 +79,9 @@ namespace AdventCalendar2019.D18
 
                 Console.WriteLine($"Building graph for {point.Data}.");
 
-                var keyPaths = Pathfinding<int>.FindTargetPoints(maze, point.X, point.Y, IsMatch, PointMode.Point, CreatePointData, keyLocs.Where(x => x.Data != point.Data).ToArray()).ToList();
+                var keyPaths = Pathfinding<State>.FindTargetPoints(maze, point.X, point.Y, IsMatch, PointMode.Point, CreatePointData, keyLocs.Where(x => x.Data != point.Data).ToArray())
+                                .OrderBy(p => p.Distance)
+                                .ToList();
 
                 graph.Add(point, keyPaths);
             }
@@ -93,23 +95,33 @@ namespace AdventCalendar2019.D18
             return point.Data != '#';
         }
 
-        private DataPoint<int> CreatePointData(DataPoint<char> point, DataPoint<int> lastDataPoint)
+        private DataPoint<State> CreatePointData(DataPoint<char> point, DataPoint<State> lastDataPoint)
         {
             // check if this is a door, if it is set the bit on the Data object on the returned point.
-            int obstacle = lastDataPoint.Data;
+            (int obstacles, int keys) = lastDataPoint.Data;
 
             if (char.IsUpper(point.Data))
             {
-                obstacle |= (int)Math.Pow(2, char.ToLower(point.Data) - 'a');
+                obstacles |= (int)Math.Pow(2, char.ToLower(point.Data) - 'a');
+            }
+            else if (char.IsLower(point.Data))
+            {
+                keys |= (int)Math.Pow(2, point.Data - 'a');
             }
 
-            return new DataPoint<int>(point.X, point.Y, obstacle)
+            var state = new State
+            {
+                Obstacles = obstacles,
+                Keys = keys,
+            };
+
+            return new DataPoint<State>(point.X, point.Y, state)
             {
                 Distance = lastDataPoint.Distance + 1,
             };
         }
 
-        private IList<MazeInstance> ProcessMaze(Maze initialMaze, IDictionary<DataPoint<char>, IList<DataPoint<int>>> graph)
+        private IList<MazeInstance> ProcessMaze(Maze initialMaze, IDictionary<DataPoint<char>, IList<DataPoint<State>>> graph)
         {
             Queue<MazeInstance> instances = new Queue<MazeInstance>();
             instances.Enqueue(new MazeInstance(initialMaze)
@@ -119,26 +131,11 @@ namespace AdventCalendar2019.D18
             });
 
             IList<MazeInstance> finishedMazes = new List<MazeInstance>();
-            IDictionary<int, int> discoveredPaths = new Dictionary<int, int>();
+            IDictionary<State, int> discoveredPaths = new Dictionary<State, int>();
 
             while (instances.Any())
             {
                 var maze = instances.Dequeue();
-
-                //if (discoveredPaths.ContainsKey(maze.Keys))
-                //{
-                //    if (discoveredPaths[maze.Keys] < maze.Distance)
-                //    {
-                //        continue;
-                //    }
-
-                //    discoveredPaths[maze.Keys] = maze.Distance;
-                //}
-                //else
-                //{
-                //    discoveredPaths[maze.Keys] = maze.Distance;
-                //}
-
 
                 var keyPaths = graph[maze.Current];
                 if (keyPaths.Any())
@@ -150,19 +147,34 @@ namespace AdventCalendar2019.D18
                         // check to see if we have not collected this key.
                         if (!maze.IsKeyCollected(key.Data))
                         {
-                            Debug.WriteLine($"Checking {maze.X},{maze.Y} [{maze.Current.Data}] -> {keyPath.X},{keyPath.Y} [{key.Data}] | Keys: [{maze.Keys}] Doors: [{keyPath.Data}]");
+                            Debug.WriteLine($"Checking {maze.X},{maze.Y} [{maze.Current.Data}] -> {keyPath.X},{keyPath.Y} [{key.Data}] | Keys: [{keyPath.Data.Keys}] Doors: [{keyPath.Data.Obstacles}]");
 
                             // check to see if there are any locked doors on this path.
-                            if (keyPath.Data == 0 || (maze.Keys > 0 && (keyPath.Data & maze.Keys) == keyPath.Data))
+                            if (keyPath.Data.Obstacles == 0 || (maze.Keys > 0 && (keyPath.Data.Obstacles & maze.Keys) == keyPath.Data.Obstacles))
                             {
                                 Debug.WriteLine($"{key.Data} :: ({keyPath.X},{keyPath.Y}) : d = {keyPath.Distance}, o = {keyPath.Data} ~ open");
 
                                 var nextMaze = maze.Clone();
                                 nextMaze.Move(keyPath);
-                                nextMaze.CollectKey(key.Data);
 
                                 if (nextMaze.RemainingKeys.Any())
                                 {
+                                    var state = nextMaze.State;
+
+                                    if (discoveredPaths.ContainsKey(state))
+                                    {
+                                        if (discoveredPaths[state] < nextMaze.Distance)
+                                        {
+                                            continue;
+                                        }
+
+                                        discoveredPaths[state] = nextMaze.Distance;
+                                    }
+                                    else
+                                    {
+                                        discoveredPaths.Add(state, nextMaze.Distance);
+                                    }
+
                                     instances.Enqueue(nextMaze);
                                 }
                                 else
