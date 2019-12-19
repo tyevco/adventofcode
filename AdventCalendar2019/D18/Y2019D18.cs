@@ -77,7 +77,7 @@ namespace AdventCalendar2019.D18
             {
                 var point = points.Dequeue();
 
-                Console.WriteLine($"Building graph for {point.Data}.");
+                Debug.WriteLine($"Building graph for {point.Data}.");
 
                 var keyPaths = Pathfinding<State>.FindTargetPoints(maze, point.X, point.Y, IsMatch, PointMode.Point, CreatePointData, keyLocs.Where(x => x.Data != point.Data).ToArray())
                                 .OrderBy(p => p.Distance)
