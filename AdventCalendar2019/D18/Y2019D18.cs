@@ -1,13 +1,11 @@
-﻿using Advent.Calendar.Y2019D18;
-using Advent.Utilities;
-using Advent.Utilities.Attributes;
-using Advent.Utilities.Data.Map;
-using AdventCalendar2019.D18;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Advent.Utilities;
+using Advent.Utilities.Attributes;
+using Advent.Utilities.Data.Map;
 
 namespace AdventCalendar2019.D18
 {
@@ -46,11 +44,10 @@ namespace AdventCalendar2019.D18
 
                 Debug.WriteLine($"Entrance ({entranceX},{entranceY})");
 
-                var finishedMazes = ProcessMaze(maze);
+                var graph = BuildGraph(maze);
+                var finishedMazes = ProcessMaze(maze, graph);
 
                 Debug.WriteLine($"Finished :::");
-
-                StringBuilder builder = new StringBuilder();
 
                 bool best = true;
                 int i = 1;
@@ -66,14 +63,38 @@ namespace AdventCalendar2019.D18
                     Console.WriteLine($"Move order: {string.Join(", ", bestFinishedMaze.CollectedOrder)}");
                     Console.WriteLine();
                 }
-
-                Console.WriteLine(builder.ToString());
-                File.WriteAllText($"../../../{DateTime.Now.Ticks}_lastrun.log", builder.ToString());
-
             });
         }
 
-        private IList<MazeInstance> ProcessMaze(Maze initialMaze)
+        private IDictionary<PointData<char>, IList<PointData<int>>> BuildGraph(Maze maze)
+        {
+            IDictionary<PointData<char>, IList<PointData<int>>> graph = new Dictionary<PointData<char>, IList<PointData<int>>>();
+
+            Queue<PointData<char>> points = new Queue<PointData<char>>(maze.KeyLocations);
+            IList<PointData<char>> keyLocs = points.ToList();
+            points.Enqueue(maze[maze.X, maze.Y]);
+
+            bool isMatch(PointData<char> p)
+            {
+                return true;
+            }
+
+            while (points.Any())
+            {
+                var point = points.Dequeue();
+
+                Console.WriteLine($"Building graph for {point.Data}.");
+
+                var keyPaths = Pathfinding<int>.FindTargetPoints(maze, point.X, point.Y, isMatch, PointMode.Point, keyLocs.Where(x => x.Data != point.Data).ToArray()).ToList();
+
+                graph.Add(point, keyPaths);
+            }
+
+
+            return graph;
+        }
+
+        private IList<MazeInstance> ProcessMaze(Maze initialMaze, IDictionary<PointData<char>, IList<PointData<int>>> graph)
         {
             Queue<MazeInstance> instances = new Queue<MazeInstance>();
             instances.Enqueue(new MazeInstance(initialMaze)
@@ -103,8 +124,8 @@ namespace AdventCalendar2019.D18
                     discoveredPaths[maze.Keys] = maze.Distance;
                 }
 
-                IEnumerable<Point<int>> keyPaths = Pathfinding.FindTargetPoints(maze.Maze, maze.X, maze.Y, maze.IsMatch, PointMode.Point, maze.RemainingKeys);
 
+                var keyPaths = graph[maze.Maze[maze.X, maze.Y]];
                 if (keyPaths.Any())
                 {
                     foreach (var keyPath in keyPaths)

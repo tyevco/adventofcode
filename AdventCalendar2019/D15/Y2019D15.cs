@@ -108,13 +108,13 @@ namespace AdventCalendar2019.D15
 
                 ship.DebugPrint();
 
-                var path = Pathfinding.FindTargetPoint(ship, 0, 0, oxygenPoint.Value.X, oxygenPoint.Value.Y, tile =>
+                var path = Pathfinding<int>.FindTargetPoint(ship, 0, 0, oxygenPoint.Value.X, oxygenPoint.Value.Y, tile =>
                 {
-                    return tile == ShipTile.Open || tile == ShipTile.Oxygen;
+                    return tile.Data == ShipTile.Open || tile.Data == ShipTile.Oxygen;
                 });
 
 
-                Console.WriteLine($"{path.Data + 1} steps to oxygen tank.");
+                Console.WriteLine($"{path.Distance + 1} steps to oxygen tank.");
             });
         }
     }

@@ -3,9 +3,10 @@ using System.Linq;
 
 namespace Advent.Utilities.Data.Map
 {
-    public class Grid<T> : IGrid<T>
+    public class Grid<TPoint, TData> : IGrid<TPoint, TData>
+        where TPoint : Point<TData>
     {
-        public IDictionary<string, Point<T>> Points { get; protected set; } = new Dictionary<string, Point<T>>();
+        public IDictionary<string, TPoint> Points { get; protected set; } = new Dictionary<string, TPoint>();
 
         public int X { get; set; } = 0;
 
@@ -36,7 +37,7 @@ namespace Advent.Utilities.Data.Map
             return Points.ContainsKey(key);
         }
 
-        public Point<T> this[int x, int y]
+        public TPoint this[int x, int y]
         {
             get
             {

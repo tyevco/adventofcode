@@ -7,13 +7,13 @@ using Advent.Utilities.Data.Map;
 
 namespace AdventCalendar2019.D18
 {
-    public class Maze : Grid<char>
+    public class Maze : Grid<PointData<char>, char>
     {
         private const int DefaultSize = 0;
 
         public static Regex KeysRegex { get; } = new Regex("[a-z]");
 
-        public IList<Point<char>> KeyLocations { get; } = new List<Point<char>>();
+        public IList<PointData<char>> KeyLocations { get; } = new List<PointData<char>>();
 
         public Maze()
         {
@@ -23,7 +23,7 @@ namespace AdventCalendar2019.D18
         {
             string key = $"{x},{y}";
 
-            Point<char> point;
+            PointData<char> point;
             if (Points.ContainsKey(key))
             {
                 point = Points[key];
@@ -31,7 +31,7 @@ namespace AdventCalendar2019.D18
             }
             else
             {
-                point = new Point<char>(x, y)
+                point = new PointData<char>(x, y)
                 {
                     Data = tile
                 };
@@ -51,7 +51,7 @@ namespace AdventCalendar2019.D18
         }
 
 
-        public static void PrintGrid(IDictionary<string, Point<char>> points, int currX, int currY)
+        public static void PrintGrid(IDictionary<string, PointData<char>> points, int currX, int currY)
         {
             var xs = points.Select(x => x.Value.X);
             var ys = points.Select(y => y.Value.Y);

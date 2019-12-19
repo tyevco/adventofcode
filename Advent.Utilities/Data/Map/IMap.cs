@@ -2,9 +2,10 @@
 
 namespace Advent.Utilities.Data.Map
 {
-    public interface IGrid<T>
+    public interface IGrid<TPoint, TData>
+        where TPoint : Point<TData>
     {
-        IDictionary<string, Point<T>> Points { get; }
+        IDictionary<string, TPoint> Points { get; }
 
         int Width { get; }
 
@@ -12,6 +13,6 @@ namespace Advent.Utilities.Data.Map
 
         bool Has(int x, int y);
 
-        Point<T> this[int x, int y] { get; set; }
+        TPoint this[int x, int y] { get; set; }
     }
 }

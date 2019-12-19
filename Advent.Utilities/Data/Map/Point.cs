@@ -3,8 +3,8 @@ using System.Diagnostics;
 
 namespace Advent.Utilities.Data.Map
 {
-    [DebuggerDisplay("{X},{Y},{Z}:{Data}")]
-    public class Point<T> : ICloneable
+    [DebuggerDisplay("{X},{Y},{Z}")]
+    public class Point<T>
     {
         public Point()
             : this(0, 0, 0)
@@ -31,11 +31,10 @@ namespace Advent.Utilities.Data.Map
         public int X { get; set; }
         public int Y { get; set; }
         public int Z { get; set; }
-        public T Data { get; set; }
 
         public override string ToString()
         {
-            return $"{X},{Y} : {Data}";
+            return $"{X},{Y}";
         }
 
         public int CalculateDistance(int x, int y)
@@ -68,17 +67,6 @@ namespace Advent.Utilities.Data.Map
             hashCode = hashCode * -1521134295 + Y.GetHashCode();
             hashCode = hashCode * -1521134295 + Z.GetHashCode();
             return hashCode;
-        }
-
-        public object Clone()
-        {
-            return new Point<T>
-            {
-                X = X,
-                Y = Y,
-                Z = Z,
-                Data = Data
-            };
         }
     }
 }

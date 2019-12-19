@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Advent.Utilities;
 using Advent.Utilities.Data.Map;
-using AdventCalendar2019.D18;
 
 namespace AdventCalendar2019.D18
 {
@@ -26,6 +25,8 @@ namespace AdventCalendar2019.D18
 
         public int Keys { get; private set; } = 0;
 
+        public int Obstacles { get; private set; } = 0;
+
         public Point<char>[] RemainingKeys => Maze.KeyLocations.Where(x => !IsKeyCollected(x.Data)).ToArray();
 
         public string CollectedOrder = string.Empty;
@@ -45,11 +46,12 @@ namespace AdventCalendar2019.D18
             return (Keys & mask) == mask;
         }
 
-        public void Move(Point<int> move)
+        public void Move(PointData<int> move)
         {
             X = move.X;
             Y = move.Y;
-            Distance += move.Data;
+            Distance += move.Distance;
+            Obstacles = move.Data;
         }
 
         public bool IsMatch(char seekKey)
@@ -73,7 +75,7 @@ namespace AdventCalendar2019.D18
             }
         }
 
-        public static void PrintGrid(IDictionary<string, Point<char>> points, int currX, int currY, int keys)
+        public static void PrintGrid(IDictionary<string, PointData<char>> points, int currX, int currY, int keys)
         {
             var xs = points.Select(x => x.Value.X);
             var ys = points.Select(y => y.Value.Y);

@@ -6,15 +6,13 @@ using Advent.Utilities.Data.Map;
 
 namespace AdventCalendar2019.D13
 {
-    class ElfGame
+    class ElfGame : Grid<PointData<GameTile>, GameTile>
     {
         private const int DefaultSize = 0;
 
         public int MaxX { get; set; } = 0;
 
         public int MaxY { get; set; } = 0;
-
-        public IDictionary<string, Point<GameTile>> Points { get; private set; } = new Dictionary<string, Point<GameTile>>();
 
         public Point<GameTile> Paddle { get; private set; }
         public Point<GameTile> Ball { get; private set; }
@@ -23,7 +21,7 @@ namespace AdventCalendar2019.D13
         {
             string key = $"{x},{y}";
 
-            Point<GameTile> point;
+            PointData<GameTile> point;
             if (Points.ContainsKey(key))
             {
                 point = Points[key];
@@ -31,10 +29,7 @@ namespace AdventCalendar2019.D13
             }
             else
             {
-                point = new Point<GameTile>(x, y)
-                {
-                    Data = tile
-                };
+                point = new PointData<GameTile>(x, y, tile);
                 Points.Add(key, point);
             }
 
@@ -89,7 +84,7 @@ namespace AdventCalendar2019.D13
             }
         }
 
-        public static void PrintGrid(IDictionary<string, Point<GameTile>> points)
+        public static void PrintGrid(IDictionary<string, PointData<GameTile>> points)
         {
             var xs = points.Select(x => x.Value.X);
             var ys = points.Select(y => y.Value.Y);
