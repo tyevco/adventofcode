@@ -6,8 +6,6 @@ namespace Advent.Utilities.Data.Map
 {
     public static class Pathfinding<TData>
     {
-        private const int DefaultSize = 0;
-
         public delegate DataPoint<TData> CreatePointData<TPoint, TPointData>(TPoint Point, DataPoint<TData> lastDataPoint)
             where TPoint : Point<TPointData>;
 
@@ -118,15 +116,15 @@ namespace Advent.Utilities.Data.Map
                     CreatePointData<TGridPoint, TGridData> createDataPoint = null)
             where TGridPoint : Point<TGridData>
         {
-            IGrid<DataPoint<TData>, TData> FinishedPoints = new Grid<DataPoint<TData>, TData>();
-            Queue<DataPoint<TData>> PointsToProcess = new Queue<DataPoint<TData>>();
-            PointsToProcess.Enqueue(new DataPoint<TData>(x, y, 0, default(TData)));
+            Grid<DataPoint<TData>, TData> finishedPoints = new Grid<DataPoint<TData>, TData>();
+            Queue<DataPoint<TData>> pointsToProcess = new Queue<DataPoint<TData>>();
+            pointsToProcess.Enqueue(new DataPoint<TData>(x, y, 0, default(TData)));
 
-            while (PointsToProcess.Any())
+            while (pointsToProcess.Any())
             {
-                DataPoint<TData> point = PointsToProcess.Dequeue();
+                DataPoint<TData> point = pointsToProcess.Dequeue();
 
-                if (FinishedPoints.Has(point.X, point.Y))
+                if (finishedPoints.Has(point.X, point.Y))
                 {
                     continue;
                 }
@@ -135,7 +133,7 @@ namespace Advent.Utilities.Data.Map
 
                 foreach (var nearbyPoint in nearbyPoints)
                 {
-                    if (!FinishedPoints.Has(nearbyPoint.X, nearbyPoint.Y))
+                    if (!finishedPoints.Has(nearbyPoint.X, nearbyPoint.Y))
                     {
                         if (locationValid.Invoke(nearbyPoint))
                         {
@@ -149,29 +147,28 @@ namespace Advent.Utilities.Data.Map
                                 pointData = new DataPoint<TData>(nearbyPoint.X, nearbyPoint.Y, point.Distance + 1, default(TData));
                             }
 
-                            PointsToProcess.Enqueue(pointData);
+                            pointsToProcess.Enqueue(pointData);
                         }
                     }
                 }
 
-                FinishedPoints[point.X, point.Y] = point;
+                finishedPoints[point.X, point.Y] = point;
             }
 
             if (Debug.EnableDebugOutput)
-                PrintGrid(map, FinishedPoints.Points);
+                PrintGrid(map, finishedPoints);
 
-            return FinishedPoints;
+            return finishedPoints;
         }
 
         private static bool IsLocationValid<TGridPoint, TGridData>(int x, int y, IGrid<TGridPoint, TGridData> map, Predicate<TGridPoint> locationValid)
             where TGridPoint : Point<TGridData>
         {
-            bool valid = true;
+            bool valid;
 
-            string key = $"{x},{y}";
-            if (map.Points.ContainsKey(key))
+            if (map.Has(x, y))
             {
-                valid = locationValid(map.Points[key]);
+                valid = locationValid(map[x, y]);
             }
             else
             {
@@ -181,27 +178,24 @@ namespace Advent.Utilities.Data.Map
             return valid;
         }
 
-        public static void PrintGrid<TGridPoint, TGridData>(IGrid<TGridPoint, TGridData> map, IDictionary<string, DataPoint<TData>> points)
+        public static void PrintGrid<TGridPoint, TGridData>(IGrid<TGridPoint, TGridData> map, Grid<DataPoint<TData>, TData> path)
             where TGridPoint : Point<TGridData>
         {
-            var xs = map.Points.Select(x => x.Value.X);
-            var ys = map.Points.Select(y => y.Value.Y);
+            var minX = map.MinX;
+            var maxX = map.MaxX;
+            var minY = map.MinY;
+            var maxY = map.MaxY;
 
-            var minX = xs.Any() ? Math.Min(-DefaultSize, xs.Min()) : -DefaultSize;
-            var maxX = xs.Any() ? Math.Max(DefaultSize, xs.Max()) : DefaultSize;
-            var minY = ys.Any() ? Math.Min(-DefaultSize, ys.Min()) : -DefaultSize;
-            var maxY = ys.Any() ? Math.Max(DefaultSize, ys.Max()) : DefaultSize;
-            var maxV = points.Select(x => x.Value.Distance).Max();
+            var maxV = path.Points.Select(x => x.Value.Distance).Max();
             var len = maxV.ToString().Length + 1;
 
             for (int y = minY; y <= maxY; y++)
             {
                 for (int x = minX; x <= maxX; x++)
                 {
-                    string key = $"{x},{y}";
-                    if (points.ContainsKey(key))
+                    if (path.Has(x, y))
                     {
-                        var data = points[key].Distance;
+                        var data = path[x, y].Distance;
                         Debug.Write($"{data}".PadLeft(len, ' '));
                     }
                     else
