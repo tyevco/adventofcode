@@ -1,9 +1,11 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AdventCalendar2019.D18
 {
     [DebuggerDisplay("Doors: {Obstacles} Keys: {Keys}")]
-    public struct State
+    public struct State : IEquatable<State>
     {
         public int Obstacles { get; set; }
         public int Keys { get; set; }
@@ -17,6 +19,12 @@ namespace AdventCalendar2019.D18
         public override string ToString()
         {
             return $"Doors: {Obstacles} Keys: {Keys}";
+        }
+
+        public bool Equals([AllowNull] State other)
+        {
+            return other.Obstacles == Obstacles
+                    && other.Keys == Keys;
         }
     }
 }

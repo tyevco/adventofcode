@@ -122,7 +122,7 @@ namespace AdventCalendar2019.D18
             instances.Enqueue(new MazeInstance(initialMaze));
 
             IList<MazeInstance> finishedMazes = new List<MazeInstance>();
-            IDictionary<State, int> discoveredPaths = new Dictionary<State, int>();
+            IDictionary<(RobotSet, int), int> discoveredPaths = new Dictionary<(RobotSet, int), int>();
 
             Console.SetCursorPosition(26, 0);
             Console.Write("/");
@@ -139,22 +139,42 @@ namespace AdventCalendar2019.D18
 
                     string instancesCount = instances.Count.ToString();
                     Console.SetCursorPosition(50 - instancesCount.Length, 0);
-                    Console.Write(instancesCount);
+                    Console.WriteLine(instancesCount);
                 }
 
-                var state = maze.State;
-                if (discoveredPaths.ContainsKey(state))
+                var robotSet = new RobotSet();
+                for (int i = 0; i < maze.Robots.Length; i++)
                 {
-                    if (discoveredPaths[state] < maze.Distance)
+                    switch (i)
+                    {
+                        case 0:
+                            robotSet.First = maze.Robots[i];
+                            break;
+                        case 1:
+                            robotSet.Second = maze.Robots[i];
+                            break;
+                        case 2:
+                            robotSet.Third = maze.Robots[i];
+                            break;
+                        case 3:
+                            robotSet.Fourth = maze.Robots[i];
+                            break;
+                    }
+                }
+
+                var stateKey = (robotSet, maze.State.Keys);
+                if (discoveredPaths.ContainsKey(stateKey))
+                {
+                    if (discoveredPaths[stateKey] < maze.Distance)
                     {
                         continue;
                     }
 
-                    discoveredPaths[state] = maze.Distance;
+                    discoveredPaths[stateKey] = maze.Distance;
                 }
                 else
                 {
-                    discoveredPaths.Add(state, maze.Distance);
+                    discoveredPaths.Add(stateKey, maze.Distance);
                 }
 
                 for (int i = 0; i < maze.Robots.Length; i++)
