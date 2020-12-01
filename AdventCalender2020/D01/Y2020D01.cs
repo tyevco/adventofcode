@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Advent.Utilities;
+using Advent.Utilities.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Advent.Utilities;
-using Advent.Utilities.Attributes;
 
 namespace AdventCalendar2019.D01
 {
@@ -23,22 +23,40 @@ namespace AdventCalendar2019.D01
         {
             Timer.Monitor(() =>
             {
-                Console.WriteLine($"Total Sum: {data.Select(CalculateFuelReqs).Sum()}");
 
-                int total = 0;
-                foreach (var module in data)
+                for (int i = 0; i < data.Count; i++)
                 {
-                    var fuelReq = CalculateFuelReqs(module);
-
-                    while (fuelReq > 0)
+                    for (int j = 0; j < data.Count; j++)
                     {
-                        total += fuelReq;
+                        if (i == j)
+                            continue;
 
-                        fuelReq = CalculateFuelReqs(fuelReq);
+                        if (data[i] + data[j] == 2020)
+                        {
+                            Console.WriteLine($"{data[i]} * {data[j]} = {data[i] * data[j]}");
+                            break;
+                        }
                     }
                 }
 
-                Console.WriteLine($"Total for fuel: {total}");
+                for (int i = 0; i < data.Count; i++)
+                {
+                    for (int j = 0; j < data.Count; j++)
+                    {
+
+                        for (int k = 0; k < data.Count; k++)
+                        {
+                            if (i == j || j == k || i == k)
+                                continue;
+
+                            if (data[i] + data[j] + data[k] == 2020)
+                            {
+                                Console.WriteLine($"{data[i]} * {data[j]} * {data[k]} = {data[i] * data[j] * data[k]}");
+                                break;
+                            }
+                        }
+                    }
+                }
             });
         }
 
