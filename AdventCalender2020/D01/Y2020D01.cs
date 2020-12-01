@@ -31,22 +31,9 @@ namespace AdventCalendar2019.D01
                         if (i == j)
                             continue;
 
-                        if (data[i] + data[j] == 2020)
-                        {
-                            Console.WriteLine($"{data[i]} * {data[j]} = {data[i] * data[j]}");
-                            break;
-                        }
-                    }
-                }
-
-                for (int i = 0; i < data.Count; i++)
-                {
-                    for (int j = 0; j < data.Count; j++)
-                    {
-
                         for (int k = 0; k < data.Count; k++)
                         {
-                            if (i == j || j == k || i == k)
+                            if (j == k || i == k)
                                 continue;
 
                             if (data[i] + data[j] + data[k] == 2020)
@@ -54,6 +41,12 @@ namespace AdventCalendar2019.D01
                                 Console.WriteLine($"{data[i]} * {data[j]} * {data[k]} = {data[i] * data[j] * data[k]}");
                                 break;
                             }
+                        }
+
+                        if (data[i] + data[j] == 2020)
+                        {
+                            Console.WriteLine($"{data[i]} * {data[j]} = {data[i] * data[j]}");
+                            break;
                         }
                     }
                 }
