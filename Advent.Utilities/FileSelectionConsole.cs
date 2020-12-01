@@ -38,75 +38,82 @@ namespace Advent.Utilities
 
             if (files.Any())
             {
-                while (seekFile)
+                if (files.Count == 1)
                 {
-                    Console.SetCursorPosition(0, 0);
-
-                    for (int i = 0; i < files.Count; i++)
+                    return files.FirstOrDefault();
+                }
+                else
+                {
+                    while (seekFile)
                     {
-                        if (i == target)
-                        {
-                            Console.Write("> ");
-                        }
-                        else
-                        {
-                            Console.Write("  ");
-                        }
+                        Console.SetCursorPosition(0, 0);
 
-                        Console.WriteLine(files[i]);
-                    }
-
-                    if (options != null && options.Any())
-                    {
-                        Console.WriteLine();
-
-                        foreach (var option in options)
+                        for (int i = 0; i < files.Count; i++)
                         {
-                            if (option.Enabled())
+                            if (i == target)
                             {
-                                Console.Write("[x] ");
+                                Console.Write("> ");
                             }
                             else
                             {
-                                Console.Write("[ ] ");
+                                Console.Write("  ");
                             }
 
-                            Console.WriteLine(option.ConsoleText);
+                            Console.WriteLine(files[i]);
+                        }
+
+                        if (options != null && options.Any())
+                        {
+                            Console.WriteLine();
+
+                            foreach (var option in options)
+                            {
+                                if (option.Enabled())
+                                {
+                                    Console.Write("[x] ");
+                                }
+                                else
+                                {
+                                    Console.Write("[ ] ");
+                                }
+
+                                Console.WriteLine(option.ConsoleText);
+                            }
+                        }
+
+                        Console.WriteLine();
+                        Console.WriteLine("Press Q to quit...");
+
+                        var info = Console.ReadKey();
+
+                        if (info.Key == ConsoleKey.Enter)
+                        {
+                            seekFile = false;
+                        }
+                        else if (info.Key == ConsoleKey.UpArrow)
+                        {
+                            if (target > 0)
+                                target--;
+                        }
+                        else if (info.Key == ConsoleKey.DownArrow)
+                        {
+                            if (target < files.Count - 1)
+                                target++;
+                        }
+                        else if (info.Key == ConsoleKey.Q)
+                        {
+                            Environment.Exit(0);
+                        }
+                        else
+                        {
+                            HandleOptions(info);
                         }
                     }
 
-                    Console.WriteLine();
-                    Console.WriteLine("Press Q to quit...");
+                    Console.Clear();
 
-                    var info = Console.ReadKey();
-
-                    if (info.Key == ConsoleKey.Enter)
-                    {
-                        seekFile = false;
-                    }
-                    else if (info.Key == ConsoleKey.UpArrow)
-                    {
-                        if (target > 0)
-                            target--;
-                    }
-                    else if (info.Key == ConsoleKey.DownArrow)
-                    {
-                        if (target < files.Count - 1)
-                            target++;
-                    }
-                    else if (info.Key == ConsoleKey.Q)
-                    {
-                        Environment.Exit(0);
-                    }
-                    else
-                    {
-                        HandleOptions(info);
-                    }
+                    return files[target];
                 }
-
-                Console.Clear();
-
-                return files[target];
             }
             else
             {
