@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace AdventCalendar2019.D01
 {
-    [Exercise("Day 1: ")]
+    [Exercise("Day 1: Report Repair")]
     class Y2020D01 : FileSelectionParsingConsole<IList<int>>, IExercise
     {
         public void Execute()
@@ -23,7 +23,6 @@ namespace AdventCalendar2019.D01
         {
             Timer.Monitor(() =>
             {
-
                 for (int i = 0; i < data.Count; i++)
                 {
                     for (int j = 0; j < data.Count; j++)
@@ -51,11 +50,6 @@ namespace AdventCalendar2019.D01
                     }
                 }
             });
-        }
-
-        private int CalculateFuelReqs(int mass)
-        {
-            return ((int)(mass / 3) - 2);
         }
     }
 }
