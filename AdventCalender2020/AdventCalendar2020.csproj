@@ -25,7 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="D02\" />
     <Folder Include="D03\" />
     <Folder Include="D05\" />
     <Folder Include="D07\" />
