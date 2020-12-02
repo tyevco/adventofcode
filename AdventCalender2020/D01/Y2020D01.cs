@@ -1,6 +1,5 @@
 ﻿using Advent.Utilities;
 using Advent.Utilities.Attributes;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,35 +20,35 @@ namespace AdventCalendar2019.D01
 
         protected override void Execute(IList<int> data)
         {
-            Timer.Monitor(() =>
+            var smallest = data.Min();
+            var dataSet = data.Where(x => x < 2020 - smallest).ToList();
+
+            for (int i = 0; i < dataSet.Count; i++)
             {
-                for (int i = 0; i < data.Count; i++)
+                for (int j = 0; j < dataSet.Count; j++)
                 {
-                    for (int j = 0; j < data.Count; j++)
+                    if (i == j)
+                        continue;
+
+                    for (int k = 0; k < dataSet.Count; k++)
                     {
-                        if (i == j)
+                        if (j == k || i == k)
                             continue;
 
-                        for (int k = 0; k < data.Count; k++)
+                        if (dataSet[i] + dataSet[j] + dataSet[k] == 2020)
                         {
-                            if (j == k || i == k)
-                                continue;
-
-                            if (data[i] + data[j] + data[k] == 2020)
-                            {
-                                Console.WriteLine($"{data[i]} * {data[j]} * {data[k]} = {data[i] * data[j] * data[k]}");
-                                break;
-                            }
-                        }
-
-                        if (data[i] + data[j] == 2020)
-                        {
-                            Console.WriteLine($"{data[i]} * {data[j]} = {data[i] * data[j]}");
+                            AnswerPartTwo($"{dataSet[i]} * {dataSet[j]} * {dataSet[k]} = {dataSet[i] * dataSet[j] * dataSet[k]}");
                             break;
                         }
                     }
+
+                    if (dataSet[i] + dataSet[j] == 2020)
+                    {
+                        AnswerPartOne($"{dataSet[i]} * {dataSet[j]} = {dataSet[i] * dataSet[j]}");
+                        break;
+                    }
                 }
-            });
+            }
         }
     }
 }

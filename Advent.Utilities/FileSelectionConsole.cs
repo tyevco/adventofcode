@@ -28,6 +28,8 @@ namespace Advent.Utilities
 
         private int target = 0;
         private IList<string> files;
+        private List<object> PartOneAnswers = new List<object>();
+        private List<object> PartTwoAnswers = new List<object>();
 
         public string SelectFileFromFolder(string folder)
         {
@@ -171,9 +173,44 @@ namespace Advent.Utilities
 
                 if (file != null)
                 {
+                    PartOneAnswers.Clear();
+                    PartTwoAnswers.Clear();
+
                     Console.CursorVisible = false;
                     Execute(file);
                     Console.CursorVisible = true;
+
+                    if (PartOneAnswers.Any())
+                    {
+                        if (PartOneAnswers.Count == 1)
+                        {
+                            Console.WriteLine($"Part 1 Answer: {PartOneAnswers.FirstOrDefault()}");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Part 1 Answers:");
+                            foreach (var answer in PartOneAnswers)
+                            {
+                                Console.WriteLine(answer);
+                            }
+                        }
+                    }
+
+                    if (PartTwoAnswers.Any())
+                    {
+                        if (PartTwoAnswers.Count == 1)
+                        {
+                            Console.WriteLine($"Part 2 Answer: {PartTwoAnswers.FirstOrDefault()}");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Part 2 Answers:");
+                            foreach (var answer in PartTwoAnswers)
+                            {
+                                Console.WriteLine(answer);
+                            }
+                        }
+                    }
                 }
 
                 Console.WriteLine("Finished.");
@@ -187,5 +224,53 @@ namespace Advent.Utilities
         }
 
         protected abstract void Execute(string file);
+
+        protected void AnswerPartOne(object value, string format = null, params object[] others)
+        {
+            if (string.IsNullOrWhiteSpace(format))
+            {
+                PartOneAnswers.Add(value);
+
+                if (others != null && others.Any())
+                {
+                    PartOneAnswers.AddRange(others);
+                }
+            }
+            else
+            {
+                if (others != null && others.Any())
+                {
+                    PartOneAnswers.Add(string.Format(format, new object[] { value }.Concat(others).ToArray()));
+                }
+                else
+                {
+                    PartOneAnswers.Add(string.Format(format, value));
+                }
+            }
+        }
+
+        protected void AnswerPartTwo(object value, string format = null, params object[] others)
+        {
+            if (string.IsNullOrWhiteSpace(format))
+            {
+                PartTwoAnswers.Add(value);
+
+                if (others != null && others.Any())
+                {
+                    PartTwoAnswers.AddRange(others);
+                }
+            }
+            else
+            {
+                if (others != null && others.Any())
+                {
+                    PartTwoAnswers.Add(string.Format(format, new object[] { value }.Concat(others).ToArray()));
+                }
+                else
+                {
+                    PartTwoAnswers.Add(string.Format(format, value));
+                }
+            }
+        }
     }
 }

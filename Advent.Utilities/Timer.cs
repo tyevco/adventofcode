@@ -5,14 +5,23 @@ namespace Advent.Utilities
 {
     public static class Timer
     {
+        public static void Monitor(string name, Action action)
+        {
+            Perform(action, name);
+        }
+
         public static void Monitor(Action action)
         {
-            StackTrace stackTrace = new StackTrace();
-            var frame = stackTrace.GetFrame(1);
+            Perform(action);
+        }
+
+        private static void Perform(Action action, string actionName = null)
+        {
+            string actionBlurb = actionName == null ? string.Empty : $"{actionName} : ";
 
             if (Debug.EnableDebugOutput)
             {
-                Console.WriteLine($"Starting stopwatch for {frame.GetFileName()}:{frame.GetMethod().Name}:{frame.GetFileLineNumber()}");
+                Console.WriteLine($"{actionBlurb}Starting stopwatch");
             }
             else
             {
@@ -26,10 +35,10 @@ namespace Advent.Utilities
 
             if (Debug.EnableDebugOutput)
             {
-                Console.WriteLine($"Stopped stopwatch for {frame.GetFileName()}:{frame.GetMethod().Name}");
+                Console.WriteLine($"{actionBlurb}Stopped stopwatch");
             }
 
-            Console.WriteLine($"{frame.GetFileName()}:{frame.GetMethod().Name} : {stopwatch.ElapsedMilliseconds} ms");
+            Console.WriteLine($"{actionBlurb}{stopwatch.ElapsedMilliseconds} ms");
         }
     }
 }

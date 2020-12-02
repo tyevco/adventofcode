@@ -34,22 +34,19 @@ namespace AdventCalendar2019.D02
 
         protected override void Execute(IList<Password> data)
         {
-            Timer.Monitor(() =>
+            int countValid = 0;
+            int positionValid = 0;
+            foreach (var p in data)
             {
-                int countValid = 0;
-                int posiitonValid = 0;
-                foreach (var p in data)
-                {
-                    if (p.IsCountValid())
-                        countValid++;
+                if (p.IsCountValid())
+                    countValid++;
 
-                    if (p.IsPositionValid())
-                        posiitonValid++;
-                }
+                if (p.IsPositionValid())
+                    positionValid++;
+            }
 
-                Console.WriteLine($"Part 1: {countValid}");
-                Console.WriteLine($"Part 2: {posiitonValid}");
-            });
+            AnswerPartOne(countValid);
+            AnswerPartTwo(positionValid);
         }
     }
 }
