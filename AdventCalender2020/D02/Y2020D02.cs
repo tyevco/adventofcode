@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AdventCalendar2019.D02
+namespace AdventCalendar2020.D02
 {
     [Exercise("Day 2: Password Philosophy")]
     class Y2020D02 : FileSelectionParsingConsole<IList<Password>>, IExercise

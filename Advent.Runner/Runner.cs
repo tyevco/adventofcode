@@ -1,4 +1,5 @@
-﻿using Advent.Runner.Web;
+﻿using Advent.Runner.File;
+using Advent.Runner.Web;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -29,20 +30,36 @@ namespace Advent.Runner
                 using (var scope = serviceProvider.CreateScope())
                 {
                     var fetcher = ActivatorUtilities.CreateInstance<ExerciseService>(scope.ServiceProvider);
+                    var scriptCreator = ActivatorUtilities.CreateInstance<ScriptCreator>(scope.ServiceProvider);
 
-                    for (int y = 2015; y <= 2020; y++)
+                    //for (int y = 2015; y <= 2020; y++)
+                    //{
+                    //    for (int d = 1; d <= 25; d++)
+                    //    {
+                    //        var fetched = await fetcher.Fetch(y, d);
+                    //        if (fetched)
+                    //        {
+                    //            await fetcher.RetrieveInput(y, d);
+                    //        }
+                    //    }
+                    //}
+                    bool received = false;
+                    while (!received)
                     {
-                        for (int d = 1; d <= 25; d++)
+                        received = await fetcher.Fetch(2020, 3);
+
+                        if (received)
                         {
-                            var fetched = await fetcher.Fetch(y, d);
-                            if (fetched)
-                            {
-                                await fetcher.RetrieveInput(y, d);
-                            }
+                            var model = await fetcher.RetrieveExercise(2020, 3);
+                            await scriptCreator.CreateScript(model);
+
+                            await fetcher.RetrieveInput(2020, 3);
+                        }
+                        else
+                        {
+                            System.Threading.Thread.Sleep(5000);
                         }
                     }
-
-                    await fetcher.SubmitAnswer(2016, 1, 1, "1");
                 }
             }
             catch (Exception e)

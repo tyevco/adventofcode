@@ -3,7 +3,7 @@ using Advent.Utilities.Attributes;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AdventCalendar2019.D01
+namespace AdventCalendar2020.D01
 {
     [Exercise("Day 1: Report Repair")]
     class Y2020D01 : FileSelectionParsingConsole<IList<int>>, IExercise

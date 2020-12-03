@@ -1,4 +1,5 @@
-﻿using Advent.Runner.Web;
+﻿using Advent.Runner.File;
+using Advent.Runner.Web;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -20,6 +21,7 @@ namespace Advent.Runner
             services.Configure<SiteOptions>(o => configuration.GetSection("site").Bind(o));
             services.Configure<ApplicationOptions>(o => configuration.GetSection("app").Bind(o));
             services.AddScoped<ExerciseService>();
+            services.AddScoped<ScriptCreator>();
 
             services.AddHttpClient();
         }

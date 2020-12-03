@@ -7,5 +7,7 @@
         public string AnswersDirectory { get; set; }
 
         public string InputDataDirectory { get; set; }
+
+        public string ScriptDataDirectory { get; set; }
     }
 }

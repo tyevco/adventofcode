@@ -1,9 +1,11 @@
-﻿using Fizzler.Systems.HtmlAgilityPack;
+﻿using Advent.Runner.File;
+using Fizzler.Systems.HtmlAgilityPack;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ReverseMarkdown;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -82,6 +84,45 @@ namespace Advent.Runner.Web
                         await System.IO.File.WriteAllTextAsync($"{outputPath}\\Day_{day.ToString().PadLeft(2, '0')}.md", convert);
 
                         fetched = true;
+                    }
+                }
+            }
+
+            return fetched;
+        }
+
+        public async Task<ScriptModel> RetrieveExercise(int year, int day)
+        {
+            ScriptModel fetched = null;
+
+            var client = HttpClientFactory.CreateClient();
+
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{this.SiteOptions.Value.SiteUrl}/{year}/day/{day}");
+
+            request.Headers.Add("cookie", $"session={this.SiteOptions.Value.CookieSessionToken}");
+
+            var response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+
+                if (!content.Equals(ExerciseNotAvailable))
+                {
+                    var html = new HtmlDocument();
+                    html.LoadHtml(content);
+                    var docNode = html.DocumentNode;
+
+                    var puzzleTitle = docNode.QuerySelector(".day-desc h2");
+                    if (puzzleTitle != null)
+                    {
+
+                        fetched = new ScriptModel
+                        {
+                            Title = puzzleTitle.InnerText.Replace("---", "").Split(": ", 1, System.StringSplitOptions.RemoveEmptyEntries).LastOrDefault()?.Trim(),
+                            Year = year,
+                            Day = day,
+                        };
                     }
                 }
             }
