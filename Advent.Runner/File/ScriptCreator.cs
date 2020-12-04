@@ -1,4 +1,5 @@
-﻿using Advent.Runner.Web;
+﻿using Advent.Runner.Extensions;
+using Advent.Runner.Web;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
@@ -47,7 +48,7 @@ namespace AdventCalendar{1}.D{2}
         public ILogger<ScriptCreator> Logger { get; }
         public IOptions<ApplicationOptions> AppOptions { get; }
 
-        public async Task<bool> CreateScript(ScriptModel model, bool overwriteFile = false)
+        public async Task<bool> CreateScript(ExerciseMetadata model, bool overwriteFile = false)
         {
             string scriptFile = GetFilename(model);
             if (!overwriteFile)
@@ -58,7 +59,6 @@ namespace AdventCalendar{1}.D{2}
                 }
             }
 
-
             var fileContents = string.Format(scriptFormat, model.Title, model.Year, model.Day.ToString().PadLeft(2, '0'));
 
             await System.IO.File.WriteAllTextAsync(scriptFile, fileContents);
@@ -66,22 +66,14 @@ namespace AdventCalendar{1}.D{2}
             return true;
         }
 
-        private string GetFilename(ScriptModel model)
+        private string GetFilename(ExerciseMetadata model)
         {
             string day = model.Day.ToString().PadLeft(2, '0');
+            var path = this.AppOptions.Value.ScriptDataDirectory.Interpolate(("year", model.Year), ("day", day));
 
-            System.IO.Directory.CreateDirectory(System.IO.Path.Combine(
-                            string.Format(
-                                    this.AppOptions.Value.ScriptDataDirectory,
-                                    model.Year,
-                                    day)));
+            System.IO.Directory.CreateDirectory(path);
 
-            return System.IO.Path.Combine(
-                            string.Format(
-                                    this.AppOptions.Value.ScriptDataDirectory,
-                                    model.Year,
-                                    day),
-                            $"Y{model.Year}D{day}.cs");
+            return System.IO.Path.Combine(path, $"Y{model.Year}D{day}.cs");
 
         }
     }

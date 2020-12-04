@@ -1,5 +1,4 @@
-﻿using Advent.Runner.File;
-using Advent.Runner.Web;
+﻿using Advent.Runner.Pipelines;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -29,37 +28,15 @@ namespace Advent.Runner
             {
                 using (var scope = serviceProvider.CreateScope())
                 {
-                    var fetcher = ActivatorUtilities.CreateInstance<ExerciseService>(scope.ServiceProvider);
-                    var scriptCreator = ActivatorUtilities.CreateInstance<ScriptCreator>(scope.ServiceProvider);
+                    var filesPipeline = ActivatorUtilities.CreateInstance<GenerateFilesPipeline>(scope.ServiceProvider);
 
-                    //for (int y = 2015; y <= 2020; y++)
-                    //{
-                    //    for (int d = 1; d <= 25; d++)
-                    //    {
-                    //        var fetched = await fetcher.Fetch(y, d);
-                    //        if (fetched)
-                    //        {
-                    //            await fetcher.RetrieveInput(y, d);
-                    //        }
-                    //    }
-                    //}
-                    bool received = false;
-                    while (!received)
-                    {
-                        received = await fetcher.Fetch(2020, 3);
+                    var now = DateTime.Now;
+                    var targetDate = new DateTime(now.Year, now.Month, now.Day + 1, 0, 0, 0);
+                    var waitTimespan = targetDate.AddSeconds(-30) - now;
 
-                        if (received)
-                        {
-                            var model = await fetcher.RetrieveExercise(2020, 3);
-                            await scriptCreator.CreateScript(model);
+                    System.Threading.Thread.Sleep((int)waitTimespan.TotalMilliseconds);
 
-                            await fetcher.RetrieveInput(2020, 3);
-                        }
-                        else
-                        {
-                            System.Threading.Thread.Sleep(5000);
-                        }
-                    }
+                    var fetched = await filesPipeline.Generate(targetDate.Year, targetDate.Day);
                 }
             }
             catch (Exception e)

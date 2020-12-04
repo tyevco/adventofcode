@@ -22,13 +22,18 @@ namespace Advent.Runner
             services.Configure<ApplicationOptions>(o => configuration.GetSection("app").Bind(o));
             services.AddScoped<ExerciseService>();
             services.AddScoped<ScriptCreator>();
+            services.AddScoped<AnswerCreator>();
+            services.AddScoped<MarkdownCreator>();
 
             services.AddHttpClient();
         }
 
         public void ConfigurePipeline(IPipelineBuilder pipeline, IConfiguration configuration)
         {
+            // add pipeline triggers
+            // add pipeline steps
 
+            // add ui panels
         }
     }
 }
