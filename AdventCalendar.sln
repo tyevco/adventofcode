@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventCalendar2015", "Adven
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventCalendar2018", "AdventCalendar2018\AdventCalendar2018.csproj", "{D1B9E096-D8B2-4A45-AB81-5A683F51E80A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventCalendar2020", "AdventCalender2020\AdventCalendar2020.csproj", "{FDD9CE44-8667-4457-BC62-1444328C05B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventCalendar2020", "AdventCalendar2020\AdventCalendar2020.csproj", "{FDD9CE44-8667-4457-BC62-1444328C05B1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Advent.Runner", "Advent.Runner\Advent.Runner.csproj", "{74993BF7-5662-4D14-BD1F-F1919C893CF9}"
 EndProject
