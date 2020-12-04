@@ -34,6 +34,7 @@ namespace Advent.Runner
                     var targetDate = new DateTime(now.Year, now.Month, now.Day + 1, 0, 0, 0);
                     var waitTimespan = targetDate.AddSeconds(-30) - now;
 
+                    Console.WriteLine($"Waiting {waitTimespan} until execution for {targetDate:yyyy-MM-dd} puzzle...");
                     System.Threading.Thread.Sleep((int)waitTimespan.TotalMilliseconds);
 
                     var fetched = await filesPipeline.Generate(targetDate.Year, targetDate.Day);
