@@ -39,25 +39,6 @@ namespace AdventCalendar2020.D04
             //&& !string.IsNullOrWhiteSpace(CountryID);
         }
 
-        internal void PrintState()
-        {
-            if (ValidBirthYear)
-                System.Console.WriteLine($"BirthYear: {BirthYear} : {ValidBirthYear}");
-            if (ValidIssueYear)
-                System.Console.WriteLine($"IssueYear: {IssueYear} : {ValidIssueYear}");
-            if (ValidExpirationYear)
-                System.Console.WriteLine($"ExpirationYear: {ExpirationYear} : {ValidExpirationYear}");
-            if (ValidHeight)
-                System.Console.WriteLine($"Height: {Height} : {ValidHeight}");
-            if (ValidHairColor)
-                System.Console.WriteLine($"HairColor: {HairColor} : {ValidHairColor}");
-            if (ValidEyeColor)
-                System.Console.WriteLine($"EyeColor: {EyeColor} : {ValidEyeColor}");
-            if (ValidPassportID)
-                System.Console.WriteLine($"PassportID;: {PassportID} : {ValidPassportID}");
-            Console.WriteLine();
-        }
-
         private bool ValidBirthYear => !string.IsNullOrWhiteSpace(BirthYear) &&
                                     int.Parse(BirthYear).IsBetweenInclusive(1920, 2002);
 
