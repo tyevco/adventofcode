@@ -1,4 +1,7 @@
-﻿namespace Advent.Utilities.Extensions
+﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
+
+namespace Advent.Utilities.Extensions
 {
     public static class StringExtensions
     {
@@ -11,6 +14,21 @@
             }
 
             return returned;
+        }
+
+        private static IDictionary<int, Regex> RegexCache { get; } = new Dictionary<int, Regex>();
+
+        public static bool IsMatch(this string value, string regexString)
+        {
+            int key = regexString.GetHashCode();
+
+            if (!RegexCache.TryGetValue(key, out Regex regex))
+            {
+                regex = new Regex(regexString);
+                RegexCache.Add(key, regex);
+            }
+
+            return regex.IsMatch(value);
         }
     }
 }

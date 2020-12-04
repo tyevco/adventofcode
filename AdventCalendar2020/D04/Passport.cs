@@ -67,14 +67,18 @@ namespace AdventCalendar2020.D04
         private bool ValidExpirationYear => !string.IsNullOrWhiteSpace(ExpirationYear) &&
                                     int.Parse(ExpirationYear).IsBetweenInclusive(2020, 2030);
 
-        private bool ValidHeight => !string.IsNullOrWhiteSpace(Height) && new Regex("^[0-9]+(cm|in)$").IsMatch(Height)
+        // language=regex
+        private bool ValidHeight => !string.IsNullOrWhiteSpace(Height) && Height.IsMatch("^[0-9]+(cm|in)$")
                     && ((Height.Contains("cm") && int.Parse(Height.Substring(0, Height.IndexOf("c"))).IsBetweenInclusive(150, 193))
                         || Height.Contains("in") && int.Parse(Height.Substring(0, Height.IndexOf("i"))).IsBetweenInclusive(59, 76));
 
-        private bool ValidHairColor => !string.IsNullOrWhiteSpace(HairColor) && new Regex("^#[a-f0-9]{6}$").IsMatch(HairColor);
+        // language=regex
+        private bool ValidHairColor => !string.IsNullOrWhiteSpace(HairColor) && HairColor.IsMatch("^#[a-f0-9]{6}$");
 
-        private bool ValidEyeColor => !string.IsNullOrWhiteSpace(EyeColor) && new Regex("(amb|blu|brn|gry|grn|hzl|oth)").IsMatch(EyeColor);
+        // language=regex
+        private bool ValidEyeColor => !string.IsNullOrWhiteSpace(EyeColor) && EyeColor.IsMatch("(amb|blu|brn|gry|grn|hzl|oth)");
 
-        private bool ValidPassportID => !string.IsNullOrWhiteSpace(PassportID) && new Regex("^[0-9]{9}$").IsMatch(PassportID);
+        // language=regex
+        private bool ValidPassportID => !string.IsNullOrWhiteSpace(PassportID) && PassportID.IsMatch("^[0-9]{9}$");
     }
 }
