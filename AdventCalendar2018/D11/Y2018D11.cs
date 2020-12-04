@@ -1,28 +1,19 @@
-using Advent.Utilities;
+﻿using Advent.Utilities;
 using Advent.Utilities.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace AdventCalendar2018.D11
 {
     [Exercise("Day 11: Chronal Charge")]
-    class Y2018D11 : FileSelectionParsingConsole<IList<string>>, IExercise
+    class Program : FileSelectionConsole
     {
         public void Execute()
         {
             Start("D11/Data");
         }
 
-        protected override IList<string> DeserializeData(IList<string> data)
+        protected override void Execute(string file)
         {
-            // Setup data parser.
-            return data;
-        }
 
-        protected override void Execute(IList<string> data)
-        {
-            // perform task.
         }
     }
 }
