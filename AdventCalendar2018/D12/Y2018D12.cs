@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Advent.Utilities;
 using Advent.Utilities.Attributes;
 
 namespace AdventCalendar2018.D12

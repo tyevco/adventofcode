@@ -13,7 +13,13 @@ namespace Advent.Utilities
                 Console.Write(obj);
         }
 
-        public static void WriteLine(string obj, params (string, object)[] values)
+        public static void WriteLine(string obj, params object[] values)
+        {
+            if (EnableDebugOutput)
+                Console.WriteLine(obj, values);
+        }
+
+        public static void WriteLine(string obj, (string, object)[] values)
         {
             if (EnableDebugOutput)
                 Console.WriteLine(obj.Interpolate(values));

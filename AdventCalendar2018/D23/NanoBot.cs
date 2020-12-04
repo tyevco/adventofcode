@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using Advent.Utilities;
+﻿using Advent.Utilities;
+using Advent.Utilities.Extensions;
+using System;
 
 namespace AdventCalendar2018.D23
 {
@@ -24,54 +24,16 @@ namespace AdventCalendar2018.D23
             return Math.Abs(X - x) + Math.Abs(Y - y) + Math.Abs(Z - z);
         }
 
-        public int DistanceTo(NanoBot other)
+        public bool InRange(int x, int y, int z)
         {
-            return DistanceTo(other.X, other.Y, other.Z);
-        }
+            var inRange = (X, Y, Z).ManhattanDistance((x, y, z)) <= R;
 
-        public bool Overlap(int x, int y, int z, int r)
-        {
-            int distSq = (X - x) * (X - x)
-                        + (Y - y) * (Y - y)
-                        + (Z - z) * (Z - z);
-            int radSumSq = (R + r) * (R + r);
-
-            return distSq >= radSumSq;
-        }
-
-        public IList<ITriangle> GetFaces()
-        {
-            return new List<ITriangle>
+            if (inRange)
             {
-                new Triangle(new Vector3d(X, Y, Z + R), new Vector3d(X + R, Y, Z), new Vector3d(X, Y + R, Z)),
-                new Triangle(new Vector3d(X, Y, Z + R), new Vector3d(X + R, Y, Z), new Vector3d(X, Y - R, Z)),
-                new Triangle(new Vector3d(X, Y, Z + R), new Vector3d(X - R, Y, Z), new Vector3d(X, Y + R, Z)),
-                new Triangle(new Vector3d(X, Y, Z + R), new Vector3d(X - R, Y, Z), new Vector3d(X, Y - R, Z)),
-
-                new Triangle(new Vector3d(X, Y, Z - R), new Vector3d(X + R, Y, Z), new Vector3d(X, Y + R, Z)),
-                new Triangle(new Vector3d(X, Y, Z - R), new Vector3d(X + R, Y, Z), new Vector3d(X, Y - R, Z)),
-                new Triangle(new Vector3d(X, Y, Z - R), new Vector3d(X - R, Y, Z), new Vector3d(X, Y - R, Z)),
-                new Triangle(new Vector3d(X, Y, Z - R), new Vector3d(X - R, Y, Z), new Vector3d(X, Y + R, Z))
-            };
-        }
-
-        public bool Within(OctTree region)
-        {
-            bool intersected = false;
-            var aabb = region.GetBounds();
-
-            var faces = GetFaces();
-
-            foreach (var face in faces)
-            {
-                if (CollisonDetection.IsIntersecting(aabb, face))
-                {
-                    intersected = true;
-                    break;
-                }
+                Debug.WriteLine($"pos=<{X},{Y},{Z}>, r={R}");
             }
 
-            return intersected;
+            return inRange;
         }
     }
 }
