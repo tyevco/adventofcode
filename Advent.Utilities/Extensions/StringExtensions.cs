@@ -1,4 +1,4 @@
-﻿namespace Advent.Runner.Extensions
+﻿namespace Advent.Utilities.Extensions
 {
     public static class StringExtensions
     {
