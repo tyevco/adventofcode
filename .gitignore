@@ -7,6 +7,7 @@
 *.userosscache
 *.sln.docstates
 
+/Answers/
 /Exercises/
 .obsidian
 local.settings.json

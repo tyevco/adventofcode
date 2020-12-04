@@ -24,13 +24,4 @@
       </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="D05\" />
-    <Folder Include="D07\" />
-    <Folder Include="D09\" />
-    <Folder Include="D11\" />
-    <Folder Include="D13\" />
-    <Folder Include="D15\" />
-  </ItemGroup>
-
 </Project>
