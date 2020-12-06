@@ -6,8 +6,8 @@ using System.Linq;
 
 namespace AdventCalendar2020.D05
 {
-    [Exercise("Day 5: ")]
-    class Y2020D05M : FileSelectionParsingConsole<IList<string>>, IExercise
+    [Exercise("Day 5: Binary Boarding")]
+    class Y2020D05 : FileSelectionParsingConsole<IList<string>>, IExercise
     {
         public void Execute()
         {
