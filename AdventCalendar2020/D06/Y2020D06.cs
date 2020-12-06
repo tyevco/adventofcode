@@ -1,36 +1,34 @@
 ﻿using Advent.Utilities;
 using Advent.Utilities.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace AdventCalendar2020.D06
 {
     [Exercise("Day 6: Custom Customs")]
-    class Y2020D06 : FileSelectionParsingConsole<IList<CustomsGroup>>, IExercise
+    class Y2020D06 : FileSelectionParsingConsole<IList<IList<int>>>, IExercise
     {
         public void Execute()
         {
             Start("D06/Data");
         }
 
-        protected override IList<CustomsGroup> DeserializeData(IList<string> data)
+        protected override IList<IList<int>> DeserializeData(IList<string> data)
         {
-            IList<CustomsGroup> customsList = new List<CustomsGroup>();
+            IList<IList<int>> customsList = new List<IList<int>>();
 
-            CustomsGroup customs = new CustomsGroup();
+            IList<int> customs = new List<int>();
             foreach (var line in data)
             {
                 if (string.IsNullOrWhiteSpace(line))
                 {
                     customsList.Add(customs);
-                    customs = new CustomsGroup();
+                    customs = new List<int>();
                 }
                 else
                 {
-                    customs.People.Add(new PersonAnswers
-                    {
-                        Answers = string.Join("", line.ToCharArray().Distinct()),
-                    });
+                    customs.Add(line.ToCharArray().Select(x => char.ToLowerInvariant(x) - 'a').Aggregate(0, (x, y) => x |= (int)Math.Pow(2, y)));
                 }
             }
 
@@ -39,28 +37,15 @@ namespace AdventCalendar2020.D06
             return customsList;
         }
 
-        protected override void Execute(IList<CustomsGroup> data)
+        protected override void Execute(IList<IList<int>> data)
         {
             int totalAnyCount = 0;
             int totalAllCount = 0;
-            var alphabet = new char[] { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
+
             foreach (var group in data)
             {
-                int groupAnyCount = 0;
-                foreach(var c in alphabet)
-                {
-                    if (group.People.Any(p => p.Answers.Contains(c)))
-                    {
-                        groupAnyCount++;
-                    }
-
-                    if (group.People.All(p => p.Answers.Contains(c)))
-                    {
-                        totalAllCount++;
-                    }
-                }
-
-                totalAnyCount += groupAnyCount;
+                totalAnyCount += Convert.ToString(group.Aggregate(0, (x, y) => x |= y), 2).Count(x => x == '1');
+                totalAllCount += Convert.ToString(group.Aggregate(1073741823, (x, y) => x &= y), 2).Count(x => x == '1');
             }
 
             AnswerPartOne(totalAnyCount);
