@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace AdventCalendar2020.D07
 {
-    [Exercise("Day 7: ")]
+    [Exercise("Day 7: Handy Haversacks")]
     class Y2020D07 : FileSelectionParsingConsole<IDictionary<string, IDictionary<string, int>>>, IExercise
     {
         public void Execute()
