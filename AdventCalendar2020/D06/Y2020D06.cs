@@ -28,7 +28,7 @@ namespace AdventCalendar2020.D06
                 }
                 else
                 {
-                    customs.Add(line.ToCharArray().Select(x => char.ToLowerInvariant(x) - 'a').Aggregate(0, (x, y) => x |= (int)Math.Pow(2, y)));
+                    customs.Add(line.Select(x => char.ToLowerInvariant(x) - 'a').Aggregate(0, (x, y) => x |= (int)Math.Pow(2, y)));
                 }
             }
 
