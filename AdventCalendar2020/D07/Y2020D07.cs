@@ -25,11 +25,11 @@ namespace AdventCalendar2020.D07
                 var color = split[0].Substring(0, split[0].Length - 5);
 
                 IDictionary<string, int> colorRules = new Dictionary<string, int>();
-                var contains = split[1].Split(", ", System.StringSplitOptions.RemoveEmptyEntries);
+                var contains = split[1].Split(", ", StringSplitOptions.RemoveEmptyEntries);
                 foreach (var contain in contains)
                 {
                     var trimmed = contain.Trim('.', ' ');
-                    if (trimmed.StartsWith("no other", System.StringComparison.InvariantCultureIgnoreCase))
+                    if (trimmed.StartsWith("no other", StringComparison.InvariantCultureIgnoreCase))
                     {
                         colorRules.Add("none", 0);
                     }
@@ -85,13 +85,8 @@ namespace AdventCalendar2020.D07
             }
         }
 
-        private void Count(IDictionary<string, IDictionary<string, int>> data, string bag, ref int total, ISet<string> searched = null)
+        private void Count(IDictionary<string, IDictionary<string, int>> data, string bag, ref int total)
         {
-            if (searched == null)
-            {
-                searched = new HashSet<string>();
-            }
-
             if (bag != "none")
             {
                 var bagRule = data[bag];
@@ -99,12 +94,9 @@ namespace AdventCalendar2020.D07
                 foreach (var contains in bagRule)
                 {
                     int childTotal = 0;
+                    Count(data, contains.Key, ref childTotal);
 
-                    total += contains.Value;
-
-                    Count(data, contains.Key, ref childTotal, searched);
-
-                    total += (contains.Value * childTotal);
+                    total += contains.Value + (contains.Value * childTotal);
                 }
             }
         }
