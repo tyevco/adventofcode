@@ -1,36 +1,27 @@
 ﻿using Advent.Utilities;
 using Advent.Utilities.Attributes;
-using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
-namespace AdventCalendar2020.D078
+namespace AdventCalendar2020.D08
 {
-    [Exercise("Day 8: ")]
-    class Y2020D08 : FileSelectionParsingConsole<IList<string>>, IExercise
+    [Exercise("Day 8: Handheld Halting")]
+    class Y2020D08 : FileSelectionParsingConsole<GameMan>, IExercise
     {
         public void Execute()
         {
             Start("D08/Data");
         }
 
-        protected override IList<string> DeserializeData(IList<string> data)
+        protected override GameMan DeserializeData(IList<string> data)
         {
-            var output = data;
-
-
-
-
-            return output;
+            return new GameMan(data);
         }
 
-        protected override void Execute(IList<string> data)
+        protected override void Execute(GameMan game)
         {
-            var part1 = "";
-            var part2 = "";
+            AnswerPartOne(game.Process());
 
-            AnswerPartOne($"{part1}");
-            AnswerPartTwo($"{part2}");
+            AnswerPartTwo(game.ProcessTwo());
         }
 
     }
