@@ -20,8 +20,9 @@ namespace AdventCalendar2020.D09
 
         protected override void Execute(IList<long> data)
         {
+            int count = Helper.ReadIntInput("Please enter preamble length");
+
             Queue<long> preamble = new Queue<long>();
-            int count = 25;
             long partOne = 0;
 
             foreach (var curr in data)
@@ -48,6 +49,7 @@ namespace AdventCalendar2020.D09
             }
 
             Queue<long> sums = new Queue<long>();
+
             foreach (var curr in data)
             {
                 sums.Enqueue(curr);
