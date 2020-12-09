@@ -35,7 +35,7 @@ namespace AdventCalendar2020.D09
                 }
                 else
                 {
-                    var totals = preamble.SelectMany(x => preamble.Select(y => x + y)).ToList();
+                    var totals = preamble.SelectMany(x => preamble.Where(y => x != y).Select(y => x + y)).ToList();
 
                     if (totals.Contains(curr))
                     {
