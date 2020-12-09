@@ -225,7 +225,7 @@ namespace Advent.Utilities
 
         protected abstract void Execute(string file);
 
-        protected void AnswerPartOne(object value, string format = null, params object[] others)
+        protected T AnswerPartOne<T>(T value, string format = null, params object[] others)
         {
             if (string.IsNullOrWhiteSpace(format))
             {
@@ -247,9 +247,11 @@ namespace Advent.Utilities
                     PartOneAnswers.Add(string.Format(format, value));
                 }
             }
+
+            return value;
         }
 
-        protected void AnswerPartTwo(object value, string format = null, params object[] others)
+        protected T AnswerPartTwo<T>(T value, string format = null, params object[] others)
         {
             if (string.IsNullOrWhiteSpace(format))
             {
@@ -271,6 +273,8 @@ namespace Advent.Utilities
                     PartTwoAnswers.Add(string.Format(format, value));
                 }
             }
+
+            return value;
         }
     }
 }
