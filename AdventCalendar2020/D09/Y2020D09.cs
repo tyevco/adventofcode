@@ -15,8 +15,6 @@ namespace AdventCalendar2020.D09
 
         protected override IList<string> DeserializeData(IList<string> data)
         {
-
-
             return data;
         }
 
