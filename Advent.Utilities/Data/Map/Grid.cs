@@ -71,5 +71,15 @@ namespace Advent.Utilities.Data.Map
                 Points[key] = value;
             }
         }
+
+        public Grid<TPoint, TData> Clone()
+        {
+            var clone = new Grid<TPoint, TData>()
+            {
+                Points = this.Points.ToDictionary(x => x.Key, x => x.Value),
+            };
+
+            return clone;
+        }
     }
 }
