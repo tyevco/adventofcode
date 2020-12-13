@@ -19,12 +19,11 @@ namespace AdventCalendar2020.D12
             IList<(char, int)> items = new List<(char, int)>();
             foreach (var line in data)
             {
-                items.Add((line[0], int.Parse(line.Substring(1))));
+                items.Add((line[0], int.Parse(line[1..])));
             }
 
             return items;
         }
-
 
         protected override void Execute(IList<(char command, int amount)> data)
         {
@@ -40,21 +39,21 @@ namespace AdventCalendar2020.D12
 
             for (int i = 0; i < data.Count; i++)
             {
-                var item = data[i];
+                var (command, amount) = data[i];
 
-                switch (item.command)
+                switch (command)
                 {
                     case 'L':
-                        dir = turn(dir, -item.amount);
+                        dir = Turn(dir, -amount);
                         break;
                     case 'R':
-                        dir = turn(dir, item.amount);
+                        dir = Turn(dir, amount);
                         break;
                     case 'F':
-                        pos = move(dir, item.amount, pos);
+                        pos = Move(dir, amount, pos);
                         break;
                     default:
-                        pos = move(item.command, item.amount, pos);
+                        pos = Move(command, amount, pos);
                         break;
                 }
             }
@@ -64,27 +63,26 @@ namespace AdventCalendar2020.D12
 
         protected void PartTwo(IList<(char command, int amount)> data)
         {
-            char dir = 'E';
             (int x, int y) pos = (0, 0);
             (int x, int y) wp = (10, -1);
 
             for (int i = 0; i < data.Count; i++)
             {
-                var item = data[i];
+                var (command, amount) = data[i];
 
-                switch (item.command)
+                switch (command)
                 {
                     case 'L':
-                        (dir, wp) = turnWaypoint(dir, wp, -item.amount);
+                        wp = TurnWaypoint(wp, -amount);
                         break;
                     case 'R':
-                        (dir, wp) = turnWaypoint(dir, wp, item.amount);
+                        wp = TurnWaypoint(wp, amount);
                         break;
                     case 'F':
-                        pos = moveToward(item.amount, pos, wp);
+                        pos = MoveToward(amount, pos, wp);
                         break;
                     default:
-                        wp = move(item.command, item.amount, wp);
+                        wp = Move(command, amount, wp);
                         break;
                 }
             }
@@ -92,7 +90,7 @@ namespace AdventCalendar2020.D12
             AnswerPartOne(pos.ManhattanDistance());
         }
 
-        private (int x, int y) move(char dir, int amount, (int x, int y) pos)
+        private static (int x, int y) Move(char dir, int amount, (int x, int y) pos)
         {
             Console.Write($"moving {amount} {dir} from {pos.x},{pos.y}");
 
@@ -117,7 +115,7 @@ namespace AdventCalendar2020.D12
             return pos;
         }
 
-        private (int x, int y) moveToward(int amount, (int x, int y) pos, (int x, int y) waypoint)
+        private static (int x, int y) MoveToward(int amount, (int x, int y) pos, (int x, int y) waypoint)
         {
             Console.WriteLine($"moving {amount * waypoint.x}, {amount * waypoint.y}");
 
@@ -127,9 +125,9 @@ namespace AdventCalendar2020.D12
             return pos;
         }
 
-        List<char> directions = new List<char> { 'N', 'E', 'S', 'W' };
+        private static readonly List<char> directions = new List<char> { 'N', 'E', 'S', 'W' };
 
-        private char turn(char facing, int degrees)
+        private static char Turn(char facing, int degrees)
         {
             var turns = degrees / 90;
 
@@ -147,26 +145,22 @@ namespace AdventCalendar2020.D12
             return facing;
         }
 
-        private (char dir, (int x, int y) pos) turnWaypoint(char dir, (int x, int y) pos, int degrees)
-        {
-            dir = turn(dir, degrees);
+        private static readonly (int x, int y)[] TurnMultiples = new (int x, int y)[] { (-1, 1), (-1, -1), (1, -1), (1, 1), (-1, 1), (-1, -1), (1, -1) };
 
+        private static (int x, int y) TurnWaypoint((int x, int y) pos, int degrees)
+        {
             var turns = degrees / 90;
 
             (int x, int y) m = (1, 1);
-            bool flipXY = false;
+            bool flipXY = Math.Abs(turns % 2) == 1;
 
             if (turns > 0)
             {
-                (int x, int y)[] mult = new (int x, int y)[] { (-1, 1), (-1, -1), (1, -1), (1, 1) };
-                flipXY = turns % 2 == 1;
-                m = mult[turns - 1];
+                m = TurnMultiples[turns - 1];
             }
             else if (turns < 0)
             {
-                (int x, int y)[] mult = new (int x, int y)[] { (1, -1), (-1, -1), (-1, 1), (1, 1) };
-                flipXY = -turns % 2 == 1;
-                m = mult[-turns - 1];
+                m = TurnMultiples[TurnMultiples.Length + turns];
             }
 
             if (flipXY)
@@ -181,7 +175,7 @@ namespace AdventCalendar2020.D12
                 pos.y *= m.y;
             }
 
-            return (dir, pos);
+            return pos;
         }
     }
 }
