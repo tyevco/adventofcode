@@ -92,7 +92,7 @@ namespace AdventCalendar2020.D12
 
         private static (int x, int y) Move(char dir, int amount, (int x, int y) pos)
         {
-            Console.Write($"moving {amount} {dir} from {pos.x},{pos.y}");
+            Debug.Write($"moving {amount} {dir} from {pos.x},{pos.y}");
 
             switch (dir)
             {
@@ -110,14 +110,14 @@ namespace AdventCalendar2020.D12
                     break;
             }
 
-            Console.WriteLine($" to {pos.x},{pos.y}");
+            Debug.WriteLine($" to {pos.x},{pos.y}");
 
             return pos;
         }
 
         private static (int x, int y) MoveToward(int amount, (int x, int y) pos, (int x, int y) waypoint)
         {
-            Console.WriteLine($"moving {amount * waypoint.x}, {amount * waypoint.y}");
+            Debug.WriteLine($"moving {amount * waypoint.x}, {amount * waypoint.y}");
 
             pos.x += (amount * waypoint.x);
             pos.y += (amount * waypoint.y);
