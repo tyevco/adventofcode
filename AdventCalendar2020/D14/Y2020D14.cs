@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace AdventCalendar2020.D14
 {
-    [Exercise("Day 14: ")]
+    [Exercise("Day 14: Docking Data")]
     class Y2020D14 : FileSelectionParsingConsole<IList<string>>, IExercise
     {
         public void Execute()
