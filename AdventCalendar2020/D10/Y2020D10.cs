@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace AdventCalendar2020.D10
 {
-    [Exercise("Day 10: ")]
+    [Exercise("Day 10: Adapter Array")]
     class Y2020D10 : FileSelectionParsingConsole<IList<long>>, IExercise
     {
         public void Execute()
