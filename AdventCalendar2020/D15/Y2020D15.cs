@@ -1,40 +1,76 @@
 ﻿using Advent.Utilities;
 using Advent.Utilities.Attributes;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AdventCalendar2020.D15
 {
-    [Exercise("Day 15: ")]
-    class Y2020D15 : FileSelectionParsingConsole<IList<string>>, IExercise
+    [Exercise("Day 15: Rambunctious Recitation")]
+    class Y2020D15 : FileSelectionParsingConsole<IEnumerable<IList<int>>>, IExercise
     {
         public void Execute()
         {
             Start("D15/Data");
         }
 
-        protected override IList<string> DeserializeData(IList<string> data)
+        protected override IEnumerable<IList<int>> DeserializeData(IList<string> data)
         {
-            return data;
+            return data.Select(line => line.Split(",").Select(x => int.Parse(x)).ToList());
         }
 
-        protected override void Execute(IList<string> data)
+        protected override void Execute(IEnumerable<IList<int>> set)
         {
-            PartOne(data);
-            PartTwo(data);
+            foreach (var data in set)
+            {
+                AnswerPartOne(GetLastSpoken(data, 2020));
+                AnswerPartTwo(GetLastSpoken(data, 30000000));
+            }
         }
 
-
-        protected void PartOne(IList<string> data)
+        private int GetLastSpoken(IList<int> data, int iterations)
         {
+            IDictionary<int, (int a, int b)> spokenMap = new Dictionary<int, (int a, int b)>();
 
-            AnswerPartOne(data);
-        }
+            int lastSpoken = 0;
 
+            for (int i = 0; i < iterations; i++)
+            {
+                int speak = 0;
 
-        protected void PartTwo(IList<string> data)
-        {
+                if (i < data.Count)
+                {
+                    speak = data[i];
+                }
+                else if (spokenMap.TryGetValue(lastSpoken, out (int a, int b) value))
+                {
+                    if (value.a >= 0)
+                    {
+                        var spokeAt = value.a - value.b;
 
-            AnswerPartTwo(data);
+                        speak = spokeAt;
+                    }
+                }
+
+                if (spokenMap.TryGetValue(speak, out (int a, int b) speakValue))
+                {
+                    if (speakValue.a >= 0)
+                    {
+                        spokenMap[speak] = (i, speakValue.a);
+                    }
+                    else
+                    {
+                        spokenMap[speak] = (i, speakValue.b);
+                    }
+                }
+                else
+                {
+                    spokenMap[speak] = (-1, i);
+                }
+
+                lastSpoken = speak;
+            }
+
+            return lastSpoken;
         }
     }
 }
