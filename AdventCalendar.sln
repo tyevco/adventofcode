@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28407.52
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Advent.Utilities", "Advent.Utilities\Advent.Utilities.csproj", "{98B2BA72-EC43-4CCA-87C1-E39AC81BA7F2}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventCalendar2018", "AdventCalendar2018\AdventCalendar2018.csproj", "{D1B9E096-D8B2-4A45-AB81-5A683F51E80A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventCalendar2020", "AdventCalender2020\AdventCalendar2020.csproj", "{FDD9CE44-8667-4457-BC62-1444328C05B1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventCalendar2021", "AdventCalender2021\AdventCalendar2021.csproj", "{D91E1C88-7D22-4832-969A-7DBA38306886}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{FDD9CE44-8667-4457-BC62-1444328C05B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDD9CE44-8667-4457-BC62-1444328C05B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDD9CE44-8667-4457-BC62-1444328C05B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D91E1C88-7D22-4832-969A-7DBA38306886}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D91E1C88-7D22-4832-969A-7DBA38306886}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D91E1C88-7D22-4832-969A-7DBA38306886}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D91E1C88-7D22-4832-969A-7DBA38306886}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
