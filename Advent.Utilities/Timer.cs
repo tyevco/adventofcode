@@ -7,15 +7,14 @@ namespace Advent.Utilities
     {
         public static void Monitor(Action action)
         {
-            StackTrace stackTrace = new StackTrace();
-            var frame = stackTrace.GetFrame(1);
+            Monitor(null, action);
+        }
 
+        public static void Monitor(string name, Action action)
+        {
             if (Debug.EnableDebugOutput)
             {
-                Console.WriteLine($"Starting stopwatch for {frame.GetFileName()}:{frame.GetMethod().Name}:{frame.GetFileLineNumber()}");
-            }
-            else
-            {
+                Console.WriteLine($"{(string.IsNullOrEmpty(name) ? "" : $"[{ name}] ")}Starting stopwatch.");
             }
 
             var stopwatch = Stopwatch.StartNew();
@@ -26,10 +25,10 @@ namespace Advent.Utilities
 
             if (Debug.EnableDebugOutput)
             {
-                Console.WriteLine($"Stopped stopwatch for {frame.GetFileName()}:{frame.GetMethod().Name}");
+                Console.WriteLine($"{(string.IsNullOrEmpty(name) ? "" : $"[{ name}] ")}Stopped stopwatch.");
             }
 
-            Console.WriteLine($"{frame.GetFileName()}:{frame.GetMethod().Name} : {stopwatch.ElapsedMilliseconds} ms");
+            Console.WriteLine($"{(string.IsNullOrEmpty(name) ? "" : $"[{ name}] ")}Finished in {stopwatch.ElapsedMilliseconds} ms");
         }
     }
 }
