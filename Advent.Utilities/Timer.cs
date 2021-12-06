@@ -5,11 +5,6 @@ namespace Advent.Utilities
 {
     public static class Timer
     {
-        public static void Monitor(string name, Action action)
-        {
-            Perform(action, name);
-        }
-
         public static void Monitor(Action action)
         {
             Monitor(null, action);
@@ -17,9 +12,10 @@ namespace Advent.Utilities
 
         public static void Monitor(string name, Action action)
         {
+            var blurb = (string.IsNullOrEmpty(name) ? "" : $"[{ name}] ");
             if (Debug.EnableDebugOutput)
             {
-                Console.WriteLine($"{(string.IsNullOrEmpty(name) ? "" : $"[{ name}] ")}Starting stopwatch.");
+                Console.WriteLine($"{blurb}Starting stopwatch.");
             }
 
             var stopwatch = Stopwatch.StartNew();
@@ -30,10 +26,10 @@ namespace Advent.Utilities
 
             if (Debug.EnableDebugOutput)
             {
-                Console.WriteLine($"{(string.IsNullOrEmpty(name) ? "" : $"[{ name}] ")}Stopped stopwatch.");
+                Console.WriteLine($"{blurb}Stopped stopwatch.");
             }
 
-            Console.WriteLine($"{(string.IsNullOrEmpty(name) ? "" : $"[{ name}] ")}Finished in {stopwatch.ElapsedMilliseconds} ms");
+            Console.WriteLine($"{blurb}Finished in {stopwatch.ElapsedMilliseconds} ms");
         }
     }
 }
