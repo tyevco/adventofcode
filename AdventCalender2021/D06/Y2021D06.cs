@@ -8,7 +8,7 @@ using Advent.Utilities.Data.Map;
 
 namespace AdventCalendar2021.D06
 {
-    [Exercise("Day 5: Lanternfish")]
+    [Exercise("Day 6: Lanternfish")]
     class Y2021D06 : FileSelectionParsingConsole<IList<long>>, IExercise
     {
         public void Execute()
