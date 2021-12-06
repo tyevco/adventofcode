@@ -81,5 +81,38 @@ namespace Advent.Utilities.Data.Map
 
             return clone;
         }
+
+
+        public void PrintGrid()
+        {
+            var xs = Points.Select(x => x.Value.X);
+            var ys = Points.Select(y => y.Value.Y);
+
+            var minX = xs.Any() ? Math.Min(-DefaultSize, xs.Min()) : -DefaultSize;
+            var maxX = xs.Any() ? Math.Max(DefaultSize, xs.Max()) : DefaultSize;
+            var minY = ys.Any() ? Math.Min(-DefaultSize, ys.Min()) : -DefaultSize;
+            var maxY = ys.Any() ? Math.Max(DefaultSize, ys.Max()) : DefaultSize;
+
+            for (int y = minY; y <= maxY; y++)
+            {
+                for (int x = minX; x <= maxX; x++)
+                {
+                    string key = $"{x},{y}";
+                    if (Points.ContainsKey(key))
+                    {
+                        var data = Points[key].Data;
+                        Console.Write(data);
+                    }
+                    else
+                    {
+                        Console.Write('.');
+                    }
+                }
+
+                Console.WriteLine();
+            }
+
+            Console.WriteLine();
+        }
     }
 }

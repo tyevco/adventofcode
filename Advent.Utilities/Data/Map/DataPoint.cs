@@ -27,8 +27,6 @@
         {
         }
 
-        public T Data { get; set; }
-
         public int Distance { get; set; }
     }
 }

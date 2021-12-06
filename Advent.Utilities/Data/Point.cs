@@ -6,51 +6,44 @@ namespace Advent.Utilities.Data.Map
     public class Point<T> : Point
     {
         public Point()
-        : base(0, 0, 0)
+        : base(0, 0)
         {
         }
 
         public Point(int x)
-            : base(x, 0, 0)
+            : base(x, 0)
         {
         }
 
         public Point(int x, int y)
-            : base(x, y, 0)
+            : base(x, y)
         {
         }
 
         public T Data { get; set; }
     }
 
-    [DebuggerDisplay("{X},{Y},{Z}")]
+    [DebuggerDisplay("{X},{Y}")]
     public class Point
     {
         public Point()
-            : this(0, 0, 0)
+            : this(0, 0)
         {
         }
 
         public Point(int x)
-            : this(x, 0, 0)
+            : this(x, 0)
         {
         }
 
         public Point(int x, int y)
-            : this(x, y, 0)
-        {
-        }
-
-        public Point(int x, int y, int z)
         {
             X = x;
             Y = y;
-            Z = z;
         }
 
         public int X { get; set; }
         public int Y { get; set; }
-        public int Z { get; set; }
 
         public override string ToString()
         {
@@ -76,8 +69,33 @@ namespace Advent.Utilities.Data.Map
         {
             return obj is Point point &&
                    X == point.X &&
-                   Y == point.Y &&
-                   Z == point.Z;
+                   Y == point.Y;
+        }
+
+        public Point Step(Point toward)
+        {
+            int targetX = this.X;
+            int targetY = this.Y;
+
+            if (this.X > toward.X)
+            {
+                targetX--;
+            }
+            else if (this.X < toward.X)
+            {
+                targetX++;
+            }
+
+            if (this.Y > toward.Y)
+            {
+                targetY--;
+            }
+            else if (this.Y < toward.Y)
+            {
+                targetY++;
+            }
+
+            return new Point(targetX, targetY);
         }
 
         public override int GetHashCode()
@@ -85,7 +103,6 @@ namespace Advent.Utilities.Data.Map
             var hashCode = 1307379088;
             hashCode = hashCode * -1521134295 + X.GetHashCode();
             hashCode = hashCode * -1521134295 + Y.GetHashCode();
-            hashCode = hashCode * -1521134295 + Z.GetHashCode();
             return hashCode;
         }
     }
