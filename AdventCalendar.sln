@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventCalendar2015", "Adven
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventCalendar2018", "AdventCalendar2018\AdventCalendar2018.csproj", "{D1B9E096-D8B2-4A45-AB81-5A683F51E80A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventCalendar2020", "AdventCalender2020\AdventCalendar2020.csproj", "{FDD9CE44-8667-4457-BC62-1444328C05B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventCalendar2020", "AdventCalendar2020\AdventCalendar2020.csproj", "{FDD9CE44-8667-4457-BC62-1444328C05B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Advent.Runner", "Advent.Runner\Advent.Runner.csproj", "{74993BF7-5662-4D14-BD1F-F1919C893CF9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventCalendar2021", "AdventCalender2021\AdventCalendar2021.csproj", "{D91E1C88-7D22-4832-969A-7DBA38306886}"
 EndProject
@@ -41,6 +43,10 @@ Global
 		{FDD9CE44-8667-4457-BC62-1444328C05B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDD9CE44-8667-4457-BC62-1444328C05B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDD9CE44-8667-4457-BC62-1444328C05B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74993BF7-5662-4D14-BD1F-F1919C893CF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74993BF7-5662-4D14-BD1F-F1919C893CF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74993BF7-5662-4D14-BD1F-F1919C893CF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74993BF7-5662-4D14-BD1F-F1919C893CF9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D91E1C88-7D22-4832-969A-7DBA38306886}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D91E1C88-7D22-4832-969A-7DBA38306886}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D91E1C88-7D22-4832-969A-7DBA38306886}.Release|Any CPU.ActiveCfg = Release|Any CPU

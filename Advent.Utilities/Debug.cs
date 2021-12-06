@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Advent.Utilities.Extensions;
+using System;
 
 namespace Advent.Utilities
 {
@@ -10,6 +11,18 @@ namespace Advent.Utilities
         {
             if (EnableDebugOutput)
                 Console.Write(obj);
+        }
+
+        public static void WriteLine(string obj, params object[] values)
+        {
+            if (EnableDebugOutput)
+                Console.WriteLine(obj, values);
+        }
+
+        public static void WriteLine(string obj, (string, object)[] values)
+        {
+            if (EnableDebugOutput)
+                Console.WriteLine(obj.Interpolate(values));
         }
 
         public static void WriteLine(object obj)

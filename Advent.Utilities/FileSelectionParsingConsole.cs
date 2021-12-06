@@ -18,8 +18,10 @@ namespace Advent.Utilities
         protected sealed override void Execute(string file)
         {
             var data = ParseData(file);
-
-            Execute(data);
+            Timer.Monitor(() =>
+            {
+                Execute(data);
+            });
         }
 
         protected abstract void Execute(T data);

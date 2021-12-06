@@ -5,6 +5,11 @@ namespace Advent.Utilities
 {
     public static class Timer
     {
+        public static void Monitor(string name, Action action)
+        {
+            Perform(action, name);
+        }
+
         public static void Monitor(Action action)
         {
             Monitor(null, action);

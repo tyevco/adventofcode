@@ -7,6 +7,11 @@
 *.userosscache
 *.sln.docstates
 
+/Answers/
+/Exercises/
+.obsidian
+local.settings.json
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

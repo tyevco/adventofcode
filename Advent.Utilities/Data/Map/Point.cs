@@ -19,6 +19,8 @@ namespace Advent.Utilities.Data.Map
             : base(x, y, 0)
         {
         }
+
+        public T Data { get; set; }
     }
 
     [DebuggerDisplay("{X},{Y},{Z}")]
