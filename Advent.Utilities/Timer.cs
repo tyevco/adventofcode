@@ -13,6 +13,10 @@ namespace Advent.Utilities
         public static void Monitor(string name, Action action)
         {
             var blurb = (string.IsNullOrEmpty(name) ? "" : $"[{ name}] ");
+
+            if (!string.IsNullOrEmpty(blurb))
+                Console.WriteLine($"================ {blurb}================");
+
             if (Debug.EnableDebugOutput)
             {
                 Console.WriteLine($"{blurb}Starting stopwatch.");

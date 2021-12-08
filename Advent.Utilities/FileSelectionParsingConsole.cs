@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Advent.Utilities.Attributes;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace Advent.Utilities
@@ -18,7 +20,16 @@ namespace Advent.Utilities
         protected sealed override void Execute(string file)
         {
             var data = ParseData(file);
-            Timer.Monitor(() =>
+
+            var attributes = this.GetType().GetCustomAttribute<ExerciseAttribute>();
+
+            string exerciseName = null;
+            if (attributes != null)
+            {
+                exerciseName = attributes.Name;
+            }
+
+            Timer.Monitor(exerciseName, () =>
             {
                 Execute(data);
             });
