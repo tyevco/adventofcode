@@ -51,7 +51,7 @@ namespace Advent.Utilities.Data
         public T Get(int x, int y)
         {
             if (x >= 0 && x < Width && y >= 0 && y < Height)
-                return Items[(x + (y * Height))];
+                return Items[GetIndex(x, y)];
 
             return default;
         }
@@ -69,7 +69,7 @@ namespace Advent.Utilities.Data
         public void Set(int x, int y, T item)
         {
             if (x >= 0 && x < Width && y >= 0 && y < Height)
-                Items[(x + (y * Height))] = item;
+                Items[GetIndex(x, y)] = item;
         }
 
         public T[] GetRow(int y)
@@ -78,7 +78,7 @@ namespace Advent.Utilities.Data
             int i = 0;
             for (int x = 0; x < Width; x++)
             {
-                row[i++] = Items[(x + (y * Height))];
+                row[i++] = Items[GetIndex(x, y)];
             }
 
             return row;
@@ -90,10 +90,56 @@ namespace Advent.Utilities.Data
             int i = 0;
             for (int y = 0; y < Height; y++)
             {
-                col[i++] = Items[(x + (y * Height))];
+                col[i++] = Items[GetIndex(x, y)];
             }
 
             return col;
+        }
+
+        public (int x, int y, T item)[] GetAdjascent(int x, int y)
+        {
+            List<(int x, int y, T item)> adj = new List<(int x, int y, T item)>();
+            // check if on the left edge
+            if (x > 0)
+            {
+                adj.Add((x - 1, y, Get(x - 1, y)));
+            }
+
+            // check if on the right edge
+            if (x < Width - 1)
+            {
+                adj.Add((x + 1, y, Get(x + 1, y)));
+            }
+
+            // check if on the top edge
+            if (y > 0)
+            {
+                adj.Add((x, y - 1, Get(x, y - 1)));
+            }
+
+            // check if on the bottom edge
+            if (y < Height - 1)
+            {
+                adj.Add((x, y + 1, Get(x, y + 1)));
+            }
+
+            return adj.ToArray();
+        }
+
+        public IEnumerable<(int x, int y, T item)> Iterate()
+        {
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    yield return (x, y, Items[GetIndex(x, y)]);
+                }
+            }
+        }
+
+        private int GetIndex(int x, int y)
+        {
+            return x + (y * Width);
         }
     }
 }
