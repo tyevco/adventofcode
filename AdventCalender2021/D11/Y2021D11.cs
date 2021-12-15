@@ -66,7 +66,7 @@ namespace AdventCalendar2021.D11
             {
                 bool eval = true;
 
-                int iteration = 0;
+                int iteration = 100;
 
                 while (eval)
                 {
