@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Advent.Utilities.Data
 {
-    public class CartesianGrid<T>
+    public class CartesianGrid<T> : IEnumerable<(int x, int y, T item)>
     {
         public CartesianGrid(IEnumerable<T> items, int width, int height)
         {
@@ -96,37 +97,12 @@ namespace Advent.Utilities.Data
             return col;
         }
 
-        public (int x, int y, T item)[] GetAdjascent(int x, int y)
+        private int GetIndex(int x, int y)
         {
-            List<(int x, int y, T item)> adj = new List<(int x, int y, T item)>();
-            // check if on the left edge
-            if (x > 0)
-            {
-                adj.Add((x - 1, y, Get(x - 1, y)));
-            }
-
-            // check if on the right edge
-            if (x < Width - 1)
-            {
-                adj.Add((x + 1, y, Get(x + 1, y)));
-            }
-
-            // check if on the top edge
-            if (y > 0)
-            {
-                adj.Add((x, y - 1, Get(x, y - 1)));
-            }
-
-            // check if on the bottom edge
-            if (y < Height - 1)
-            {
-                adj.Add((x, y + 1, Get(x, y + 1)));
-            }
-
-            return adj.ToArray();
+            return x + (y * Width);
         }
 
-        public IEnumerable<(int x, int y, T item)> Iterate()
+        public IEnumerator<(int x, int y, T item)> GetEnumerator()
         {
             for (int y = 0; y < Height; y++)
             {
@@ -137,9 +113,9 @@ namespace Advent.Utilities.Data
             }
         }
 
-        private int GetIndex(int x, int y)
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return x + (y * Width);
+            return this.GetEnumerator();
         }
     }
 }

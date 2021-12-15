@@ -82,7 +82,6 @@ namespace Advent.Utilities.Data.Map
             return clone;
         }
 
-
         public void PrintGrid()
         {
             var xs = Points.Select(x => x.Value.X);

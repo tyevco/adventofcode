@@ -4,6 +4,7 @@ using System.Linq;
 using Advent.Utilities;
 using Advent.Utilities.Attributes;
 using Advent.Utilities.Data;
+using Advent.Utilities.Data.Extensions;
 using Advent.Utilities.Data.Map;
 
 namespace AdventCalendar2021.D09
@@ -44,7 +45,7 @@ namespace AdventCalendar2021.D09
             {
                 List<(int x, int y, int item)> lowSpots = new List<(int x, int y, int item)>();
 
-                foreach (var p in data.Iterate())
+                foreach (var p in data)
                 {
                     var adjs = data.GetAdjascent(p.x, p.y);
                     if (adjs.All(a => a.item > p.item))
@@ -62,7 +63,7 @@ namespace AdventCalendar2021.D09
 
                 List<int> totals = new List<int>();
 
-                foreach (var p in data.Iterate())
+                foreach (var p in data)
                 {
                     var adjs = data.GetAdjascent(p.x, p.y);
                     if (adjs.All(a => a.item > p.item))
